@@ -11,7 +11,7 @@ Debugging -> made simple model work -> overfitting af
 added weigths -> still overfitting af
 **make more complex model**
 
---
+---
 
 ## To do
 1.  Add visualization
