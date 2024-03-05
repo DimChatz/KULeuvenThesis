@@ -3,13 +3,22 @@ import torch.nn as nn
 import torch.optim as optim
 import os
 import numpy as np
+import keyboard
+import torch.nn.init as init
+from visualizer import trainVisualizer
+from torcheval.metrics.functional import multiclass_f1_score
 
-
+################
+### DATASETS ###
+################
 
 class ECGDataset(torch.utils.data.Dataset):
+    '''Time series Dataset'''
     def __init__(self, dirPath, experiment, numClasses):
+        # Root of data
         self.dir = dirPath
         self.fileNames = os.listdir(dirPath)
+        # Type of classification task
         self.exp = experiment
         self.numClasses = numClasses
 
@@ -17,30 +26,42 @@ class ECGDataset(torch.utils.data.Dataset):
         return len(self.fileNames)
 
     def __getitem__(self, idx):
+        # Create dict to ascribe labels
         nameDict = {f"AVNRT {self.exp}" : [1,0,0,0], f"AVRT {self.exp}" : [0,1,0,0], f"concealed {self.exp}" : [0,0,1,0], f"EAT {self.exp}" : [0,0,0,1]}
+        # Get file
         filePath = os.path.join(self.dir, self.fileNames[idx])
+        # Get file type for label
         fileKey = filePath.split("/")[-1].split("-")[0]
         label = nameDict[fileKey]
-        if label is None:
-            print(f"Warning: Label for '{filePath}' not found.")
-            print(np.load(filePath))
+        # Failsafe
+        #if label is None:
+            #print(f"Warning: Label for '{filePath}' not found.")
+            #print(np.load(filePath))
         ecgData = np.load(filePath)
+        # Reduce data shape (squeeze)
+        # Transpose axis to proper format
+        # and make it float32, not double
         ecgData = ecgData.squeeze(-1).transpose(1, 0).astype(np.float32)
         ecgLabels = np.array(label, dtype=np.float32)
         ecgData = torch.from_numpy(ecgData)
         ecgLabels = torch.from_numpy(ecgLabels)
         return ecgData, ecgLabels
 
+##############
+### MODELS ###
+##############
+
 class ConvBlock(nn.Module):
-    def __init__(self, in_channels):
-        self.conv1 = nn.Conv1d(in_channels=in_channels, out_channels=64, kernel_size=15, stride=2)
-        self.bn1 = nn.BatchNorm1d(num_features=64)
+    def __init__(self, inChannels, outChannels):
+        super().__init__()
+        self.conv1 = nn.Conv1d(in_channels=inChannels, out_channels=outChannels, kernel_size=15, stride=2)
+        self.bn1 = nn.BatchNorm1d(num_features=outChannels)
         self.relu1 = nn.ReLU()
-        self.conv2 = nn.Conv1d(in_channels=in_channels, out_channels=64, kernel_size=15, stride=1)
-        self.bn2 = nn.BatchNorm1d(num_features=64)
+        self.conv2 = nn.Conv1d(in_channels=outChannels, out_channels=outChannels, kernel_size=15, stride=1, padding='same')
+        self.bn2 = nn.BatchNorm1d(num_features=outChannels)
         self.relu2 = nn.ReLU()
-        self.convRes = nn.Conv1d(in_channels=in_channels, out_channels=64, kernel_size=15, stride=2)
-        self.bnRes = nn.BatchNorm1d(num_features=64)
+        self.convRes = nn.Conv1d(in_channels=inChannels, out_channels=outChannels, kernel_size=15, stride=2)
+        self.bnRes = nn.BatchNorm1d(num_features=outChannels)
         self.relu3 = nn.ReLU()
 
     def forward(self, x):
@@ -52,11 +73,11 @@ class ConvBlock(nn.Module):
         x = self.relu3(x)
         return x
 
-
 class IDENBlock(nn.Module):
-    def __init__(self, in_channels):
-        self.conv1 = nn.Conv1d(in_channels=in_channels, out_channels=64, kernel_size=15, stride=2)
-        self.bn1 = nn.BatchNorm1d(num_features=64)
+    def __init__(self, inChannels, outChannels):
+        super().__init__()
+        self.conv1 = nn.Conv1d(in_channels=inChannels, out_channels=outChannels, kernel_size=15, stride=1, padding='same')
+        self.bn1 = nn.BatchNorm1d(num_features=outChannels)
         self.relu1 = nn.ReLU()
         self.relu2 = nn.ReLU()
 
@@ -64,21 +85,27 @@ class IDENBlock(nn.Module):
         y = x.clone()
         x = self.relu1(self.bn1(self.conv1(x)))
         x = y + x
+        x = self.relu2(x)
         return x
 
 class CNNBlock(nn.Module):
-    def __init__(self, in_channels):
-        self.convBlock = ConvBlock(in_channels=64) 
+    def __init__(self, inChannels, outChannels):
+        super().__init__()
+        self.convBlock = ConvBlock(inChannels, outChannels) 
         self.pool = nn.MaxPool1d(kernel_size=2, stride=2)
-        self.IDEN = IDENBlock(in_channels=in_channels)
+        if inChannels == outChannels:
+            self.IDEN = IDENBlock(inChannels, outChannels)
+        else:
+            self.IDEN = IDENBlock(inChannels*2, outChannels)
 
     def forward(self, x):
-        x = self.IDEN(self.pool1(self.convBlock1(x)))
+        x = self.IDEN(self.pool(self.convBlock(x)))
         return x
 
 class DenseBlock(nn.Module):
-    def __init__(self):
-        self.lin = nn.Linear(512, 512)
+    def __init__(self, inChannels, outChannels):
+        super().__init__()
+        self.lin = nn.Linear(inChannels, outChannels)
         self.relu = nn.ReLU()
         self.drop = nn.Dropout(0.5)
 
@@ -87,39 +114,51 @@ class DenseBlock(nn.Module):
         return x
 
 class ECGCNNClassifier(nn.Module):
-    def __init__(self):
-        super(ECGCNNClassifier, self).__init__()
+    '''Model from paper:
+    Automatic multilabel electrocardiogram diagnosis of heart rhythm or conduction abnormalities with deep learning: a cohort study
+    It is in the supplementary material'''
+    def __init__(self, numClasses):
+        super().__init__()
         self.conv = nn.Conv1d(in_channels=12, out_channels=64, kernel_size=15, stride=2)
         self.bn = nn.BatchNorm1d(num_features=64)
         self.relu = nn.ReLU()
         self.maxPool = nn.MaxPool1d(kernel_size=2, stride=2)
-        self.convBlock1 = CNNBlock(in_channels=64, out_channels=128)
-        self.convBlock2 = CNNBlock(in_channels=64, out_channels=128)
-        self.convBlock3 = CNNBlock(in_channels=64, out_channels=128)
-        self.convBlock4 = CNNBlock(in_channels=64, out_channels=128)
+        self.convBlock1 = CNNBlock(inChannels=64, outChannels=128)
+        self.convBlock2 = CNNBlock(inChannels=128, outChannels=256)
+        self.convBlock3 = CNNBlock(inChannels=256, outChannels=512)
         self.avgPool = nn.AvgPool1d(kernel_size=2, stride=2)
         self.flatten = nn.Flatten()
-        self.IDEN1 = IDENBlock()
-        self.IDEN2 = IDENBlock()
-        self.softmax = nn.Softmax()
+        self.Dense1 = DenseBlock(inChannels=1024, outChannels=512)
+        self.Dense2 = DenseBlock(inChannels=512, outChannels=512)
+        self.fc = nn.Linear(512, numClasses)
 
     def forward(self, x):
         x = self.maxPool(self.relu(self.bn(self.conv(x))))
-        x = self.convBlock1(self.convBlock2(self.convBlock3(self.convBlock4(x))))
+        x = self.convBlock1(x)
+        x = self.convBlock2(x)
+        x = self.convBlock3(x)
         x = self.flatten(self.avgPool(x))
-        x = self.IDEN1(self.IDEN2(x))
-        x = self.softmax(x)
+        x = self.Dense1(x)
+        x = self.Dense2(x)
+        x = self.fc(x)
         return x
     
+#############################################
+
 class ECGSimpleClassifier(nn.Module):
+    '''Random Model I came up with to see that
+        my data runs'''
     def __init__(self, numClasses):
-        super(ECGSimpleClassifier, self).__init__()
+        super().__init__()
         self.conv1 = nn.Conv1d(in_channels=12, out_channels=64, kernel_size=5, stride=5)
+        init.kaiming_normal_(self.conv1.weight, mode='fan_in', nonlinearity='relu')
         self.relu = nn.ReLU()
         self.pool = nn.MaxPool1d(kernel_size=10)
         self.conv2 = nn.Conv1d(64, 128, kernel_size=5, stride=5)
+        init.kaiming_normal_(self.conv2.weight, mode='fan_in', nonlinearity='relu')
         self.fc1 = nn.Linear(128, 64)
-        self.fc2 = nn.Linear(64, numClasses)  # num_classes is the number of categories
+        init.kaiming_normal_(self.fc1.weight, mode='fan_in', nonlinearity='relu')
+        self.fc2 = nn.Linear(64, numClasses)
 
     def forward(self, x):
         x = self.pool(self.relu(self.conv1(x)))
@@ -128,67 +167,110 @@ class ECGSimpleClassifier(nn.Module):
         x = self.relu(self.fc1(x))
         x = self.fc2(x)
         return x
-    
-def train(trainLoader, valLoader, testLoader, learningRate, epochs, classes, classWeights):
+
+#################
+### TRAINING  ###
+### FUNCTIONs ###
+#################
+def train(model, trainLoader, valLoader, testLoader, classes, learningRate, epochs, classWeights, earlyStopPatience, reduceLRPatience):
     # Model, Loss, and Optimizer
-    model = ECGSimpleClassifier(classes)
+    # Add weights to loss
     classWeights = torch.from_numpy(classWeights)
     criterion = nn.CrossEntropyLoss(weight=classWeights)
     optimizer = optim.Adam(model.parameters(), lr=learningRate)
 
+    # Trackers for callbacks
+    bestValF1 = -1
+    bestESEpoch = -1
+    bestLRepoch = -1
+
+    # Trackers for training vis
+    trainLossList, valLossList, trainAccList, valAccList, trainF1List, valF1List = [], [], [], [], [], []
+
     for epoch in range(epochs):
         trainLoss, correctTrainPreds, totalTrainPreds = 0, 0, 0
+        trainPredTensor, trainLabelTensor = torch.tensor([]), torch.tensor([])
         for inputs, labels in trainLoader:
             outputs = model(inputs)
+            #if torch.equal(labels, torch.from_numpy(np.array([0,0,1,0]))) or torch.equal(labels, torch.from_numpy(np.array([0,0,0,1]))):
+            #    print(labels)
+            #else:
+            #print('outputs are ',torch.argmax(outputs, 1))
+            #print('labels are ',torch.argmax(labels, 1))
+            #keyboard.wait()
             # Calculate loss
-            loss = criterion(outputs, torch.max(labels, 1)[1])
-            trainLoss += loss.item()
-            # Zero the gradients
-            optimizer.zero_grad()
-            # Perform backward pass
-            loss.backward()
-            # Update the weights
+            loss = criterion(outputs, labels)
+            #print(loss)inChannels, outChannels
             optimizer.step()
             # Calculate accuracy
-            _, predicted = torch.max(outputs.data, 1)
             totalTrainPreds += labels.size(0)
-            correctTrainPreds += (predicted == torch.max(labels, 1)[1]).sum().item()
+            #print(labels.size(0))
+            correctTrainPreds += (torch.argmax(outputs, 1) == torch.argmax(labels, 1)).sum()
+            trainPredTensor = torch.cat((trainPredTensor, torch.argmax(outputs, 1)))
+            trainLabelTensor = torch.cat((trainLabelTensor, torch.argmax(labels, 1)))
+            #print((torch.argmax(outputs, 1) == torch.argmax(labels, 1)).sum())
+            #keyboard.wait()
 
         # Validation
         model.eval()
-        valLoss = 0
-        correctValPreds = 0
-        totalValPreds = 0
+        valLoss, correctValPreds, totalValPreds = 0, 0, 0
+        valPredTensor, valLabelTensor = torch.tensor([]), torch.tensor([])
         with torch.no_grad():
             for inputs, labels in valLoader:
                 outputs = model(inputs)
-                loss = criterion(outputs, torch.max(labels, 1)[1])
+                loss = criterion(outputs, labels)
                 valLoss += loss.item()
-                _, predicted = torch.max(outputs.data, 1)
                 totalValPreds += labels.size(0)
-                correctValPreds += (predicted == torch.max(labels, 1)[1]).sum().item()
+                correctValPreds += (torch.argmax(outputs, 1) == torch.argmax(labels, 1)).sum()
+                valPredTensor = torch.cat((valPredTensor, torch.argmax(outputs, 1)))
+                valLabelTensor = torch.cat((valLabelTensor, torch.argmax(labels, 1)))
 
         epochTrainLoss = trainLoss / len(trainLoader)
         epochTrainAcc = correctTrainPreds / totalTrainPreds * 100
+        epochTrainF1 = multiclass_f1_score(torch.flatten(trainPredTensor).long(), torch.flatten(trainLabelTensor).long(), num_classes=classes, average='macro').item() * 100
         epochValLoss = valLoss / len(valLoader)
         epochValAcc = correctValPreds / totalValPreds * 100
-        print(f'Epoch {epoch+1}, Train Loss: {epochTrainLoss:.4f}, Train Accuracy: {epochTrainAcc:.2f}%, Val Loss: {epochValLoss:.4f}, Val Accuracy: {epochValAcc:.2f}%')
+        epochValF1 = multiclass_f1_score(torch.flatten(valPredTensor).long(), torch.flatten(valLabelTensor).long(), num_classes=classes, average='macro').item() * 100
 
+        print(f'Epoch {epoch+1}: Train Loss: {epochTrainLoss:.4f}, Val Loss: {epochValLoss:.4f}, Train Acc: {epochTrainAcc:.2f}%, Val Accuracy: {epochValAcc:.2f}%, Train F1 Score: {epochTrainF1:.2f}%, Val F1 Score: {epochValF1:.2f}%')
+        
+        # Append to vis trackers
+        trainLossList.append(epochTrainLoss)
+        valLossList.append(epochValLoss)
+        trainAccList.append(epochTrainAcc)
+        valAccList.append(epochValAcc)
+        trainF1List.append(epochTrainF1)
+        valF1List.append(epochValF1)
+
+        # Early stopping and reduce LR callbacks
+        if epochValF1 > bestValF1:
+            bestESEpoch = epoch
+            bestLRepoch = epoch
+            bestValF1 = epochValF1
+        if epoch - bestLRepoch > reduceLRPatience - 1:
+            learningRate /= 5
+            bestLRepoch = epoch
+            print("Reducing LR")
+        if epoch - bestESEpoch > earlyStopPatience - 1:
+            print("Early stopped training at epoch %d" % epoch)
+            break  # terminate the training loop
+
+    trainVisualizer(trainLossList, valLossList, trainAccList, valAccList, trainF1List, valF1List)
 
     # Test
     model.eval()
-    testLoss = 0
-    correctTestPreds = 0
-    totalTestPreds = 0
+    testLoss, correctTestPreds, totalTestPreds = 0, 0, 0
+    testPredTensor, testLabelTensor = torch.tensor([]), torch.tensor([])
     with torch.no_grad():
         for inputs, labels in testLoader:
             outputs = model(inputs)
-            loss = criterion(outputs, torch.max(labels, 1)[1])
+            loss = criterion(outputs, labels)
             testLoss += loss.item()
-            _, predicted = torch.max(outputs.data, 1)
             totalTestPreds += labels.size(0)
-            correctTestPreds += (predicted == torch.max(labels, 1)[1]).sum().item()
-
+            correctTestPreds += (torch.argmax(outputs, 1) == torch.argmax(labels, 1)).sum()
+            testPredTensor = torch.cat((testPredTensor, torch.argmax(outputs, 1)))
+            testLabelTensor = torch.cat((testLabelTensor, torch.argmax(labels, 1)))
     testLoss = testLoss / len(testLoader)
     testAcc = correctTestPreds / totalTestPreds * 100
-    print(f'Test Loss: {testLoss:.4f}, Test Accuracy: {testAcc:.2f}%')
+    epochTestF1 = multiclass_f1_score(torch.flatten(testPredTensor).long(), torch.flatten(testLabelTensor).long(), num_classes=classes, average='macro').item() * 100
+    print(f'Test Loss: {testLoss:.4f}, Test Accuracy: {testAcc:.2f}%, Test F1 Score: {epochTestF1:.2f}%')
