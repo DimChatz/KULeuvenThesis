@@ -77,6 +77,7 @@ def gaussianCalc(gaussianArray):
     gaussianArray = gaussianArray[:, :, 1:]
     mean = np.mean(gaussianArray)
     sigma = np.std(gaussianArray)
+    print(mean, sigma)
     return mean, sigma
 
 def gaussianNormalizer(folderPath, segment):

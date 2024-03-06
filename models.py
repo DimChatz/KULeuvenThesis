@@ -7,6 +7,7 @@ import keyboard
 import torch.nn.init as init
 from visualizer import trainVisualizer
 from torcheval.metrics.functional import multiclass_f1_score
+from datetime import datetime
 
 ################
 ### DATASETS ###
@@ -14,13 +15,14 @@ from torcheval.metrics.functional import multiclass_f1_score
 
 class ECGDataset(torch.utils.data.Dataset):
     '''Time series Dataset'''
-    def __init__(self, dirPath, experiment, numClasses):
+    def __init__(self, dirPath, experiment, numClasses, classWeights):
         # Root of data
         self.dir = dirPath
         self.fileNames = os.listdir(dirPath)
         # Type of classification task
         self.exp = experiment
         self.numClasses = numClasses
+        self.weights = classWeights
 
     def __len__(self):
         return len(self.fileNames)
@@ -33,10 +35,6 @@ class ECGDataset(torch.utils.data.Dataset):
         # Get file type for label
         fileKey = filePath.split("/")[-1].split("-")[0]
         label = nameDict[fileKey]
-        # Failsafe
-        #if label is None:
-            #print(f"Warning: Label for '{filePath}' not found.")
-            #print(np.load(filePath))
         ecgData = np.load(filePath)
         # Reduce data shape (squeeze)
         # Transpose axis to proper format
@@ -46,6 +44,14 @@ class ECGDataset(torch.utils.data.Dataset):
         ecgData = torch.from_numpy(ecgData)
         ecgLabels = torch.from_numpy(ecgLabels)
         return ecgData, ecgLabels
+        
+    def samplerWeights(self):
+        nameDict = {f"AVNRT {self.exp}": 0, f"AVRT {self.exp}": 1, f"concealed {self.exp}": 2, f"EAT {self.exp}": 3}
+        # Use the class index from nameDict to get the weight directly from self.weights
+        return [self.weights[nameDict[fileName.split("-")[0]]] for fileName in self.fileNames]
+
+    
+    
 
 ##############
 ### MODELS ###
@@ -172,10 +178,14 @@ class ECGSimpleClassifier(nn.Module):
 ### TRAINING  ###
 ### FUNCTIONs ###
 #################
-def train(model, trainLoader, valLoader, testLoader, classes, learningRate, epochs, classWeights, earlyStopPatience, reduceLRPatience):
+def train(model, trainLoader, valLoader, testLoader, classes, learningRate, epochs, classWeights, earlyStopPatience, reduceLRPatience, device):
     # Model, Loss, and Optimizer
+    model = model.to(device)
+    now = datetime.now()
+    formatted_now = now.strftime("%d-%m-%y-%H-%M")
+
     # Add weights to loss
-    classWeights = torch.from_numpy(classWeights)
+    classWeights = torch.from_numpy(classWeights).to(device)
     criterion = nn.CrossEntropyLoss(weight=classWeights)
     optimizer = optim.Adam(model.parameters(), lr=learningRate)
 
@@ -188,9 +198,12 @@ def train(model, trainLoader, valLoader, testLoader, classes, learningRate, epoc
     trainLossList, valLossList, trainAccList, valAccList, trainF1List, valF1List = [], [], [], [], [], []
 
     for epoch in range(epochs):
+        model.train()
         trainLoss, correctTrainPreds, totalTrainPreds = 0, 0, 0
         trainPredTensor, trainLabelTensor = torch.tensor([]), torch.tensor([])
         for inputs, labels in trainLoader:
+            inputs, labels = inputs.to(device), labels.to(device)
+            optimizer.zero_grad()
             outputs = model(inputs)
             #if torch.equal(labels, torch.from_numpy(np.array([0,0,1,0]))) or torch.equal(labels, torch.from_numpy(np.array([0,0,0,1]))):
             #    print(labels)
@@ -200,12 +213,14 @@ def train(model, trainLoader, valLoader, testLoader, classes, learningRate, epoc
             #keyboard.wait()
             # Calculate loss
             loss = criterion(outputs, labels)
+            loss.backward()
             #print(loss)inChannels, outChannels
             optimizer.step()
             # Calculate accuracy
+            trainLoss += loss.item()
             totalTrainPreds += labels.size(0)
             #print(labels.size(0))
-            correctTrainPreds += (torch.argmax(outputs, 1) == torch.argmax(labels, 1)).sum()
+            correctTrainPreds += (torch.argmax(outputs, 1) == torch.argmax(labels, 1)).sum().item()
             trainPredTensor = torch.cat((trainPredTensor, torch.argmax(outputs, 1)))
             trainLabelTensor = torch.cat((trainLabelTensor, torch.argmax(labels, 1)))
             #print((torch.argmax(outputs, 1) == torch.argmax(labels, 1)).sum())
@@ -217,11 +232,12 @@ def train(model, trainLoader, valLoader, testLoader, classes, learningRate, epoc
         valPredTensor, valLabelTensor = torch.tensor([]), torch.tensor([])
         with torch.no_grad():
             for inputs, labels in valLoader:
+                inputs , labels = inputs.to(device), labels.to(device)
                 outputs = model(inputs)
                 loss = criterion(outputs, labels)
                 valLoss += loss.item()
                 totalValPreds += labels.size(0)
-                correctValPreds += (torch.argmax(outputs, 1) == torch.argmax(labels, 1)).sum()
+                correctValPreds += (torch.argmax(outputs, 1) == torch.argmax(labels, 1)).sum().item()
                 valPredTensor = torch.cat((valPredTensor, torch.argmax(outputs, 1)))
                 valLabelTensor = torch.cat((valLabelTensor, torch.argmax(labels, 1)))
 
@@ -247,8 +263,9 @@ def train(model, trainLoader, valLoader, testLoader, classes, learningRate, epoc
             bestESEpoch = epoch
             bestLRepoch = epoch
             bestValF1 = epochValF1
+            torch.save(model.state_dict(), f'/home/tzikos/Desktop/weights/{model.__class__.__name__}_{formatted_now}.pth')
         if epoch - bestLRepoch > reduceLRPatience - 1:
-            learningRate /= 5
+            learningRate /= 10
             bestLRepoch = epoch
             print("Reducing LR")
         if epoch - bestESEpoch > earlyStopPatience - 1:
@@ -258,16 +275,18 @@ def train(model, trainLoader, valLoader, testLoader, classes, learningRate, epoc
     trainVisualizer(trainLossList, valLossList, trainAccList, valAccList, trainF1List, valF1List)
 
     # Test
+    model.load_state_dict(torch.load(f'/home/tzikos/Desktop/weights/{model.__class__.__name__}_{formatted_now}.pth'))
     model.eval()
     testLoss, correctTestPreds, totalTestPreds = 0, 0, 0
     testPredTensor, testLabelTensor = torch.tensor([]), torch.tensor([])
     with torch.no_grad():
         for inputs, labels in testLoader:
+            inputs, labels = inputs.to(device), labels.to(device)
             outputs = model(inputs)
             loss = criterion(outputs, labels)
             testLoss += loss.item()
             totalTestPreds += labels.size(0)
-            correctTestPreds += (torch.argmax(outputs, 1) == torch.argmax(labels, 1)).sum()
+            correctTestPreds += (torch.argmax(outputs, 1) == torch.argmax(labels, 1)).sum().item()
             testPredTensor = torch.cat((testPredTensor, torch.argmax(outputs, 1)))
             testLabelTensor = torch.cat((testLabelTensor, torch.argmax(labels, 1)))
     testLoss = testLoss / len(testLoader)

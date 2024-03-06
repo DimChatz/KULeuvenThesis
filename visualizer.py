@@ -4,14 +4,12 @@ from preprocessing import downsampler, noiseRemover, createMissingLeads
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-def preprocVis():
-    filePath = "/home/tzikos/Desktop/Data/Berts/AVNRT/AVNRT tachy/AVNRT tachy/75E6EFE9-4EC8-4B3A-9E89-5004E6A326F2_2AX1ZWAX3DRF_20220426_2.xlsx"
+def preprocVis(filePath, mean , sigma):
     data = pd.read_excel(filePath)
     data = downsampler(data)
     orig = data[data.columns[1]].to_numpy()
     data = data.drop(data.columns[0], axis=1)
     data = data.to_numpy()
-    mean, sigma = 0.2697284861743545, 634.6015221068606
     normData = (data - mean) / sigma
     procData = noiseRemover(normData)
     procData = np.expand_dims(procData, axis = -1)
@@ -22,20 +20,19 @@ def preprocVis():
     y1 = orig
     y2 = normData[:750,0]
     y3 = procData[:750,0,0]
+    y4 = procData[:750,0,1]
 
     # Create figure with 2 subplots arranged in 1 row and 2 columns
-    fig = make_subplots(rows=3, cols=1)
+    fig = make_subplots(rows=2, cols=2)
 
 
     # Adding scatter plot to the first subplot
     fig.add_trace(go.Scatter(x=x, y=y1, mode='lines', name='original'), row=1, col=1)
-    fig.add_trace(go.Scatter(x=x, y=y2, mode='lines', name='noise Removed'), row=2, col=1)
-    fig.add_trace(go.Scatter(x=x, y=y3, mode='lines', name='noise Removed'), row=3, col=1)
-
-
+    fig.add_trace(go.Scatter(x=x, y=y2, mode='lines', name='normalized data'), row=2, col=1)
+    fig.add_trace(go.Scatter(x=x, y=y3, mode='lines', name='fully processed Lead'), row=1, col=2)
+    fig.add_trace(go.Scatter(x=x, y=y4, mode='lines', name='should-be-missing lead'), row=2, col=2)
     # Updating layout (optional)
     fig.update_layout(title_text="before and after")
-
     # Showing the plot
     fig.show()
 
