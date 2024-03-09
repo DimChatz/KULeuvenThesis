@@ -12,19 +12,30 @@ Created berts dataset preprocessing + simple model -> failed, wrong data former 
 Debugging -> made simple model work -> overfitting af
 added weigths -> still overfitting af
 
-### V-0.1.2 5/3
+### V-0.1.2 5/3 - 6/3
 Added callbacks for early stopping and reducing LR
 Added training visualizer for loss and accuracy
 Added F1 score
 Fixed Model training and preprocessing
-create more complex model -> is shit af
+create more complex model -> is shit af -> not same as paper
+**Issue with cuda**
+
+### V-1-1-1 7/3
+Fixed Cuda
+Recleared dataset
 
 ---
 
 ## To do
 - Add visualization of preproc
 - Add visualization of training
-- ○ Create more complex model
-- Add more metrics
-- Added LR reduction and early stoppying callbacks
-- ○ add ptbxl data
+○ Create CNN
+○ Create GNN
+○ Create Transformer
+○ Create Foundation
+- Add accuracy
+- Add F1
+- Add LR reduction callback 
+- Add early stoppying callbacks
+○ Add ptbxl data
+○ Add cross-validation data

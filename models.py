@@ -178,7 +178,8 @@ class ECGSimpleClassifier(nn.Module):
 ### TRAINING  ###
 ### FUNCTIONs ###
 #################
-def train(model, trainLoader, valLoader, testLoader, classes, learningRate, epochs, classWeights, earlyStopPatience, reduceLRPatience, device):
+def train(model, trainLoader, valLoader, classes, learningRate, epochs, 
+    classWeights, earlyStopPatience, reduceLRPatience, device, expList):
     # Model, Loss, and Optimizer
     model = model.to(device)
     now = datetime.now()
@@ -200,7 +201,7 @@ def train(model, trainLoader, valLoader, testLoader, classes, learningRate, epoc
     for epoch in range(epochs):
         model.train()
         trainLoss, correctTrainPreds, totalTrainPreds = 0, 0, 0
-        trainPredTensor, trainLabelTensor = torch.tensor([]), torch.tensor([])
+        trainPredTensor, trainLabelTensor = torch.tensor([]).to(device), torch.tensor([]).to(device)
         for inputs, labels in trainLoader:
             inputs, labels = inputs.to(device), labels.to(device)
             optimizer.zero_grad()
@@ -229,7 +230,7 @@ def train(model, trainLoader, valLoader, testLoader, classes, learningRate, epoc
         # Validation
         model.eval()
         valLoss, correctValPreds, totalValPreds = 0, 0, 0
-        valPredTensor, valLabelTensor = torch.tensor([]), torch.tensor([])
+        valPredTensor, valLabelTensor = torch.tensor([]).to(device), torch.tensor([]).to(device)
         with torch.no_grad():
             for inputs, labels in valLoader:
                 inputs , labels = inputs.to(device), labels.to(device)
@@ -249,7 +250,15 @@ def train(model, trainLoader, valLoader, testLoader, classes, learningRate, epoc
         epochValF1 = multiclass_f1_score(torch.flatten(valPredTensor).long(), torch.flatten(valLabelTensor).long(), num_classes=classes, average='macro').item() * 100
 
         print(f'Epoch {epoch+1}: Train Loss: {epochTrainLoss:.4f}, Val Loss: {epochValLoss:.4f}, Train Acc: {epochTrainAcc:.2f}%, Val Accuracy: {epochValAcc:.2f}%, Train F1 Score: {epochTrainF1:.2f}%, Val F1 Score: {epochValF1:.2f}%')
+        classTrainF1 = multiclass_f1_score(torch.flatten(trainPredTensor).long(), torch.flatten(trainLabelTensor).long(), num_classes=classes, average=None) * 100
+        classValF1 = multiclass_f1_score(torch.flatten(valPredTensor).long(), torch.flatten(valLabelTensor).long(), num_classes=classes, average=None) * 100
+        for i in range(classTrainF1.size(0)):
+            print(f"For class {expList[i].split(" ")[0]} the Train F1: {classTrainF1[i]:.2f}% and Val F1: {classValF1[i]:.2f}%")
+
+
         
+
+
         # Append to vis trackers
         trainLossList.append(epochTrainLoss)
         valLossList.append(epochValLoss)
@@ -257,7 +266,7 @@ def train(model, trainLoader, valLoader, testLoader, classes, learningRate, epoc
         valAccList.append(epochValAcc)
         trainF1List.append(epochTrainF1)
         valF1List.append(epochValF1)
-
+        
         # Early stopping and reduce LR callbacks
         if epochValF1 > bestValF1:
             bestESEpoch = epoch
@@ -273,23 +282,28 @@ def train(model, trainLoader, valLoader, testLoader, classes, learningRate, epoc
             break  # terminate the training loop
 
     trainVisualizer(trainLossList, valLossList, trainAccList, valAccList, trainF1List, valF1List)
+    filepath = f'/home/tzikos/Desktop/weights/{model.__class__.__name__}_{formatted_now}.pth'
+    return filepath
 
+def test(model, testLoader, classes, device, filePath, expList):
     # Test
-    model.load_state_dict(torch.load(f'/home/tzikos/Desktop/weights/{model.__class__.__name__}_{formatted_now}.pth'))
+    model.load_state_dict(torch.load(f'{filePath}'))
+    model = model.to(device)
     model.eval()
-    testLoss, correctTestPreds, totalTestPreds = 0, 0, 0
-    testPredTensor, testLabelTensor = torch.tensor([]), torch.tensor([])
+    correctTestPreds, totalTestPreds = 0, 0
+    testPredTensor, testLabelTensor = torch.tensor([]).to(device), torch.tensor([]).to(device)
     with torch.no_grad():
         for inputs, labels in testLoader:
             inputs, labels = inputs.to(device), labels.to(device)
             outputs = model(inputs)
-            loss = criterion(outputs, labels)
-            testLoss += loss.item()
             totalTestPreds += labels.size(0)
             correctTestPreds += (torch.argmax(outputs, 1) == torch.argmax(labels, 1)).sum().item()
             testPredTensor = torch.cat((testPredTensor, torch.argmax(outputs, 1)))
             testLabelTensor = torch.cat((testLabelTensor, torch.argmax(labels, 1)))
-    testLoss = testLoss / len(testLoader)
     testAcc = correctTestPreds / totalTestPreds * 100
     epochTestF1 = multiclass_f1_score(torch.flatten(testPredTensor).long(), torch.flatten(testLabelTensor).long(), num_classes=classes, average='macro').item() * 100
-    print(f'Test Loss: {testLoss:.4f}, Test Accuracy: {testAcc:.2f}%, Test F1 Score: {epochTestF1:.2f}%')
+    print(f'Test Accuracy: {testAcc:.2f}%, Test F1 Score: {epochTestF1:.2f}%')
+    classTestF1 = multiclass_f1_score(torch.flatten(testPredTensor).long(), torch.flatten(testLabelTensor).long(), num_classes=classes, average=None) * 100
+    for i in range(classTestF1.size(0)):
+        print(f"For class {expList[i].split(" ")[0]} the F1: {classTestF1[i]:.2f}%")
+

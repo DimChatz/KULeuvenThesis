@@ -1,11 +1,10 @@
 import os
 import pandas as pd
 import numpy as np
-import torch
 from scipy.signal import butter, filtfilt
 import warnings
 warnings.filterwarnings("ignore", message="Workbook contains no default style, apply openpyxl's default")
-
+import sys
 
 def downsampler(data):
     '''Function for downsampling all data to 250Hz.'''
@@ -77,7 +76,6 @@ def gaussianCalc(gaussianArray):
     gaussianArray = gaussianArray[:, :, 1:]
     mean = np.mean(gaussianArray)
     sigma = np.std(gaussianArray)
-    print(mean, sigma)
     return mean, sigma
 
 def gaussianNormalizer(folderPath, segment):
@@ -85,14 +83,18 @@ def gaussianNormalizer(folderPath, segment):
     gaussianArray = np.zeros((2500,12,1), np.float32)
     excelFiles = appendExcelFiles(folderPath, segment)
     for excelFile in excelFiles:
-        tempData = pd.read_excel(excelFile)
-        tempData = downsampler(tempData)
-        tempData = tempData.drop(tempData.columns[0], axis=1)
-        tempData = tempData.to_numpy()
-        # Apply noise removal filter - bandpass 0.5-45Hz
-        tempData = noiseRemover(tempData)
-        tempExpanded = np.expand_dims(tempData, axis = -1)
-        gaussianArray = np.concatenate((gaussianArray, tempExpanded), axis=2)
+        try:
+            tempData = pd.read_excel(excelFile)
+            tempData = downsampler(tempData)
+            tempData = tempData.drop(tempData.columns[0], axis=1)
+            tempData = tempData.to_numpy()
+            # Apply noise removal filter - bandpass 0.5-45Hz
+            tempData = noiseRemover(tempData)
+            tempExpanded = np.expand_dims(tempData, axis = -1)
+            gaussianArray = np.concatenate((gaussianArray, tempExpanded), axis=2)
+        except Exception as e:
+            print(excelFile)
+            print(e)
     return gaussianCalc(gaussianArray)
     
 def createMissingLeads(startArray):
@@ -147,7 +149,7 @@ def preprocessAll(folderpath, segmentList, mean, sigma):
         Applies the above as needed'''
     # Create train, val, test
     trainData, valData, testData = appendStratifiedFiles(folderpath, segmentList)
-    print(len(trainData), len(valData), len(testData))
+    print(f"Train Data is, {len(trainData)}, val is {len(valData)}, test is {len(testData)}")
     # Get type of experiment
     experiment = segmentList[0].split(" ")[-1]
     # Preproc

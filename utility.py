@@ -2,6 +2,7 @@ import os
 import numpy as np
 
 def classInstanceCalc(rootDir, targetDir,  segmentList, experiment):
+    os.makedirs(targetDir, exist_ok=True)
     countList = []
     for i in range(len(segmentList)):
         count = 0
@@ -12,10 +13,12 @@ def classInstanceCalc(rootDir, targetDir,  segmentList, experiment):
         print(f'For segment {segmentList[i]} the total class count in training is {int(np.round(0.8*count))}')
         countList.append(count)
     countList = np.array(countList, dtype=np.float32)
-    np.save(f'{targetDir}/{experiment}Weights.npy', countList)
+    print(f'Saves at {targetDir}{experiment}Weights.npy')
+    np.save(f'{targetDir}{experiment}Weights.npy', countList)
 
 def calcWeights(dir, experiment):
-    classCounts = np.load(f'{dir}/{experiment}Weights.npy')
+    print(f'Saved at {dir}{experiment}Weights.npy')
+    classCounts = np.load(f'{dir}{experiment}Weights.npy')
     totalCounts = np.sum(classCounts)
     classWeights = totalCounts / classCounts
     return classWeights
