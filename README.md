@@ -24,12 +24,19 @@ create more complex model -> is shit af -> not same as paper
 Fixed Cuda
 Recleared dataset
 
+
+### V-2-1-1 11/3
+Added Gaussian per channel
+Added PTB-XL preprocessing
+Fixed CNN model of paper with calcs and padding
 ---
 
 ## To do
+- Preproc Berts
 - Add visualization of preproc
 - Add visualization of training
-○ Create CNN
+- Add F1 per class
+- Create CNN
 ○ Create GNN
 ○ Create Transformer
 ○ Create Foundation
@@ -37,5 +44,12 @@ Recleared dataset
 - Add F1
 - Add LR reduction callback 
 - Add early stoppying callbacks
-○ Add ptbxl data
+- Add ptbxl data
 ○ Add cross-validation data
+○ Add experiment tracker
+○ **PROCESSING** check missing data of Bert
+○ check duplicate patients for Bert
+- fix gaussian norms to be per channel
+○ ablation study
+
+

@@ -4,7 +4,6 @@ import numpy as np
 from scipy.signal import butter, filtfilt
 import warnings
 warnings.filterwarnings("ignore", message="Workbook contains no default style, apply openpyxl's default")
-import sys
 
 def downsampler(data):
     '''Function for downsampling all data to 250Hz.'''
@@ -51,36 +50,17 @@ def appendStratifiedFiles(directory, segmentList):
         testFiles += excelFiles[int(np.round(0.9*len(excelFiles))):]
     return trainFiles, valFiles, testFiles
 
-def globalNormalizer(directory):
-    '''Function to Normalize based on the absolute maximum of the distro'''
-    endMin = 1000
-    endMax = -1000
-    for root, dirs, files in os.walk(directory):
-        for file in files:
-            # Check that excel files are picked, 
-            # they are not the general files for all the tests and 
-            if file.endswith('.xlsx') and ("overzicht" not in file):
-                xlData = pd.read_excel(f"{root}/{file}")
-                xlData = downsampler(xlData)
-                # Drop the time column
-                xlData = xlData.drop(xlData.columns[0], axis=1)
-                tempMax = xlData.values.max()
-                tempMin = xlData.values.min()
-                # Update Max - Min
-                endMax = max(tempMax, endMax)
-                endMin = min(tempMin, endMin)
-    return max(abs(endMin), endMax)
-
 def gaussianCalc(gaussianArray):
     '''Calcs mean and sigma for Gaussian'''
-    gaussianArray = gaussianArray[:, :, 1:]
-    mean = np.mean(gaussianArray)
-    sigma = np.std(gaussianArray)
+    mean, sigma = [], []
+    for i in range(12):
+        mean.append(np.mean(gaussianArray[:,i]))
+        sigma.append(np.std(gaussianArray[:,i]))
     return mean, sigma
 
 def gaussianNormalizer(folderPath, segment):
     '''Apply Gaussian Normalization'''
-    gaussianArray = np.zeros((2500,12,1), np.float32)
+    gaussianArray = np.zeros((2500,12), np.float32)
     excelFiles = appendExcelFiles(folderPath, segment)
     for excelFile in excelFiles:
         try:
@@ -90,8 +70,7 @@ def gaussianNormalizer(folderPath, segment):
             tempData = tempData.to_numpy()
             # Apply noise removal filter - bandpass 0.5-45Hz
             tempData = noiseRemover(tempData)
-            tempExpanded = np.expand_dims(tempData, axis = -1)
-            gaussianArray = np.concatenate((gaussianArray, tempExpanded), axis=2)
+            gaussianArray = np.vstack((gaussianArray, tempData))
         except Exception as e:
             print(excelFile)
             print(e)
@@ -136,10 +115,12 @@ def preprocPipeline(files, usage, segment, mean, sigma):
         # Remove noise
         tempData = noiseRemover(tempData)
         # Normalize to calculated Gaussian
-        finalData = (tempData - mean) / sigma   
+        finalData = np.zeros((2500, 12), np.float32)
+        for i in range(12):
+            finalData[:, i] = (tempData[:, i] - mean[i]) / sigma[i]   
         finalData = np.expand_dims(finalData, axis = -1)
         # Create extra leads
-        finalData = createMissingLeads(finalData)
+        #finalData = createMissingLeads(finalData)
         for i in range(finalData.shape[2]):
             # Save so you don't do all the above every time
             np.save(f'/home/tzikos/Desktop/Data/Berts torch/{segment}/{usage}/{file.split("/")[-3]}-{file.split("/")[-1][:-5]}-{i}.npy', np.expand_dims(finalData[:, :, i], axis =-1))

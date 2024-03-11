@@ -3,11 +3,11 @@ import torch.nn as nn
 import torch.optim as optim
 import os
 import numpy as np
-import keyboard
 import torch.nn.init as init
 from visualizer import trainVisualizer
 from torcheval.metrics.functional import multiclass_f1_score
 from datetime import datetime
+from utility import padSeqSymm
 
 ################
 ### DATASETS ###
@@ -58,23 +58,30 @@ class ECGDataset(torch.utils.data.Dataset):
 ##############
 
 class ConvBlock(nn.Module):
-    def __init__(self, inChannels, outChannels):
+    def __init__(self, inChannels, outChannels, targetLength):
         super().__init__()
-        self.conv1 = nn.Conv1d(in_channels=inChannels, out_channels=outChannels, kernel_size=15, stride=2)
+        self.conv1 = nn.Conv1d(in_channels=inChannels, out_channels=outChannels, 
+                               kernel_size=15, stride=2)
         self.bn1 = nn.BatchNorm1d(num_features=outChannels)
         self.relu1 = nn.ReLU()
-        self.conv2 = nn.Conv1d(in_channels=outChannels, out_channels=outChannels, kernel_size=15, stride=1, padding='same')
+        self.conv2 = nn.Conv1d(in_channels=outChannels, out_channels=outChannels, 
+                               kernel_size=15, stride=1, padding='same')
         self.bn2 = nn.BatchNorm1d(num_features=outChannels)
         self.relu2 = nn.ReLU()
-        self.convRes = nn.Conv1d(in_channels=inChannels, out_channels=outChannels, kernel_size=15, stride=2)
+        self.convRes = nn.Conv1d(in_channels=inChannels, out_channels=outChannels, 
+                                 kernel_size=15, stride=2)
         self.bnRes = nn.BatchNorm1d(num_features=outChannels)
         self.relu3 = nn.ReLU()
+        self.targetLength = targetLength
 
     def forward(self, x):
         y = x.clone()
-        x = self.relu1(self.bn1(self.conv1(x)))
+        x = self.bn1(self.conv1(x))
+        x = padSeqSymm(x, self.targetLength, 2)
+        x = self.relu1(x)
         x = self.relu2(self.bn2(self.conv2(x)))
         y = self.bnRes(self.convRes(y))
+        y = padSeqSymm(y, self.targetLength//2, 2)
         x = y + x
         x = self.relu3(x)
         return x
@@ -82,7 +89,8 @@ class ConvBlock(nn.Module):
 class IDENBlock(nn.Module):
     def __init__(self, inChannels, outChannels):
         super().__init__()
-        self.conv1 = nn.Conv1d(in_channels=inChannels, out_channels=outChannels, kernel_size=15, stride=1, padding='same')
+        self.conv1 = nn.Conv1d(in_channels=inChannels, out_channels=outChannels, 
+                               kernel_size=15, stride=1, padding='same')
         self.bn1 = nn.BatchNorm1d(num_features=outChannels)
         self.relu1 = nn.ReLU()
         self.relu2 = nn.ReLU()
@@ -95,7 +103,7 @@ class IDENBlock(nn.Module):
         return x
 
 class CNNBlock(nn.Module):
-    def __init__(self, inChannels, outChannels):
+    def __init__(self, inChannels, outChannels, targetLength):
         super().__init__()
         self.convBlock = ConvBlock(inChannels, outChannels) 
         self.pool = nn.MaxPool1d(kernel_size=2, stride=2)
@@ -103,9 +111,14 @@ class CNNBlock(nn.Module):
             self.IDEN = IDENBlock(inChannels, outChannels)
         else:
             self.IDEN = IDENBlock(inChannels*2, outChannels)
+        self.targetLength = targetLength
 
     def forward(self, x):
-        x = self.IDEN(self.pool(self.convBlock(x)))
+        x = self.convBlock(x)
+        x = padSeqSymm(x, self.targetLength, 2)
+        x = self.pool(x)
+        x = padSeqSymm(x, self.targetLength//2, 2)
+        x = self.IDEN(x)
         return x
 
 class DenseBlock(nn.Module):
@@ -113,7 +126,7 @@ class DenseBlock(nn.Module):
         super().__init__()
         self.lin = nn.Linear(inChannels, outChannels)
         self.relu = nn.ReLU()
-        self.drop = nn.Dropout(0.5)
+        self.drop = nn.Dropout(0.6)
 
     def forward(self, x):
         x = self.drop(self.relu(self.lin(x)))
@@ -125,25 +138,30 @@ class ECGCNNClassifier(nn.Module):
     It is in the supplementary material'''
     def __init__(self, numClasses):
         super().__init__()
-        self.conv = nn.Conv1d(in_channels=12, out_channels=64, kernel_size=15, stride=2)
+        self.conv = nn.Conv1d(in_channels=12, out_channels=64, kernel_size=15, stride=1, padding='same')
         self.bn = nn.BatchNorm1d(num_features=64)
         self.relu = nn.ReLU()
         self.maxPool = nn.MaxPool1d(kernel_size=2, stride=2)
-        self.convBlock1 = CNNBlock(inChannels=64, outChannels=128)
-        self.convBlock2 = CNNBlock(inChannels=128, outChannels=256)
-        self.convBlock3 = CNNBlock(inChannels=256, outChannels=512)
+        self.convBlock1 = CNNBlock(inChannels=64, outChannels=64)
+        self.convBlock2 = CNNBlock(inChannels=64, outChannels=128)
+        self.convBlock3 = CNNBlock(inChannels=128, outChannels=256)
+        self.convBlock4 = CNNBlock(inChannels=256, outChannels=512)
         self.avgPool = nn.AvgPool1d(kernel_size=2, stride=2)
         self.flatten = nn.Flatten()
-        self.Dense1 = DenseBlock(inChannels=1024, outChannels=512)
+        self.Dense1 = DenseBlock(inChannels=2048, outChannels=512)
         self.Dense2 = DenseBlock(inChannels=512, outChannels=512)
         self.fc = nn.Linear(512, numClasses)
 
     def forward(self, x):
-        x = self.maxPool(self.relu(self.bn(self.conv(x))))
+        x = self.bn(self.conv(x))
+        x = self.maxPool(self.relu(x))
+        x = padSeqSymm(x, 1250, 2)
         x = self.convBlock1(x)
         x = self.convBlock2(x)
         x = self.convBlock3(x)
-        x = self.flatten(self.avgPool(x))
+        x = self.convBlock4(x)
+        x = self.avgPool(x)
+        x = self.flatten(x)
         x = self.Dense1(x)
         x = self.Dense2(x)
         x = self.fc(x)
