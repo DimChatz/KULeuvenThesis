@@ -18,7 +18,7 @@ Added training visualizer for loss and accuracy
 Added F1 score
 Fixed Model training and preprocessing
 create more complex model -> is shit af -> not same as paper
-**Issue with cuda**
+**Issue with cuda** -> **Fixed**
 
 ### V-1-1-1 7/3
 Fixed Cuda
@@ -48,7 +48,8 @@ Fixed CNN model of paper with calcs and padding
 ○ Add cross-validation data
 ○ Add experiment tracker
 ○ **PROCESSING** check missing data of Bert
-○ check duplicate patients for Bert
+○ **PROCESSING** check duplicate patients for Bert
+○ Add regularization
 - fix gaussian norms to be per channel
 ○ ablation study
 

@@ -81,7 +81,7 @@ class ConvBlock(nn.Module):
         x = self.relu1(x)
         x = self.relu2(self.bn2(self.conv2(x)))
         y = self.bnRes(self.convRes(y))
-        y = padSeqSymm(y, self.targetLength//2, 2)
+        y = padSeqSymm(y, self.targetLength, 2)
         x = y + x
         x = self.relu3(x)
         return x
@@ -105,7 +105,7 @@ class IDENBlock(nn.Module):
 class CNNBlock(nn.Module):
     def __init__(self, inChannels, outChannels, targetLength):
         super().__init__()
-        self.convBlock = ConvBlock(inChannels, outChannels) 
+        self.convBlock = ConvBlock(inChannels, outChannels, targetLength) 
         self.pool = nn.MaxPool1d(kernel_size=2, stride=2)
         if inChannels == outChannels:
             self.IDEN = IDENBlock(inChannels, outChannels)
@@ -142,13 +142,13 @@ class ECGCNNClassifier(nn.Module):
         self.bn = nn.BatchNorm1d(num_features=64)
         self.relu = nn.ReLU()
         self.maxPool = nn.MaxPool1d(kernel_size=2, stride=2)
-        self.convBlock1 = CNNBlock(inChannels=64, outChannels=64)
-        self.convBlock2 = CNNBlock(inChannels=64, outChannels=128)
-        self.convBlock3 = CNNBlock(inChannels=128, outChannels=256)
-        self.convBlock4 = CNNBlock(inChannels=256, outChannels=512)
+        self.convBlock1 = CNNBlock(inChannels=64, outChannels=64, targetLength=625)
+        self.convBlock2 = CNNBlock(inChannels=64, outChannels=128, targetLength=156)
+        self.convBlock3 = CNNBlock(inChannels=128, outChannels=256, targetLength=39)
+        self.convBlock4 = CNNBlock(inChannels=256, outChannels=512, targetLength=9)
         self.avgPool = nn.AvgPool1d(kernel_size=2, stride=2)
         self.flatten = nn.Flatten()
-        self.Dense1 = DenseBlock(inChannels=2048, outChannels=512)
+        self.Dense1 = DenseBlock(inChannels=1024, outChannels=512)
         self.Dense2 = DenseBlock(inChannels=512, outChannels=512)
         self.fc = nn.Linear(512, numClasses)
 
@@ -272,7 +272,7 @@ def train(model, trainLoader, valLoader, classes, learningRate, epochs,
         classValF1 = multiclass_f1_score(torch.flatten(valPredTensor).long(), torch.flatten(valLabelTensor).long(), num_classes=classes, average=None) * 100
         for i in range(classTrainF1.size(0)):
             print(f"For class {expList[i].split(" ")[0]} the Train F1: {classTrainF1[i]:.2f}% and Val F1: {classValF1[i]:.2f}%")
-
+        print("")
 
         
 

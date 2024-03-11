@@ -120,7 +120,7 @@ def preprocPipeline(files, usage, segment, mean, sigma):
             finalData[:, i] = (tempData[:, i] - mean[i]) / sigma[i]   
         finalData = np.expand_dims(finalData, axis = -1)
         # Create extra leads
-        #finalData = createMissingLeads(finalData)
+        finalData = createMissingLeads(finalData)
         for i in range(finalData.shape[2]):
             # Save so you don't do all the above every time
             np.save(f'/home/tzikos/Desktop/Data/Berts torch/{segment}/{usage}/{file.split("/")[-3]}-{file.split("/")[-1][:-5]}-{i}.npy', np.expand_dims(finalData[:, :, i], axis =-1))
