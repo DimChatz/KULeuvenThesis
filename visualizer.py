@@ -63,13 +63,12 @@ def trainVisualizer(trainLossList, valLossList, trainAccList, valAccList, trainF
     fig.show()
 
 
-def Vis(filePath):
-    data = np.load(filePath)
 
+def VisNP(npArray, saveName, comment=" "):
     # Generating data
-    x = np.linspace(0, 3, 1500)
-    y1 = data[:1500, 0]
-    y2 = data[:1500, 1]
+    x = np.linspace(0, 1, 5000)
+    y1 = npArray[:, 0]
+    y2 = npArray[:, 1]
 
     # Create figure with 2 subplots arranged in 1 row and 2 columns
     fig = make_subplots(rows=1, cols=2)
@@ -78,6 +77,7 @@ def Vis(filePath):
     fig.add_trace(go.Scatter(x=x, y=y1, mode='lines', name='Lead 1'), row=1, col=1)
     fig.add_trace(go.Scatter(x=x, y=y2, mode='lines', name='Lead 2'), row=1, col=2)
     # Updating layout (optional)
-    fig.update_layout(title_text="Leads 1 and 2\nAfter preprocessing")
+    fig.update_layout(title_text=f"{comment}")
     # Showing the plot
+    fig.write_html(f"/home/tzikos/{saveName}.html")
     fig.show()

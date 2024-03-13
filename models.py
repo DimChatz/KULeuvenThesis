@@ -45,12 +45,40 @@ class ECGDataset(torch.utils.data.Dataset):
         ecgLabels = torch.from_numpy(ecgLabels)
         return ecgData, ecgLabels
         
-    def samplerWeights(self):
-        nameDict = {f"AVNRT {self.exp}": 0, f"AVRT {self.exp}": 1, f"concealed {self.exp}": 2, f"EAT {self.exp}": 3}
-        # Use the class index from nameDict to get the weight directly from self.weights
-        return [self.weights[nameDict[fileName.split("-")[0]]] for fileName in self.fileNames]
-
+#################################
     
+class PTBDataset(torch.utils.data.Dataset):
+    '''Time series Dataset'''
+    def __init__(self, dirPath, numClasses, classWeights):
+        # Root of data
+        self.dir = dirPath
+        self.fileNames = os.listdir(dirPath)
+        self.numClasses = numClasses
+        self.weights = classWeights
+
+    def __len__(self):
+        return len(self.fileNames)
+
+    def __getitem__(self, idx):
+        # Create dict to ascribe labels
+        nameDict = {f"NORM":[1,0,0,0,0],f"MI":[0,1,0,0,0], 
+                    f"STTC":[0,0,1,0,0],f"CD":[0,0,0,1,0],
+                    "HYP":[0,0,0,0,1]}
+        # Get file
+        filePath = os.path.join(self.dir, self.fileNames[idx])
+        # Get file type for label
+        fileKey = filePath.split("/")[-1].split("-")[0]
+        label = nameDict[fileKey]
+        ecgData = np.load(filePath)
+        ecgData = np.expand_dims(ecgData, axis = -1)
+        # Reduce data shape (squeeze)
+        # Transpose axis to proper format
+        # and make it float32, not double
+        ecgData = ecgData.squeeze(-1).transpose(1, 0).astype(np.float32)
+        ecgLabels = np.array(label, dtype=np.float32)
+        ecgData = torch.from_numpy(ecgData)
+        ecgLabels = torch.from_numpy(ecgLabels)
+        return ecgData, ecgLabels
     
 
 ##############
@@ -197,7 +225,9 @@ class ECGSimpleClassifier(nn.Module):
 ### FUNCTIONs ###
 #################
 def train(model, trainLoader, valLoader, classes, learningRate, epochs, 
-    classWeights, earlyStopPatience, reduceLRPatience, device, expList):
+    classWeights, earlyStopPatience, reduceLRPatience, device, expList, 
+    dataset, lr, batchSize):
+    print("Starting training")
     # Model, Loss, and Optimizer
     model = model.to(device)
     now = datetime.now()
@@ -272,7 +302,6 @@ def train(model, trainLoader, valLoader, classes, learningRate, epochs,
         classValF1 = multiclass_f1_score(torch.flatten(valPredTensor).long(), torch.flatten(valLabelTensor).long(), num_classes=classes, average=None) * 100
         for i in range(classTrainF1.size(0)):
             print(f"For class {expList[i].split(" ")[0]} the Train F1: {classTrainF1[i]:.2f}% and Val F1: {classValF1[i]:.2f}%")
-        print("")
 
         
 
@@ -290,7 +319,7 @@ def train(model, trainLoader, valLoader, classes, learningRate, epochs,
             bestESEpoch = epoch
             bestLRepoch = epoch
             bestValF1 = epochValF1
-            torch.save(model.state_dict(), f'/home/tzikos/Desktop/weights/{model.__class__.__name__}_{formatted_now}.pth')
+            torch.save(model.state_dict(), f'/home/tzikos/Desktop/weights/{model.__class__.__name__}_{dataset}_B{batchSize}_L{lr}_{formatted_now}.pth')
         if epoch - bestLRepoch > reduceLRPatience - 1:
             learningRate /= 10
             bestLRepoch = epoch
@@ -298,6 +327,7 @@ def train(model, trainLoader, valLoader, classes, learningRate, epochs,
         if epoch - bestESEpoch > earlyStopPatience - 1:
             print("Early stopped training at epoch %d" % epoch)
             break  # terminate the training loop
+        print("")
 
     trainVisualizer(trainLossList, valLossList, trainAccList, valAccList, trainF1List, valF1List)
     filepath = f'/home/tzikos/Desktop/weights/{model.__class__.__name__}_{formatted_now}.pth'
