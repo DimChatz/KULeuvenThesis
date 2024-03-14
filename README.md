@@ -47,9 +47,8 @@ fixed all train-test pipeline
 - Add visualization of training
 - Add F1 per class
 - Create CNN
-? Create GNN
-○ Create Transformer
-○ Create Foundation
+○ Check other models
+○ Handle Foundation
 - Add accuracy
 - Add F1
 - Add LR reduction callback 
@@ -65,7 +64,8 @@ fixed all train-test pipeline
 ○ ablation study
 ? Add explainable AI
 ○ Add PTBXL all classes
-○ Add savepaths in visualizations
+- Add savepaths in visualizations
+○ Add mean and sigma efficient calculation
 
 
 

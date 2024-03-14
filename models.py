@@ -1,4 +1,5 @@
 import torch
+import torch.nn.functional as F
 import torch.nn as nn
 import torch.optim as optim
 import os
@@ -7,7 +8,6 @@ import torch.nn.init as init
 from visualizer import trainVisualizer
 from torcheval.metrics.functional import multiclass_f1_score
 from datetime import datetime
-from utility import padSeqSymm
 
 ################
 ### DATASETS ###
@@ -18,29 +18,33 @@ class ECGDataset(torch.utils.data.Dataset):
     def __init__(self, dirPath, experiment, numClasses, classWeights):
         # Root of data
         self.dir = dirPath
+        # Its files
         self.fileNames = os.listdir(dirPath)
         # Type of classification task
         self.exp = experiment
+        # Number of classes
         self.numClasses = numClasses
-        self.weights = classWeights
 
     def __len__(self):
         return len(self.fileNames)
 
     def __getitem__(self, idx):
         # Create dict to ascribe labels
-        nameDict = {f"AVNRT {self.exp}" : [1,0,0,0], f"AVRT {self.exp}" : [0,1,0,0], f"concealed {self.exp}" : [0,0,1,0], f"EAT {self.exp}" : [0,0,0,1]}
+        nameDict = {f"normal {self.exp}": [1,0,0,0,0], f"AVNRT {self.exp}" : [0,1,0,0,0], 
+                    f"AVRT {self.exp}" : [0,0,1,0,0], f"concealed {self.exp}" : [0,0,0,1,0], f"EAT {self.exp}" : [0,0,0,0,1]}
         # Get file
         filePath = os.path.join(self.dir, self.fileNames[idx])
-        # Get file type for label
+        # Get class label
         fileKey = filePath.split("/")[-1].split("-")[0]
         label = nameDict[fileKey]
+        # Load ECG data
         ecgData = np.load(filePath)
         # Reduce data shape (squeeze)
         # Transpose axis to proper format
         # and make it float32, not double
         ecgData = ecgData.squeeze(-1).transpose(1, 0).astype(np.float32)
         ecgLabels = np.array(label, dtype=np.float32)
+        # Make them torch tensors
         ecgData = torch.from_numpy(ecgData)
         ecgLabels = torch.from_numpy(ecgLabels)
         return ecgData, ecgLabels
@@ -52,8 +56,11 @@ class PTBDataset(torch.utils.data.Dataset):
     def __init__(self, dirPath, numClasses, classWeights):
         # Root of data
         self.dir = dirPath
+        # Its files
         self.fileNames = os.listdir(dirPath)
+        # Number of classes
         self.numClasses = numClasses
+        # Class weights
         self.weights = classWeights
 
     def __len__(self):
@@ -66,16 +73,19 @@ class PTBDataset(torch.utils.data.Dataset):
                     "HYP":[0,0,0,0,1]}
         # Get file
         filePath = os.path.join(self.dir, self.fileNames[idx])
-        # Get file type for label
+        # Get class label
         fileKey = filePath.split("/")[-1].split("-")[0]
         label = nameDict[fileKey]
+        # Load ECG data
         ecgData = np.load(filePath)
+        # Expand dims to make it 3D
         ecgData = np.expand_dims(ecgData, axis = -1)
         # Reduce data shape (squeeze)
         # Transpose axis to proper format
         # and make it float32, not double
         ecgData = ecgData.squeeze(-1).transpose(1, 0).astype(np.float32)
         ecgLabels = np.array(label, dtype=np.float32)
+        # Make them torch tensors
         ecgData = torch.from_numpy(ecgData)
         ecgLabels = torch.from_numpy(ecgLabels)
         return ecgData, ecgLabels
@@ -84,6 +94,30 @@ class PTBDataset(torch.utils.data.Dataset):
 ##############
 ### MODELS ###
 ##############
+
+def padSeqSymm(batch, targetLength, dimension):
+    """Symmetrically pad the sequences in a batch to have a uniform length.
+    Params:
+    - batch: A batch of input data of shape (batchSize, channels, sequenceLength)
+    - targetLength: The desired length for all sequences.
+    - dimension: Dimension along which to pad. For our task it's 2."""
+
+    # Calculate the current length of the sequences
+    currentLength = batch.size(dimension)
+    # Calculate the total padding needed
+    totPadNeeded = max(0, targetLength - currentLength)
+    # Calculate padding to add to both the start and end of the sequence
+    padEachSide = totPadNeeded // 2
+    # For an odd padding needed, add the extra padding at the end (+1 at first list, second element)
+    if totPadNeeded % 2 == 1:
+        padArg = [padEachSide, padEachSide + 1] + [0, 0] * (batch.dim() - dimension - 1)
+    # For an even padding needed, add the padding symmetrically
+    else:
+        padArg = [padEachSide, padEachSide] + [0, 0] * (batch.dim() - dimension - 1)
+    # Pad the sequences
+    symPadBatch = F.pad(batch, pad=padArg, mode='constant', value=0)
+    return symPadBatch
+
 
 class ConvBlock(nn.Module):
     def __init__(self, inChannels, outChannels, targetLength):
@@ -114,6 +148,7 @@ class ConvBlock(nn.Module):
         x = self.relu3(x)
         return x
 
+
 class IDENBlock(nn.Module):
     def __init__(self, inChannels, outChannels):
         super().__init__()
@@ -129,6 +164,7 @@ class IDENBlock(nn.Module):
         x = y + x
         x = self.relu2(x)
         return x
+
 
 class CNNBlock(nn.Module):
     def __init__(self, inChannels, outChannels, targetLength):
@@ -149,6 +185,7 @@ class CNNBlock(nn.Module):
         x = self.IDEN(x)
         return x
 
+
 class DenseBlock(nn.Module):
     def __init__(self, inChannels, outChannels):
         super().__init__()
@@ -159,6 +196,7 @@ class DenseBlock(nn.Module):
     def forward(self, x):
         x = self.drop(self.relu(self.lin(x)))
         return x
+
 
 class ECGCNNClassifier(nn.Module):
     '''Model from paper:
@@ -195,7 +233,9 @@ class ECGCNNClassifier(nn.Module):
         x = self.fc(x)
         return x
     
+
 #############################################
+
 
 class ECGSimpleClassifier(nn.Module):
     '''Random Model I came up with to see that
@@ -220,20 +260,25 @@ class ECGSimpleClassifier(nn.Module):
         x = self.fc2(x)
         return x
 
+
 #################
 ### TRAINING  ###
-### FUNCTIONs ###
+### FUNCTIONS ###
 #################
+    
+
 def train(model, trainLoader, valLoader, classes, learningRate, epochs, 
     classWeights, earlyStopPatience, reduceLRPatience, device, expList, 
     dataset, lr, batchSize):
+    '''Training function for the model'''
     print("Starting training")
-    # Model, Loss, and Optimizer
-    model = model.to(device)
-    now = datetime.now()
-    formatted_now = now.strftime("%d-%m-%y-%H-%M")
 
-    # Add weights to loss
+    model = model.to(device)
+    # Get date for saving model weights
+    now = datetime.now()
+    formattedNow = now.strftime("%d-%m-%y-%H-%M")
+
+    # Add weights to loss and optimizer
     classWeights = torch.from_numpy(classWeights).to(device)
     criterion = nn.CrossEntropyLoss(weight=classWeights)
     optimizer = optim.Adam(model.parameters(), lr=learningRate)
@@ -243,15 +288,21 @@ def train(model, trainLoader, valLoader, classes, learningRate, epochs,
     bestESEpoch = -1
     bestLRepoch = -1
 
-    # Trackers for training vis
+    # Trackers for training visualization
     trainLossList, valLossList, trainAccList, valAccList, trainF1List, valF1List = [], [], [], [], [], []
 
+    ################
+    ### TRAINING ###
+    ###   LOOP   ###
+    ################
     for epoch in range(epochs):
         model.train()
+        # Initialize trackers
         trainLoss, correctTrainPreds, totalTrainPreds = 0, 0, 0
         trainPredTensor, trainLabelTensor = torch.tensor([]).to(device), torch.tensor([]).to(device)
         for inputs, labels in trainLoader:
             inputs, labels = inputs.to(device), labels.to(device)
+            # Reset gradients
             optimizer.zero_grad()
             outputs = model(inputs)
             #if torch.equal(labels, torch.from_numpy(np.array([0,0,1,0]))) or torch.equal(labels, torch.from_numpy(np.array([0,0,0,1]))):
@@ -262,21 +313,19 @@ def train(model, trainLoader, valLoader, classes, learningRate, epochs,
             #keyboard.wait()
             # Calculate loss
             loss = criterion(outputs, labels)
+            # Backpropagate
             loss.backward()
-            #print(loss)inChannels, outChannels
             optimizer.step()
-            # Calculate accuracy
+            # Calculate loss, accuracy and F1 score
             trainLoss += loss.item()
             totalTrainPreds += labels.size(0)
-            #print(labels.size(0))
             correctTrainPreds += (torch.argmax(outputs, 1) == torch.argmax(labels, 1)).sum().item()
             trainPredTensor = torch.cat((trainPredTensor, torch.argmax(outputs, 1)))
             trainLabelTensor = torch.cat((trainLabelTensor, torch.argmax(labels, 1)))
-            #print((torch.argmax(outputs, 1) == torch.argmax(labels, 1)).sum())
-            #keyboard.wait()
 
         # Validation
         model.eval()
+        # Initialize trackers
         valLoss, correctValPreds, totalValPreds = 0, 0, 0
         valPredTensor, valLabelTensor = torch.tensor([]).to(device), torch.tensor([]).to(device)
         with torch.no_grad():
@@ -290,23 +339,22 @@ def train(model, trainLoader, valLoader, classes, learningRate, epochs,
                 valPredTensor = torch.cat((valPredTensor, torch.argmax(outputs, 1)))
                 valLabelTensor = torch.cat((valLabelTensor, torch.argmax(labels, 1)))
 
+        # Calculate loss and metrics
         epochTrainLoss = trainLoss / len(trainLoader)
         epochTrainAcc = correctTrainPreds / totalTrainPreds * 100
         epochTrainF1 = multiclass_f1_score(torch.flatten(trainPredTensor).long(), torch.flatten(trainLabelTensor).long(), num_classes=classes, average='macro').item() * 100
         epochValLoss = valLoss / len(valLoader)
         epochValAcc = correctValPreds / totalValPreds * 100
         epochValF1 = multiclass_f1_score(torch.flatten(valPredTensor).long(), torch.flatten(valLabelTensor).long(), num_classes=classes, average='macro').item() * 100
-
+        # Print 'em
         print(f'Epoch {epoch+1}: Train Loss: {epochTrainLoss:.4f}, Val Loss: {epochValLoss:.4f}, Train Acc: {epochTrainAcc:.2f}%, Val Accuracy: {epochValAcc:.2f}%, Train F1 Score: {epochTrainF1:.2f}%, Val F1 Score: {epochValF1:.2f}%')
+        # Print class F1 scores
         classTrainF1 = multiclass_f1_score(torch.flatten(trainPredTensor).long(), torch.flatten(trainLabelTensor).long(), num_classes=classes, average=None) * 100
         classValF1 = multiclass_f1_score(torch.flatten(valPredTensor).long(), torch.flatten(valLabelTensor).long(), num_classes=classes, average=None) * 100
         for i in range(classTrainF1.size(0)):
             print(f"For class {expList[i].split(" ")[0]} the Train F1: {classTrainF1[i]:.2f}% and Val F1: {classValF1[i]:.2f}%")
 
-        
-
-
-        # Append to vis trackers
+        # Append to visualization trackers
         trainLossList.append(epochTrainLoss)
         valLossList.append(epochValLoss)
         trainAccList.append(epochTrainAcc)
@@ -319,25 +367,36 @@ def train(model, trainLoader, valLoader, classes, learningRate, epochs,
             bestESEpoch = epoch
             bestLRepoch = epoch
             bestValF1 = epochValF1
-            torch.save(model.state_dict(), f'/home/tzikos/Desktop/weights/{model.__class__.__name__}_{dataset}_B{batchSize}_L{lr}_{formatted_now}.pth')
+            # Save model weights for best validation F1
+            torch.save(model.state_dict(), f'/home/tzikos/Desktop/weights/{model.__class__.__name__}_{dataset}_B{batchSize}_L{lr}_{formattedNow}.pth')
         if epoch - bestLRepoch > reduceLRPatience - 1:
             learningRate /= 10
             bestLRepoch = epoch
             print("Reducing LR")
         if epoch - bestESEpoch > earlyStopPatience - 1:
             print("Early stopped training at epoch %d" % epoch)
-            break  # terminate the training loop
+            # terminate the training loop
+            break  
         print("")
 
-    trainVisualizer(trainLossList, valLossList, trainAccList, valAccList, trainF1List, valF1List)
-    filepath = f'/home/tzikos/Desktop/weights/{model.__class__.__name__}_{formatted_now}.pth'
+    # Visualize training
+    trainVisualizer(trainLossList, valLossList, trainAccList, valAccList, trainF1List, valF1List,
+                    saveName=f"{model.__class__.__name__}_{dataset}_B{batchSize}_L{lr}_{formattedNow}")
+    # Return the path to the best model weights
+    # to be used for testing
+    filepath = f'/home/tzikos/Desktop/weights/{model.__class__.__name__}_{formattedNow}.pth'
     return filepath
 
+###############
+### TESTING ###
+###############
 def test(model, testLoader, classes, device, filePath, expList):
-    # Test
+    '''Testing function for the model'''
+    # Load model weights
     model.load_state_dict(torch.load(f'{filePath}'))
     model = model.to(device)
     model.eval()
+    # Initialize trackers
     correctTestPreds, totalTestPreds = 0, 0
     testPredTensor, testLabelTensor = torch.tensor([]).to(device), torch.tensor([]).to(device)
     with torch.no_grad():
@@ -348,9 +407,11 @@ def test(model, testLoader, classes, device, filePath, expList):
             correctTestPreds += (torch.argmax(outputs, 1) == torch.argmax(labels, 1)).sum().item()
             testPredTensor = torch.cat((testPredTensor, torch.argmax(outputs, 1)))
             testLabelTensor = torch.cat((testLabelTensor, torch.argmax(labels, 1)))
+    # Calculate accuracy and F1 score
     testAcc = correctTestPreds / totalTestPreds * 100
     epochTestF1 = multiclass_f1_score(torch.flatten(testPredTensor).long(), torch.flatten(testLabelTensor).long(), num_classes=classes, average='macro').item() * 100
     print(f'Test Accuracy: {testAcc:.2f}%, Test F1 Score: {epochTestF1:.2f}%')
+    # Print class F1 scores
     classTestF1 = multiclass_f1_score(torch.flatten(testPredTensor).long(), torch.flatten(testLabelTensor).long(), num_classes=classes, average=None) * 100
     for i in range(classTestF1.size(0)):
         print(f"For class {expList[i].split(" ")[0]} the F1: {classTestF1[i]:.2f}%")

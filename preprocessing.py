@@ -45,20 +45,25 @@ def appendStratifiedFiles(directory, segmentList):
                 if file.endswith('.xlsx') and ("overzicht" not in file) and (segmentList[i] in os.path.join(root, file)):
                     excelFiles.append(os.path.join(root, file))
         # Split 80-10-10
+        print(f"The class {segmentList[i]} has {len(excelFiles)} files")
         trainFiles += excelFiles[:int(np.round(0.8*len(excelFiles)))]
         valFiles += excelFiles[int(np.round(0.8*len(excelFiles))):int(np.round(0.9*len(excelFiles)))]
         testFiles += excelFiles[int(np.round(0.9*len(excelFiles))):]
     return trainFiles, valFiles, testFiles
 
-def gaussianCalc(gaussianArray):
+def gaussianCalc(gaussianArray, experiment):
     '''Calcs mean and sigma for Gaussian'''
     mean, sigma = [], []
     for i in range(12):
         mean.append(np.mean(gaussianArray[:,i]))
         sigma.append(np.std(gaussianArray[:,i]))
+    mean = np.array(mean, dtype=np.float32)
+    sigma = np.array(sigma, dtype=np.float32)
+    np.save(f'/home/tzikos/Desktop/{experiment}mean.npy', mean)
+    np.save(f'/home/tzikos/Desktop/{experiment}sigma.npy', sigma)
     return mean, sigma
 
-def gaussianNormalizer(folderPath, segment):
+def gaussianNormalizer(folderPath, segment, experiment):
     '''Apply Gaussian Normalization'''
     gaussianArray = np.zeros((2500,12), np.float32)
     excelFiles = appendExcelFiles(folderPath, segment)
@@ -74,7 +79,7 @@ def gaussianNormalizer(folderPath, segment):
         except Exception as e:
             print(excelFile)
             print(e)
-    return gaussianCalc(gaussianArray)
+    return gaussianCalc(gaussianArray, experiment)
     
 def createMissingLeads(startArray):
     '''Data Augmentation by removing one lead at a time'''
