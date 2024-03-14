@@ -1,8 +1,6 @@
 from models import ECGDataset, PTBDataset, train, test, ECGCNNClassifier, ECGSimpleClassifier
 from torch.utils.data import DataLoader
-from preprocessing import gaussianNormalizer, preprocessAll
-from utility import calcWeights, classInstanceCalc
-from visualizer import preprocVis
+from preprocessing import appendStratifiedFiles, downsamplerNoiseRemover, gaussianCalcBert, gaussianNormalizerMissingLeadCreatorBert
 from torch.utils.data.sampler import WeightedRandomSampler
 import torch
 from preprocPTBXL import readPTB_5, gaussianNormalizerPTB, dataSplitterPTB, createMissingLeadsPTB
@@ -14,6 +12,8 @@ print(device)
 LEARNING_RATE_PTB = 0.0000003
 LEARNING_RATE_BERT = 0.0000003
 BATCH = 64
+L1 = False
+L2 = False
 
 # Stable
 EPOCHS = 1000
@@ -23,17 +23,15 @@ REDLR_PAT = 5
 # GLOBALS
 CLASSES_BERT = 5
 CLASSES_PTB = 5
+ROOT_DATA_PATH = '/home/tzikos/Desktop/Data'
 EXPERIMENT = "pre"
-PTB_PATH = "/home/tzikos/Desktop/Data/PTBXL torch/"
-ROOT_PATH = '/home/tzikos/Desktop/Data/Berts/'
-DIR_PATH = f"/home/tzikos/Desktop/Data/Berts torch/{EXPERIMENT}"
 WEIGHT_PATH = "/home/tzikos/Desktop/weights/"
 PREPROC_PTB = False
-PRETRAIN = False
 PREPROC_BERT = True
-CALC_WEIGHTS_BERT = True
+PRETRAIN = False
 FINETUNE = False
 TEST = False
+VISUALIZE = False
 
 
 
@@ -45,18 +43,40 @@ if PREPROC_PTB:
     createMissingLeadsPTB(trainList, "train")
     createMissingLeadsPTB(valList, "val")
 
-expList = [f'normal {EXPERIMENT}, "AVNRT {EXPERIMENT}', f'AVRT {EXPERIMENT}', f'concealed {EXPERIMENT}', f'EAT {EXPERIMENT}']
+expList = [f'normal {EXPERIMENT}', f'AVNRT {EXPERIMENT}', f'AVRT {EXPERIMENT}', f'concealed {EXPERIMENT}', f'EAT {EXPERIMENT}']
 PTBList = ["NORM", "MI", "STTC", "CD", "HYP"]
 
 if PREPROC_BERT:
-    mean, sigma = gaussianNormalizer(ROOT_PATH, segment = f'{EXPERIMENT}', experiment=EXPERIMENT)
-    print(f"mean is {mean}, and sigma is {sigma}")
-    preprocessAll(ROOT_PATH, expList, mean, sigma)
-    preprocVis("/home/tzikos/Desktop/Data/Berts/AVNRT/AVNRT tachy/AVNRT tachy/75E6EFE9-4EC8-4B3A-9E89-5004E6A326F2_2AX1ZWAX3DRF_20220426_2.xlsx",
-               mean[0], sigma[0])
+    #trainFiles, valFiles, testFiles = appendStratifiedFiles(f"{ROOT_DATA_PATH}/Berts/", expList)
+    #downsamplerNoiseRemover(trainFiles, f"{ROOT_DATA_PATH}/Berts downsapled/{EXPERIMENT}/train", 
+    #                        f"{ROOT_DATA_PATH}/Berts no noise/{EXPERIMENT}/train")
+    #downsamplerNoiseRemover(valFiles, f"{ROOT_DATA_PATH}/Berts downsapled/{EXPERIMENT}/val", 
+    #                        f"{ROOT_DATA_PATH}/Berts no noise/{EXPERIMENT}/val")    
+    #downsamplerNoiseRemover(testFiles, f"{ROOT_DATA_PATH}/Berts downsapled/{EXPERIMENT}/test", 
+    #                        f"{ROOT_DATA_PATH}/Berts no noise/{EXPERIMENT}/test")
+    #print("End of downsampling and noise removal")
+    mean, sigma = gaussianCalcBert(f"{ROOT_DATA_PATH}/Berts no noise/{EXPERIMENT}/train")
+    print(mean)
+    print(mean.shape)
+    print(sigma)
+    print(sigma.shape)
+    gaussianNormalizerMissingLeadCreatorBert(f"{ROOT_DATA_PATH}/Berts no noise/{EXPERIMENT}/train", 
+                                             f"{ROOT_DATA_PATH}/Berts gaussian/{EXPERIMENT}/train", 
+                                             f"{ROOT_DATA_PATH}/Berts torch/{EXPERIMENT}/train",
+                                             mean, sigma) 
+    gaussianNormalizerMissingLeadCreatorBert(f"{ROOT_DATA_PATH}/Berts no noise/{EXPERIMENT}/val", 
+                                             f"{ROOT_DATA_PATH}/Berts gaussian/{EXPERIMENT}/val", 
+                                             f"{ROOT_DATA_PATH}/Berts torch/{EXPERIMENT}/val",
+                                             mean, sigma) 
+    gaussianNormalizerMissingLeadCreatorBert(f"{ROOT_DATA_PATH}/Berts no noise/{EXPERIMENT}/test", 
+                                             f"{ROOT_DATA_PATH}/Berts gaussian/{EXPERIMENT}/test", 
+                                             f"{ROOT_DATA_PATH}/Berts torch/{EXPERIMENT}/test",
+                                             mean, sigma)
+    print("End of Berts preprocessing")
     
-model = ECGCNNClassifier(CLASSES_PTB)
 
+model = ECGCNNClassifier(CLASSES_PTB)
+'''
 if PRETRAIN:
     # Datasets
     classWeights = np.load(WEIGHT_PATH + "PTBweights.npy")
@@ -69,12 +89,6 @@ if PRETRAIN:
     filePath = train(model, trainLoader, valLoader, CLASSES_PTB, LEARNING_RATE_PTB,
           EPOCHS, classWeights, EARLY_PAT, REDLR_PAT, device, PTBList,
           dataset="PTBXL", batchSize=BATCH, lr=LEARNING_RATE_PTB)
-
-
-
-if CALC_WEIGHTS_BERT:
-     classWeights = classInstanceCalc(ROOT_PATH, WEIGHT_PATH, expList, EXPERIMENT)
-classWeights = calcWeights(WEIGHT_PATH, EXPERIMENT, CLASSES_BERT)
 
 if FINETUNE:
     # Datasets
@@ -95,4 +109,4 @@ if TEST:
         filePath = f"/home/tzikos/Desktop/weights/ECGCNNClassifier_07-03-24-12-13.pth"
     testDataset = ECGDataset(f"{DIR_PATH}/test/", EXPERIMENT, CLASSES_BERT, classWeights)
     testLoader = DataLoader(testDataset, batch_size=BATCH)
-    test(model, testLoader, CLASSES_BERT, device, filePath, expList)
+    test(model, testLoader, CLASSES_BERT, device, filePath, expList)'''

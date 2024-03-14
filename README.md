@@ -39,6 +39,13 @@ Fixed CNN model of paper with calcs and padding
 checked for duplicate patients in berts data
 fixed ptb pipeline and visualization
 fixed all train-test pipeline
+
+### 13/3
+Run ptb tests and finished its correct preproc
+
+### 14/3
+overhauled Berts pipeline
+
 ---
 
 ## To do
@@ -63,9 +70,9 @@ fixed all train-test pipeline
 - fix gaussian norms to be per channel
 ○ ablation study
 ? Add explainable AI
-○ Add PTBXL all classes
+? Add PTBXL all classes
 - Add savepaths in visualizations
-○ Add mean and sigma efficient calculation
+- Add mean and sigma efficient calculation
 
 
 
