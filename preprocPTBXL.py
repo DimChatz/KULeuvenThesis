@@ -159,4 +159,3 @@ def dataSplitterPTB(directory="/home/tzikos/Desktop/Data/PTBXL normed/", segment
         trainFiles += npyFiles[:int(np.round(0.9*len(npyFiles)))]
         valFiles += npyFiles[int(np.round(0.9*len(npyFiles))):]
     return trainFiles, valFiles
-

@@ -90,3 +90,23 @@ def VisNP(npArray, saveName, comment=" "):
     # Showing the plot
     fig.write_html(f"/home/tzikos/{saveName}.html")
     fig.show()
+
+def Vis(filePath1, filePath2, saveName, comment=" "):
+    """Function to visualize PTBXL data at each step of the process"""
+    # Generating data
+    x = np.linspace(0, 10, 2500)
+    y1 = np.load(filePath1)
+    y1 = y1[:, 0]
+    y2 = np.load(filePath2)
+    y2 = y2[:, 0]
+
+    # Create figure with 2 subplots arranged in 1 row and 2 columns
+    fig = make_subplots(rows=1, cols=2)
+    # Adding scatter plot to the first subplot
+    fig.add_trace(go.Scatter(x=x, y=y1, mode='lines', name='AVNRT'), row=1, col=1)
+    fig.add_trace(go.Scatter(x=x, y=y2, mode='lines', name='Normal'), row=1, col=2)
+    # Updating layout
+    fig.update_layout(title_text=f"{comment}")
+    # Showing the plot
+    fig.write_html(f"/home/tzikos/{saveName}.html")
+    fig.show()

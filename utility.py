@@ -91,4 +91,3 @@ def findDuplicatePatients(directory):
                 if not duplicates.empty:
                     print(f"Duplicates found in geadnr in {file}")
                     print(duplicates)
-

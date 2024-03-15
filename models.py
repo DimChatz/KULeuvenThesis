@@ -42,7 +42,7 @@ class ECGDataset(torch.utils.data.Dataset):
         # Reduce data shape (squeeze)
         # Transpose axis to proper format
         # and make it float32, not double
-        ecgData = ecgData.squeeze(-1).transpose(1, 0).astype(np.float32)
+        ecgData = ecgData.transpose(1, 0).astype(np.float32)
         ecgLabels = np.array(label, dtype=np.float32)
         # Make them torch tensors
         ecgData = torch.from_numpy(ecgData)
@@ -269,7 +269,7 @@ class ECGSimpleClassifier(nn.Module):
 
 def train(model, trainLoader, valLoader, classes, learningRate, epochs, 
     classWeights, earlyStopPatience, reduceLRPatience, device, expList, 
-    dataset, lr, batchSize, L2=False):
+    dataset, lr, batchSize, L1=None, L2=None):
     '''Training function for the model'''
     print("Starting training")
 
@@ -281,10 +281,7 @@ def train(model, trainLoader, valLoader, classes, learningRate, epochs,
     # Add weights to loss and optimizer
     classWeights = torch.from_numpy(classWeights).to(device)
     criterion = nn.CrossEntropyLoss(weight=classWeights)
-    if L2:
-        optimizer = optim.Adam(model.parameters(), lr=learningRate, weight_decay=1e-4)
-    else:
-        optimizer = optim.Adam(model.parameters(), lr=learningRate, weight_decay=1e-4)
+    optimizer = optim.Adam(model.parameters(), lr=learningRate)
 
     # Trackers for callbacks
     bestValF1 = -1
@@ -316,6 +313,13 @@ def train(model, trainLoader, valLoader, classes, learningRate, epochs,
             #keyboard.wait()
             # Calculate loss
             loss = criterion(outputs, labels)
+            regLoss = 0
+            for param in model.parameters():
+                if L1 is not None:
+                    regLoss += L1 * torch.sum(torch.abs(param))
+                if L2 is not None:
+                    regLoss += L2 * torch.sum(param ** 2)
+            loss += regLoss
             # Backpropagate
             loss.backward()
             optimizer.step()

@@ -45,6 +45,8 @@ Run ptb tests and finished its correct preproc
 
 ### 14/3
 overhauled Berts pipeline
+Created plot for berts data to check weird sigma and mean
+Trained pretrained model
 
 ---
 
@@ -66,7 +68,7 @@ overhauled Berts pipeline
 ○ Add model weight loader
 - check missing data of Bert
 - check duplicate patients for Bert
-○ Add regularization
+- Add regularization
 - fix gaussian norms to be per channel
 ○ ablation study
 ? Add explainable AI

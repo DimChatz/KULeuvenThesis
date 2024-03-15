@@ -125,6 +125,6 @@ def createMissingLeads(targetDir, file, startArray):
         # ...to set the copy to 0...
         tempArray[:, i] = 0.
         # ...and save it
-        np.save(f"{targetDir}/{file.split('/')[-1][:-5]}-{i}.npy", tempArray)
+        np.save(f"{targetDir}/{file.split('/')[-1][:-4]}-{i+1}.npy", tempArray)
+    np.save(f"{targetDir}/{file.split('/')[-1][:-4]}-{0}.npy", endArray)
     return endArray
-
