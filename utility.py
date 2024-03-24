@@ -68,7 +68,7 @@ def checkBertMissing(directory):
                 df = pd.read_excel(os.path.join(root, file))
                 # Check for missing data in ecg leads
                 if df.isna().any().any():
-                    print("NaN found")
+                    print(f"NaN found in file {file}")
 
 def findDuplicatePatients(directory):
     """Function to find duplicate patients in the data"""
@@ -89,5 +89,45 @@ def findDuplicatePatients(directory):
                 duplicates = df[df.duplicated(subset=['pseudo ID'], keep=False)]
                 # Print the duplicates if any along with the file name
                 if not duplicates.empty:
-                    print(f"Duplicates found in geadnr in {file}")
+                    print(f"Duplicates found in pseudo ID in {file}")
                     print(duplicates)
+
+def checkStats(dataPath, exp):
+    expList = [f"norm {exp}", f"AVNRT {exp}", f"AVRT {exp}", f"concealed {exp}", f"EAT {exp}"]
+    meanTrain = np.load(f"/home/tzikos/Desktop/weights/meanBerts{exp}.npy")
+    sigmaTrain = np.load(f"/home/tzikos/Desktop/weights/sigmaBerts{exp}.npy")
+    accArray = np.zeros((2500,12,1))
+    for root, dirs, files in os.walk(f"{dataPath}/{exp}/val"):
+        for file in files:
+            if file.endswith('.npy'):
+                tempArray = np.load(os.path.join(root, file))
+                accArray = np.concatenate((accArray, np.expand_dims(tempArray, axis=-1)), axis = 2)
+    # Remove zero duplicate at start
+    accArray = accArray[:,:,1:]
+    # Create mean and sigma
+    meanVal = np.mean(accArray, axis = (0,2))
+    sigmaVal = np.std(accArray, axis = (0,2))
+
+    accArray = np.zeros((2500,12,1))
+    for root, dirs, files in os.walk(f"{dataPath}/{exp}/test"):
+        for file in files:
+            if file.endswith('.npy'):
+                tempArray = np.load(os.path.join(root, file))
+                accArray = np.concatenate((accArray, np.expand_dims(tempArray, axis=-1)), axis = 2)
+    # Remove zero duplicate at start
+    accArray = accArray[:,:,1:]
+    # Create mean and sigma
+    meanTest = np.mean(accArray, axis = (0,2))
+    sigmaTest = np.std(accArray, axis = (0,2))
+
+    with open(f"/home/tzikos/statsBert{exp}.txt", "w") as file:
+        for i in range(5):
+            file.write(f"Class {expList[i]}\n")
+            for j in range(12):
+                file.write(f"for lead {j}\n")
+                file.write(f"For train the mean is {meanTrain[j]:.4f} and sigma {sigmaTrain[j]:.2f}\n")
+                file.write(f"For val the mean is {meanVal[j]:.4f} and sigma {sigmaVal[j]:.2f}\n")
+                file.write(f"For test the mean is {meanTest[j]:.4f} and sigma {sigmaTest[j]:.2f}\n")
+                file.write("\n")
+            file.write("\n")
+            file.write("\n")

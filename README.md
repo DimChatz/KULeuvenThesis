@@ -48,6 +48,17 @@ overhauled Berts pipeline
 Created plot for berts data to check weird sigma and mean
 Trained pretrained model
 
+## V-3-1-1
+### 18/3 - 22/3
+added tracking
+addded regularization
+found issues with gaussian norm and fixed
+did data stats 
+added confusion matrix
+checked a bit literature about statistics
+added checkpoints in data for possible ablation
+changed preproc PTB for all type of exps
+
 ---
 
 ## To do
@@ -63,18 +74,24 @@ Trained pretrained model
 - Add LR reduction callback 
 - Add early stoppying callbacks
 - Add ptbxl data
-○ Add cross-validation
-○ Add experiment tracker
-○ Add model weight loader
+? Add cross-validation
+- Add experiment tracker
+- Add model weight loader
 - check missing data of Bert
 - check duplicate patients for Bert
 - Add regularization
 - fix gaussian norms to be per channel
 ○ ablation study
 ? Add explainable AI
-? Add PTBXL all classes
+- Add PTBXL rhythm classes
 - Add savepaths in visualizations
 - Add mean and sigma efficient calculation
+- Add Confusion matrix
+○ **weird confusion matrix stuff - training data dont make sense**
+○ **wandb doesnt log all epochs in plots**
+○ **manual plots dont log all epochs in plots**
+
+
 
 
 

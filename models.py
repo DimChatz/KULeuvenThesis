@@ -8,6 +8,10 @@ import torch.nn.init as init
 from visualizer import trainVisualizer
 from torcheval.metrics.functional import multiclass_f1_score
 from datetime import datetime
+import wandb
+from sklearn.metrics import confusion_matrix
+from visualizer import plotNSaveConfusion
+import plotly.io as pio
 
 ################
 ### DATASETS ###
@@ -24,6 +28,7 @@ class ECGDataset(torch.utils.data.Dataset):
         self.exp = experiment
         # Number of classes
         self.numClasses = numClasses
+        self.weights = classWeights
 
     def __len__(self):
         return len(self.fileNames)
@@ -49,6 +54,12 @@ class ECGDataset(torch.utils.data.Dataset):
         ecgLabels = torch.from_numpy(ecgLabels)
         return ecgData, ecgLabels
         
+    def samplerWeights(self):
+        nameDict = {f"normal {self.exp}": 0, f"AVNRT {self.exp}": 1, f"AVRT {self.exp}": 2, f"concealed {self.exp}": 3, f"EAT {self.exp}": 4}
+        # Use the class index from nameDict to get the weight directly from self.weights
+        return [self.weights[nameDict[fileName.split("-")[0]]] for fileName in self.fileNames]    
+
+
 #################################
     
 class PTBDataset(torch.utils.data.Dataset):
@@ -250,14 +261,14 @@ class ECGSimpleClassifier(nn.Module):
         init.kaiming_normal_(self.conv2.weight, mode='fan_in', nonlinearity='relu')
         self.fc1 = nn.Linear(128, 64)
         init.kaiming_normal_(self.fc1.weight, mode='fan_in', nonlinearity='relu')
-        self.fc2 = nn.Linear(64, numClasses)
+        self.fc = nn.Linear(64, numClasses)
 
     def forward(self, x):
         x = self.pool(self.relu(self.conv1(x)))
         x = self.pool(self.relu(self.conv2(x)))
         x = torch.flatten(x, 1)
         x = self.relu(self.fc1(x))
-        x = self.fc2(x)
+        x = self.fc(x)
         return x
 
 
@@ -280,6 +291,7 @@ def train(model, trainLoader, valLoader, classes, learningRate, epochs,
 
     # Add weights to loss and optimizer
     classWeights = torch.from_numpy(classWeights).to(device)
+    #criterion = nn.CrossEntropyLoss()
     criterion = nn.CrossEntropyLoss(weight=classWeights)
     optimizer = optim.Adam(model.parameters(), lr=learningRate)
 
@@ -305,12 +317,6 @@ def train(model, trainLoader, valLoader, classes, learningRate, epochs,
             # Reset gradients
             optimizer.zero_grad()
             outputs = model(inputs)
-            #if torch.equal(labels, torch.from_numpy(np.array([0,0,1,0]))) or torch.equal(labels, torch.from_numpy(np.array([0,0,0,1]))):
-            #    print(labels)
-            #else:
-            #print('outputs are ',torch.argmax(outputs, 1))
-            #print('labels are ',torch.argmax(labels, 1))
-            #keyboard.wait()
             # Calculate loss
             loss = criterion(outputs, labels)
             regLoss = 0
@@ -346,6 +352,7 @@ def train(model, trainLoader, valLoader, classes, learningRate, epochs,
                 valPredTensor = torch.cat((valPredTensor, torch.argmax(outputs, 1)))
                 valLabelTensor = torch.cat((valLabelTensor, torch.argmax(labels, 1)))
 
+
         # Calculate loss and metrics
         epochTrainLoss = trainLoss / len(trainLoader)
         epochTrainAcc = correctTrainPreds / totalTrainPreds * 100
@@ -353,6 +360,7 @@ def train(model, trainLoader, valLoader, classes, learningRate, epochs,
         epochValLoss = valLoss / len(valLoader)
         epochValAcc = correctValPreds / totalValPreds * 100
         epochValF1 = multiclass_f1_score(torch.flatten(valPredTensor).long(), torch.flatten(valLabelTensor).long(), num_classes=classes, average='macro').item() * 100
+
         # Print 'em
         print(f'Epoch {epoch+1}: Train Loss: {epochTrainLoss:.4f}, Val Loss: {epochValLoss:.4f}, Train Acc: {epochTrainAcc:.2f}%, Val Accuracy: {epochValAcc:.2f}%, Train F1 Score: {epochTrainF1:.2f}%, Val F1 Score: {epochValF1:.2f}%')
         # Print class F1 scores
@@ -360,6 +368,7 @@ def train(model, trainLoader, valLoader, classes, learningRate, epochs,
         classValF1 = multiclass_f1_score(torch.flatten(valPredTensor).long(), torch.flatten(valLabelTensor).long(), num_classes=classes, average=None) * 100
         for i in range(classTrainF1.size(0)):
             print(f"For class {expList[i].split(" ")[0]} the Train F1: {classTrainF1[i]:.2f}% and Val F1: {classValF1[i]:.2f}%")
+            wandb.log({f"Train F1 {expList[i].split(" ")[0]}": classTrainF1[i], f"Val F1 {expList[i].split(" ")[0]}": classValF1[i]}, step=epoch+1, commit=False)
 
         # Append to visualization trackers
         trainLossList.append(epochTrainLoss)
@@ -374,8 +383,54 @@ def train(model, trainLoader, valLoader, classes, learningRate, epochs,
             bestESEpoch = epoch
             bestLRepoch = epoch
             bestValF1 = epochValF1
+            wandb.log({"Best val F1": bestValF1, "Weight Name": f"{model.__class__.__name__}_{dataset}_B{batchSize}_L{lr}_{formattedNow}"}, step=epoch+1, commit=False)
+            for i in range(classTrainF1.size(0)):
+                wandb.log({f"Best Val F1 {expList[i].split(" ")[0]}": classValF1[i]}, step=epoch+1, commit=False)
             # Save model weights for best validation F1
             torch.save(model.state_dict(), f'/home/tzikos/Desktop/weights/{model.__class__.__name__}_{dataset}_B{batchSize}_L{lr}_{formattedNow}.pth')
+            # Create a W&B Table with appropriate column names
+            # only for Berts data
+            if "AVNRT pre" in expList or "AVNRT tachy" in expList:
+                classNames = expList
+                # Validation Confusion matrix
+                trainPredictions = torch.flatten(trainPredTensor).cpu().numpy()
+                trainLabels = torch.flatten(trainLabelTensor).cpu().numpy()
+                trainCM = confusion_matrix(trainLabels, trainPredictions)
+                # Create a W&B Table with appropriate column names
+                # only for Berts data
+                columns = ['Class'] + [f'Predicted: {className}' for className in classNames]
+                trainCMTable = wandb.Table(columns=columns)
+                # Fill the table with data from the confusion matrix
+                for i in range(len(trainCM)):
+                    row = [classNames[i]] + trainCM[i].tolist()
+                    trainCMTable.add_data(*row)
+                wandb.log({'Training Confusion Matrix': trainCMTable}, step=epoch+1, commit=False)
+                # Plot and save confusion matrix
+                figTrain = plotNSaveConfusion(trainCM, classNames, f"/Confusion_train_{model.__class__.__name__}_{dataset}_B{batchSize}_L{lr}_{formattedNow}", "Train")        
+                # Convert Plotly figure to an image and log to W&B
+                pio.write_image(figTrain, f"/home/tzikos/Confusions/Confusion_train_{model.__class__.__name__}_{dataset}_B{batchSize}_L{lr}_{formattedNow}.png", 
+                                width=1000, height=1000)
+                wandb.log({"Training Confusion Matrix Heatmap": wandb.Image(f"/home/tzikos/Confusions/Confusion_train_{model.__class__.__name__}_{dataset}_B{batchSize}_L{lr}_{formattedNow}.png")},
+                           step=epoch+1, commit=False)
+    
+                # Validation Confusion matrix
+                valPredictions = torch.flatten(valPredTensor).cpu().numpy()
+                valLabels = torch.flatten(valLabelTensor).cpu().numpy()
+                valCM = confusion_matrix(valLabels, valPredictions)
+                # Create a W&B Table with appropriate column names
+                # only for Berts data
+                valCMTable = wandb.Table(columns=columns)
+                # Fill the table with data from the confusion matrix
+                for i in range(len(valCM)):
+                    row = [classNames[i]] + valCM[i].tolist()
+                    valCMTable.add_data(*row)
+                wandb.log({'Validation Confusion Matrix': valCMTable}, step=epoch+1, commit=False)
+                # Plot and save confusion matrix
+                figVal = plotNSaveConfusion(valCM, classNames, f"/Confusion_val_{model.__class__.__name__}_{dataset}_B{batchSize}_L{lr}_{formattedNow}", "Validation")
+                pio.write_image(figVal, f"/home/tzikos/Confusions/Confusion_val_{model.__class__.__name__}_{dataset}_B{batchSize}_L{lr}_{formattedNow}.png", 
+                                width=1000, height=1000)
+                wandb.log({"Validation Confusion Matrix Heatmap": wandb.Image(f"/home/tzikos/Confusions/Confusion_val_{model.__class__.__name__}_{dataset}_B{batchSize}_L{lr}_{formattedNow}.png")},
+                           step=epoch+1, commit=False)
         if epoch - bestLRepoch > reduceLRPatience - 1:
             learningRate /= 10
             bestLRepoch = epoch
@@ -383,21 +438,24 @@ def train(model, trainLoader, valLoader, classes, learningRate, epochs,
         if epoch - bestESEpoch > earlyStopPatience - 1:
             print("Early stopped training at epoch %d" % epoch)
             # terminate the training loop
-            break  
+            break
+        wandb.log({"train acc": epochTrainAcc, "train loss": epochTrainLoss, "train F1": epochTrainF1}, step=epoch+1, commit=False)
+        wandb.log({"val acc": epochValAcc, "val loss": epochValLoss, "val F1": epochValF1}, step=epoch+1, commit=False)
         print("")
-
+    wandb.log({}, commit=True)
     # Visualize training
     trainVisualizer(trainLossList, valLossList, trainAccList, valAccList, trainF1List, valF1List,
-                    saveName=f"{model.__class__.__name__}_{dataset}_B{batchSize}_L{lr}_{formattedNow}")
+                    saveName=f"Train_hist_{model.__class__.__name__}_{dataset}_B{batchSize}_L{lr}_{formattedNow}")
     # Return the path to the best model weights
     # to be used for testing
-    filepath = f'/home/tzikos/Desktop/weights/{model.__class__.__name__}_{formattedNow}.pth'
+    filepath = f'/home/tzikos/Desktop/weights/{model.__class__.__name__}_{dataset}_B{batchSize}_L{lr}_{formattedNow}.pth'
     return filepath
 
 ###############
 ### TESTING ###
 ###############
 def test(model, testLoader, classes, device, filePath, expList):
+    print(filePath)
     '''Testing function for the model'''
     # Load model weights
     model.load_state_dict(torch.load(f'{filePath}'))
@@ -422,4 +480,8 @@ def test(model, testLoader, classes, device, filePath, expList):
     classTestF1 = multiclass_f1_score(torch.flatten(testPredTensor).long(), torch.flatten(testLabelTensor).long(), num_classes=classes, average=None) * 100
     for i in range(classTestF1.size(0)):
         print(f"For class {expList[i].split(" ")[0]} the F1: {classTestF1[i]:.2f}%")
+        wandb.log({"Test F1": epochTestF1})
+        for i in range(len(expList)):
+            wandb.log({f"Test F1 {expList[i].split(" ")[0]}": classTestF1[i]})
+    
 

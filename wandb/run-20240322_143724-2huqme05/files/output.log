@@ -1,0 +1,67 @@
+
+Starting training
+Epoch 1: Train Loss: 15.7169, Val Loss: 1.4449, Train Acc: 23.08%, Val Accuracy: 62.84%, Train F1 Score: 22.80%, Val F1 Score: 34.22%
+For class normal the Train F1: 25.20% and Val F1: 80.83%
+For class AVNRT the Train F1: 20.63% and Val F1: 18.40%
+For class AVRT the Train F1: 23.01% and Val F1: 32.10%
+For class concealed the Train F1: 26.87% and Val F1: 39.80%
+For class EAT the Train F1: 18.29% and Val F1: 0.00%
+Epoch 2: Train Loss: 15.5418, Val Loss: 1.3142, Train Acc: 30.73%, Val Accuracy: 66.47%, Train F1 Score: 30.29%, Val F1 Score: 32.56%
+For class normal the Train F1: 35.76% and Val F1: 83.07%
+For class AVNRT the Train F1: 23.53% and Val F1: 22.84%
+For class AVRT the Train F1: 35.11% and Val F1: 6.45%
+For class concealed the Train F1: 33.94% and Val F1: 48.31%
+For class EAT the Train F1: 23.12% and Val F1: 2.11%
+Traceback (most recent call last):
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/runpy.py", line 198, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/runpy.py", line 88, in _run_code
+    exec(code, run_globals)
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.2.0-linux-x64/bundled/libs/debugpy/adapter/../../debugpy/launcher/../../debugpy/__main__.py", line 39, in <module>
+    cli.main()
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.2.0-linux-x64/bundled/libs/debugpy/adapter/../../debugpy/launcher/../../debugpy/../debugpy/server/cli.py", line 430, in main
+    run()
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.2.0-linux-x64/bundled/libs/debugpy/adapter/../../debugpy/launcher/../../debugpy/../debugpy/server/cli.py", line 284, in run_file
+    runpy.run_path(target, run_name="__main__")
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.2.0-linux-x64/bundled/libs/debugpy/_vendored/pydevd/_pydevd_bundle/pydevd_runpy.py", line 321, in run_path
+    return _run_module_code(code, init_globals, run_name,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.2.0-linux-x64/bundled/libs/debugpy/_vendored/pydevd/_pydevd_bundle/pydevd_runpy.py", line 135, in _run_module_code
+    _run_code(code, mod_globals, init_globals,
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.2.0-linux-x64/bundled/libs/debugpy/_vendored/pydevd/_pydevd_bundle/pydevd_runpy.py", line 124, in _run_code
+    exec(code, run_globals)
+  File "/home/tzikos/Desktop/KULeuvenThesis/main.py", line 195, in <module>
+    filePath = train(model, trainLoader, valLoader, CLASSES_BERT, LEARNING_RATE_BERT,
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/Desktop/KULeuvenThesis/models.py", line 314, in train
+    for inputs, labels in trainLoader:
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/torch/utils/data/dataloader.py", line 631, in __next__
+    data = self._next_data()
+           ^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/torch/utils/data/dataloader.py", line 1329, in _next_data
+    idx, data = self._get_data()
+                ^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/torch/utils/data/dataloader.py", line 1295, in _get_data
+    success, data = self._try_get_data()
+                    ^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/torch/utils/data/dataloader.py", line 1133, in _try_get_data
+    data = self._data_queue.get(timeout=timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/multiprocessing/queues.py", line 122, in get
+    return _ForkingPickler.loads(res)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/torch/multiprocessing/reductions.py", line 495, in rebuild_storage_fd
+    fd = df.detach()
+         ^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/multiprocessing/resource_sharer.py", line 57, in detach
+    with _resource_sharer.get_connection(self._id) as conn:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/multiprocessing/resource_sharer.py", line 86, in get_connection
+    c = Client(address, authkey=process.current_process().authkey)
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/multiprocessing/process.py", line 37, in current_process
+    def current_process():
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.2.0-linux-x64/bundled/libs/debugpy/_vendored/pydevd/_pydevd_bundle/pydevd_trace_dispatch_regular.py", line 326, in __call__
+    def __call__(self, frame, event, arg):
+KeyboardInterrupt

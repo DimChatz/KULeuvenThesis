@@ -81,23 +81,23 @@ def downsamplerNoiseRemover(listToSave, targetDirDown, targetDirNoise):
         np.save(f"{targetDirNoise}/{file.split('/')[-2]}-{file.split('/')[-1][:-5]}.npy", tempArray)
 
 
-def gaussianCalcBert(directory):
+def gaussianCalcBert(directory, experiment):
     '''Function to calculate the mean and sigma for Bert's data'''
-    meanAcc, sigmaAcc = np.zeros((1,12)), np.zeros((1,12))
+    accArray = np.zeros((2500,12,1))
     for root, dirs, files in os.walk(directory):
         for file in files:
             if file.endswith('.npy'):
                 tempArray = np.load(os.path.join(root, file))
-                meanAcc = np.concatenate((meanAcc, np.expand_dims(np.mean(tempArray, axis=0), axis=0)), axis = 0)
-                sigmaAcc = np.concatenate((sigmaAcc, np.expand_dims(np.mean(tempArray, axis=0), axis=0)), axis = 0)
+                #print(np.expand_dims(tempArray, axis=-1).shape)
+                accArray = np.concatenate((accArray, np.expand_dims(tempArray, axis=-1)), axis = 2)
     # Remove zero duplicate at start
-    meanAcc, sigmaAcc = meanAcc[1:], sigmaAcc[1:]
+    accArray = accArray[:,:,1:]
     # Create mean and sigma
-    mean = np.sum(meanAcc, axis = 0) / meanAcc.shape[0]
-    sigmaSum = np.sum(np.power(sigmaAcc, 2) + np.power(meanAcc, 2), axis = 0)
-    sigma = np.sqrt((sigmaSum - meanAcc.shape[0] * np.power(mean, 2)) / meanAcc.shape[0])
-    np.save(f'/home/tzikos/Desktop/weights/meanBerts.npy', mean)
-    np.save(f'/home/tzikos/Desktop/weights/sigmaBerts.npy', sigma)
+    mean = np.mean(accArray, axis = (0,2))
+    sigma = np.std(accArray, axis = (0,2))
+    print(mean.shape)
+    np.save(f'/home/tzikos/Desktop/weights/meanBerts{experiment}.npy', mean)
+    np.save(f'/home/tzikos/Desktop/weights/sigmaBerts{experiment}.npy', sigma)
     return mean, sigma
 
 

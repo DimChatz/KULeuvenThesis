@@ -3,6 +3,8 @@ import numpy as np
 from preprocessing import downsampler, noiseRemover, createMissingLeads
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+import plotly.figure_factory as ff
+import plotly.io as pio
 
 def preprocVis(filePath, mean, sigma, saveName):
     """Function to visualize the preprocessing of Bert's data
@@ -48,13 +50,13 @@ def trainVisualizer(trainLossList, valLossList, trainAccList, valAccList, trainF
     # Create figure with 2 subplots arranged in 1 row and 3 columns
     fig = make_subplots(rows=1, cols=3, subplot_titles=("Loss", "Accuracy", "F1 Score"))
     # Adding scatter plot to the first subplot
-    x = np.linspace(1, len(trainLossList))
-    fig.add_trace(go.Scatter(x=x, y=trainLossList, mode='lines', name='train loss'), row=1, col=1)
-    fig.add_trace(go.Scatter(x=x, y=valLossList, mode='lines', name='val loss'), row=1, col=1)
-    fig.add_trace(go.Scatter(x=x, y=trainAccList, mode='lines', name='train Acc'), row=1, col=2)
-    fig.add_trace(go.Scatter(x=x, y=valAccList, mode='lines', name='val Acc'), row=1, col=2)
-    fig.add_trace(go.Scatter(x=x, y=trainF1List, mode='lines', name='train F1'), row=1, col=3)
-    fig.add_trace(go.Scatter(x=x, y=valF1List, mode='lines', name='val F1'), row=1, col=3)
+    xAxis = np.linspace(1, len(trainLossList), len(trainLossList))
+    fig.add_trace(go.Scatter(x=xAxis, y=trainLossList, mode='lines', name='train loss'), row=1, col=1)
+    fig.add_trace(go.Scatter(x=xAxis, y=valLossList, mode='lines', name='val loss'), row=1, col=1)
+    fig.add_trace(go.Scatter(x=xAxis, y=trainAccList, mode='lines', name='train Acc'), row=1, col=2)
+    fig.add_trace(go.Scatter(x=xAxis, y=valAccList, mode='lines', name='val Acc'), row=1, col=2)
+    fig.add_trace(go.Scatter(x=xAxis, y=trainF1List, mode='lines', name='train F1'), row=1, col=3)
+    fig.add_trace(go.Scatter(x=xAxis, y=valF1List, mode='lines', name='val F1'), row=1, col=3)
     # Updating layout (optional)
     fig.update_layout(
         title_text="Training Visualization",
@@ -110,3 +112,34 @@ def Vis(filePath1, filePath2, saveName, comment=" "):
     # Showing the plot
     fig.write_html(f"/home/tzikos/{saveName}.html")
     fig.show()
+
+def plotNSaveConfusion(cm, classNames, saveStr, text):
+    """
+    Plot and save a confusion matrix using Plotly with row-wise color intensity and integer annotations.
+
+    Parameters:
+    - cm: Confusion matrix (2D numpy array).
+    - classNames: List of class names (labels).
+    - saveStr: Name of the file to save the plot.
+    - text: Title text for the confusion matrix.
+    """
+    # Normalize each row by its maximum value for color scaling
+    cm_normalized = np.array([row / np.sum(row) for row in cm])
+    
+    # Create annotations (text in each cell) using the original integer values from cm
+    annotations = [[str(int(value)) for value in row] for row in cm]
+
+    # Define the figure using a heatmap for the confusion matrix with integer annotations
+    fig = ff.create_annotated_heatmap(z=cm_normalized, x=classNames, y=classNames, annotation_text=annotations, colorscale='Magma')
+
+    # Update layout to make it more readable
+    fig.update_layout(title_text=f"{text} Confusion Matrix",
+                      xaxis=dict(title='Predicted value'),
+                      yaxis=dict(title='Actual value'),
+                      yaxis_autorange='reversed',  # This correctly flips the y-axis to match conventional confusion matrix layout
+                      xaxis_tickangle=-45)
+    # Show figure in the notebook or IDE
+    fig.show()
+    # Save the figure as an HTML file
+    fig.write_html(f"/home/tzikos/{saveStr}.html")
+    return fig
