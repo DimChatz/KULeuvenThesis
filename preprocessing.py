@@ -7,20 +7,23 @@ warnings.filterwarnings("ignore", message="Workbook contains no default style, a
 
 
 def downsampler(data):
-    '''Function for downsampling all data to 250Hz.'''
-    # Determine the current sampling frequency
-    current_frequency = round(1 / data[data.columns[0]].iloc[1] - data[data.columns[0]].iloc[0])
-    # Downsample if necessary
+    '''Function for downsampling all data to 250Hz by averaging.'''
+    # Assume the first column is time or similar sequential
+    current_frequency = round(1 / (data[data.columns[0]].iloc[1] - data[data.columns[0]].iloc[0]))
+    # Determine how many points to group for averaging
     if current_frequency == 500:
-        # Take every other row to achieve 250Hz from 500Hz
-        data = data.iloc[::2].reset_index(drop=True)
-        # Take every 4th row to achieve 250Hz from 1kHz
+        group_size = 2
     elif current_frequency == 1000:
-        data = data.iloc[::4].reset_index(drop=True)
-    return data
+        group_size = 4
+    else:
+        return data  # No downsampling needed
+    # Calculate group indices (each group of size `group_size` gets the same index)
+    group_indices = np.arange(len(data)) // group_size
+    # Downsample by averaging every `group_size` points
+    downsampled_data = data.groupby(group_indices).mean().reset_index(drop=True)
+    return downsampled_data
 
-
-def bandpass(lowF = 0.5, highF = 45, samplingF = 250, order = 5):
+def bandpass(lowF = 0.5, highF = 50, samplingF = 250, order = 5):
     '''Buttersworth bandpass filter'''
     # Nyquist frequency
     nyqF = 0.5 * samplingF
@@ -31,7 +34,7 @@ def bandpass(lowF = 0.5, highF = 45, samplingF = 250, order = 5):
     return b, a
 
 
-def noiseRemover(data, lowF = 0.5, highF = 45, samplingF = 250, order = 5):
+def noiseRemover(data, lowF = 0.5, highF = 50, samplingF = 250, order = 3):
     '''Application of bandpass'''
     b, a = bandpass(lowF, highF, samplingF, order)
     y = filtfilt(b, a, data, axis = 0)

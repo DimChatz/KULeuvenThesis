@@ -6,21 +6,22 @@ import torch
 from preprocPTBXL import readPTB, gaussianNormalizerPTB, dataSplitterPTB, createMissingLeadsPTB
 import numpy as np
 import wandb
+import os
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(device)
 
 # HYPERPARAMETERS
-LEARNING_RATE_PTB = 0.0000003
+LEARNING_RATE_PTB = 0.00001
 LEARNING_RATE_BERT = 0.000001
 BATCH = 64
 L1 = 0.0001
 L2 = 0.0001
-A_BERT = 10
+A_BERT = 1
 A_PTB = 1
 
 # Stable
-EPOCHS = 5
+EPOCHS = 1000
 EARLY_PAT = 12
 REDLR_PAT = 5
 
@@ -28,14 +29,14 @@ REDLR_PAT = 5
 CLASSES_BERT = 5
 CLASSES_PTB = 12
 ROOT_DATA_PATH = '/home/tzikos/Desktop/Data'
-EXPERIMENT = "tachy"
+EXPERIMENT = "pre"
 WEIGHT_PATH = "/home/tzikos/Desktop/weights/"
 PREPROC_PTB = False
 PREPROC_BERT = False
-PRETRAIN = False
-FINETUNE = True
+PRETRAIN = True
+FINETUNE = False
 VISUALIZE = False
-USE_PRETRAINED = True
+USE_PRETRAINED = False
 
 if PRETRAIN or FINETUNE:
     model = ECGCNNClassifier(CLASSES_BERT)
@@ -64,21 +65,16 @@ if PRETRAIN or FINETUNE:
         "use_pretrained": USE_PRETRAINED}
     )
 
-
-
-if PREPROC_PTB:
-    metadataPath="/home/tzikos/Desktop/Data/PTBXL/ptbxl_database.csv", 
-    dataPath = "/home/tzikos/Desktop/Data/PTBXL/records500/", 
-    if CLASSES_PTB == 44:
-        typeC = "AllDia"
-        countDict = {"NDT":0, "NST":0, "DIG":0, "LNGQT":0, "NORM":0, "IMI":0, "ASMI":0,
+if CLASSES_PTB == 44:
+    typeC = "AllDia"
+    countDict = {"NDT":0, "NST":0, "DIG":0, "LNGQT":0, "NORM":0, "IMI":0, "ASMI":0,
                     "LVH":0, "LAFB":0, "ISC_":0, "IRBBB":0, "1AVB":0, "IVCD":0, "ISCAL":0,
                     "CRBBB":0, "CLBBB":0, "ILMI":0, "LAO/LAE":0, "AMI":0, "ALMI":0, "ISCIN":0,
                     "INJAS":0, "LMI":0, "ISCIL":0, "LPFB":0, "ISCAS":0, "INJAL":0, "ISCLA":0,
                     "RVH":0, "ANEUR":0, "RAO/RAE":0, "EL":0, "WPW":0, "ILBBB":0, "IPLMI":0,
                     "ISCAN":0, "IPMI":0, "SEHYP":0, "INJIN":0, "INJLA":0, "PMI":0, "3AVB":0,
                     "INJIL":0, "2AVB":0}
-        classDict = {"NDT":"NDT", "NST":"NST", "DIG":"DIG", "LNGQT":"LNGQT", "NORM":"NORM", 
+    classDict = {"NDT":"NDT", "NST":"NST", "DIG":"DIG", "LNGQT":"LNGQT", "NORM":"NORM", 
                     "IMI":"IMI", "ASMI":"ASMI", "LVH":"LVH", "LAFB":"LAFB", "ISC_":"ISC_", 
                     "IRBBB":"IRBB", "1AVB":"1AVB", "IVCD":"IVCD", "ISCAL":"ISCAL", "CRBBB":"CRBBB",
                     "CLBBB":"CLBBB", "ILMI":"ILMI", "LAO/LAE":"LAO/:LAE", "AMI":"AMI", "ALMI":"ALMI",
@@ -87,12 +83,10 @@ if PREPROC_PTB:
                     "RAO/RAE":"RAO/RAE", "EL":"EL", "WPW":"WPW", "ILBBB":"ILBB", "IPLMI":"IPLMI",
                     "ISCAN":"ISCAN", "IPMI":"IPMI", "SEHYP":"SEHYP", "INJIN":"INJIN", "INJLA":"INJLA",
                     "PMI":"PMI", "3AVB":"3AVB", "INJIL":"INJIN", "2AVB":"2AVB"}
-    elif CLASSES_PTB == 5:
-        typeC = "Diagnostic"
-        # Initialize the dictionary to count the class instances
-        countDict = {"NORM":0, "MI":0, "STTC":0, "CD":0, "HYP":0}
-        # Initialize the dictionary to map the classes to superclasses
-        classDict = {"NDT":"STTC", "NST":"STTC", "DIG":"STTC", "LNGQT":"STTC", "NORM":"NORM", 
+elif CLASSES_PTB == 5:
+    typeC = "Diagnostic"
+    countDict = {"NORM":0, "MI":0, "STTC":0, "CD":0, "HYP":0}
+    classDict = {"NDT":"STTC", "NST":"STTC", "DIG":"STTC", "LNGQT":"STTC", "NORM":"NORM", 
                     "IMI":"MI", "ASMI":"MI", "LVH":"HYP", "LAFB":"CD", "ISC_":"STTC", 
                     "IRBBB":"CD", "1AVB":"CD", "IVCD":"CD", "ISCAL":"STTC", "CRBBB":"CD",
                     "CLBBB":"CD", "ILMI":"MI", "LAO/LAE":"HYP", "AMI":"MI", "ALMI":"MI",
@@ -101,27 +95,35 @@ if PREPROC_PTB:
                     "RAO/RAE":"HYP", "EL":"STTC"    , "WPW":"CD", "ILBBB":"CD", "IPLMI":"MI",
                     "ISCAN":"STTC", "IPMI":"MI", "SEHYP":"HYP", "INJIN":"MI", "INJLA":"MI",
                     "PMI":"MI", "3AVB":"CD", "INJIL":"MI", "2AVB":"CD"}
-    elif CLASSES_PTB == 12:
-        typeC = "Rhythm"
-        countDict = {"SR":0, "AFIB":0, "STACH":0, "SARRH":0, "SBRAD":0, "PACE":0,
+elif CLASSES_PTB == 12:
+    typeC = "Rhythm"
+    countDict = {"SR":0, "AFIB":0, "STACH":0, "SARRH":0, "SBRAD":0, "PACE":0,
                      "SVARR":0, "BIGU":0, "AFLT":0, "SVTAC":0, "PSVT":0, "TRIGU":0}
-        classDict = {"SR":"SR", "AFIB":"AFIB", "STACH":"STACH", "SARRH":"SARRH", "SBRAD":"SBRAD",
+    classDict = {"SR":"SR", "AFIB":"AFIB", "STACH":"STACH", "SARRH":"SARRH", "SBRAD":"SBRAD",
                     "PACE":"PACE", "SVARR":"SVARR", "BIGU":"BIGU", "AFLT":"AFLT", "SVTAC":"SVTAC",
                     "PSVT":"PSVT", "TRIGU":"TRIGU"}
+
+if PREPROC_PTB:
+    metadataPath="/home/tzikos/Desktop/Data/PTBXL/ptbxl_database.csv"
+    dataPath = "/home/tzikos/Desktop/Data/PTBXL/records500/"
     savePath1 = f"/home/tzikos/Desktop/Data/PTBXL {typeC} Downsampled/"
+    for key in countDict.keys():
+        os.makedirs(f"{savePath1}{key}", exist_ok=True)
     savePath2 = f"/home/tzikos/Desktop/Data/PTBXL {typeC} Denoised/"
+    for key in countDict.keys():
+        os.makedirs(f"{savePath2}{key}", exist_ok=True)
     savePath3 = f"/home/tzikos/Desktop/Data/PTBXL {typeC} Gaussian/"
+    for key in countDict.keys():
+        os.makedirs(f"{savePath3}{key}", exist_ok=True)
     savePath4 = f"/home/tzikos/Desktop/Data/PTBXL {typeC} torch/"
-    tempPath = readPTB(countDict, classDict, metadataPath, dataPath, savePath1, savePath2)
-    trainList, valList = dataSplitterPTB(tempPath, list(classDict.values()))
-    gaussianNormalizerPTB(trainList, savePath2, CLASSES_PTB, savePath3)
-    createMissingLeadsPTB(trainList, np.load(f"{WEIGHT_PATH}PTBXLmean{CLASSES_PTB}.npy"), 
-                          np.load(f"{WEIGHT_PATH}PTBXLsigma{CLASSES_PTB}.npy"), "train", typeC)
-    createMissingLeadsPTB(valList, np.load(f"{WEIGHT_PATH}PTBXLmean{CLASSES_PTB}.npy"), 
-                          np.load(f"{WEIGHT_PATH}PTBXLsigma{CLASSES_PTB}.npy"), "val", typeC)
+    os.makedirs(f"{savePath4}train", exist_ok=True)
+    os.makedirs(f"{savePath4}val", exist_ok=True)
+    #tempPath = readPTB(countDict, classDict, metadataPath, dataPath, savePath1, savePath2)
+    #trainList, valList = dataSplitterPTB(tempPath, list(classDict.values()))
+    #gaussianNormalizerPTB(trainList, savePath2, CLASSES_PTB, savePath3)
+    createMissingLeadsPTB(savePath3, countDict, savePath4)
 
 expList = [f'normal {EXPERIMENT}', f'AVNRT {EXPERIMENT}', f'AVRT {EXPERIMENT}', f'concealed {EXPERIMENT}', f'EAT {EXPERIMENT}']
-PTBList = ["NORM", "MI", "STTC", "CD", "HYP"]
 
 if PREPROC_BERT:
     trainFiles, valFiles, testFiles = appendStratifiedFiles(f"{ROOT_DATA_PATH}/Berts/", expList)
@@ -157,17 +159,17 @@ if PREPROC_BERT:
 model = ECGCNNClassifier(CLASSES_PTB)
 if PRETRAIN:
     # Datasets
-    classWeights = np.load(WEIGHT_PATH + "PTBweights.npy")
+    classWeights = np.load(WEIGHT_PATH + f"PTBweights{CLASSES_PTB}.npy")
     classWeights = A_PTB * classWeights
-    print(classWeights.shape)
-    print(classWeights)
-    trainDataset = PTBDataset(f"{ROOT_DATA_PATH}/PTBXL torch/train/", CLASSES_PTB, classWeights)
+    #print(classWeights.shape)
+    #print(classWeights)
+    trainDataset = PTBDataset(f"{ROOT_DATA_PATH}/PTBXL {typeC} torch/train/", CLASSES_PTB, classWeights, countDict)
     trainLoader = DataLoader(trainDataset, batch_size=BATCH, shuffle=True, num_workers=8)
-    valDataset = PTBDataset(f"{ROOT_DATA_PATH}/PTBXL torch/val/", CLASSES_PTB, classWeights)
+    valDataset = PTBDataset(f"{ROOT_DATA_PATH}/PTBXL {typeC} torch/val/", CLASSES_PTB, classWeights, countDict)
     valLoader = DataLoader(valDataset, batch_size=BATCH, shuffle=True, num_workers=8)
     filePath = train(model, trainLoader, valLoader, CLASSES_PTB, LEARNING_RATE_PTB,
-          EPOCHS, classWeights, EARLY_PAT, REDLR_PAT, device, PTBList,
-          dataset="PTBXL", batchSize=BATCH, lr=LEARNING_RATE_PTB)
+          EPOCHS, classWeights, EARLY_PAT, REDLR_PAT, device, list(countDict.keys()),
+          dataset="PTBXL", batchSize=BATCH, lr=LEARNING_RATE_PTB, L1=L1, L2=L2)
 
 
 if FINETUNE:
@@ -187,8 +189,8 @@ if FINETUNE:
     # Datasets
     trainDataset = ECGDataset(f"{ROOT_DATA_PATH}/Berts torch/{EXPERIMENT}/train/", EXPERIMENT, CLASSES_BERT, classWeights)
     trainLoader = DataLoader(trainDataset, batch_size=BATCH, 
-                             shuffle=True, 
-                             #sampler=WeightedRandomSampler(weights=trainDataset.samplerWeights(), num_samples=len(trainDataset)),
+                             #shuffle=True, 
+                             sampler=WeightedRandomSampler(weights=trainDataset.samplerWeights(), num_samples=len(trainDataset)),
                              num_workers=8)
     valDataset = ECGDataset(f"{ROOT_DATA_PATH}/Berts torch/{EXPERIMENT}/val/", EXPERIMENT, CLASSES_BERT, classWeights)
     valLoader = DataLoader(valDataset, batch_size=BATCH, shuffle=True, num_workers=8)

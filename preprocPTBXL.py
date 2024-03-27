@@ -6,6 +6,8 @@ import os
 import ast
 from visualizer import VisNP
 
+
+
 def getGaussianParamsPTB(fileList):
     """Function to calculate the Gaussian parameters for the PTBXL dataset"""
     # Initialize the array to stack the data
@@ -25,6 +27,8 @@ def getGaussianParamsPTB(fileList):
         sigma.append(np.std(stacked[:, i]))
     return mean, sigma
     
+
+
 def gaussianNormalizerPTB(fileList, dataPath, numClasses, savePath, weightsPath="/home/tzikos/Desktop/weights/"):
     """Function to Gaussian normalize the PTBXL dataset"""
     mean, sigma = getGaussianParamsPTB(fileList)
@@ -45,39 +49,36 @@ def gaussianNormalizerPTB(fileList, dataPath, numClasses, savePath, weightsPath=
         for file in files:
             if file.endswith('.npy'):
                 tempArray = np.load(os.path.join(root, file))
-                # If the count is less than 2
-                if count <2:
-                    VisNP(tempArray, saveName="exampleBeforeNorm", comment="Before normalization")
-                    count += 1
                 for i in range(12):
                     tempArray[:, i] = (tempArray[:, i] - mean[i]) / sigma[i]
-                if count <2:
-                    VisNP(tempArray, saveName="exampleAfterNorm", comment="After normalization")
-                    count += 1
                 np.save(os.path.join(savePath, f"{root.split("/")[-1]}/{file}"), tempArray)
 
 
-def createMissingLeadsPTB(fileList, mean, sigma, split, savePath):
+
+def createMissingLeadsPTB(dataPath, countDict, savePath):
     """Function to create missing leads for the PTBXL dataset"""
     # Count for visualization
-    count = 0
-    for file in fileList:
-        # Load file
-        data = np.load(file)
-        # Add dimension to add the data
-        data = np.expand_dims(data, axis = -1)
-        # Create missing leads
-        endArray = data.copy()
-        for i in range(12):
-            tempArray = data.copy()
-            tempArray = (tempArray - mean[i]) / sigma[i]
-            tempArray[:, i, :] = 0.
-            endArray = np.concatenate((endArray, tempArray), axis = 2)
-        for i in range(endArray.shape[2]):
-            if count == 0:
-                VisNP(endArray[:,:,1], saveName="exampleAfterRemovingLead", comment="After removing Lead")
-                count += 1
-            np.save(f"{savePath}{split}/{file.split("/")[-2]}-{file.split("/")[-1][:-4]}-{i}.npy", endArray[:,:,i])
+    for key in countDict.keys():
+        fileList = []
+        for root, dirs, files in os.walk(f"{dataPath}/{key}/"):
+            for file in files:
+                if file.endswith('.npy'):
+                    fileList.append(os.path.join(root, file))
+        for file in fileList[:int(0.9*len(fileList))]:
+            data = np.load(os.path.join(root, file))
+            np.save(f"{savePath}/train/{file.split("/")[-2]}-{file.split("/")[-1][:-4]}-{0}.npy", data)
+            for i in range(12):
+                tempArray = data.copy()
+                tempArray[:, i] = 0.
+                np.save(f"{savePath}/train/{file.split("/")[-2]}-{file.split("/")[-1][:-4]}-{i+1}.npy", tempArray)
+        for file in fileList[int(0.9*len(fileList)):]:
+            data = np.load(os.path.join(root, file))
+            np.save(f"{savePath}/val/{file.split("/")[-2]}-{file.split("/")[-1][:-4]}-{0}.npy", data)
+            for i in range(12):
+                tempArray = data.copy()
+                tempArray[:, i] = 0.
+                np.save(f"{savePath}/val/{file.split("/")[-2]}-{file.split("/")[-1][:-4]}-{i+1}.npy", tempArray)
+
 
 
 def readPTB(countDict, classDict, metadataPath, dataPath, savePath1, savePath2):
@@ -91,7 +92,7 @@ def readPTB(countDict, classDict, metadataPath, dataPath, savePath1, savePath2):
     for index, row in metaData.iterrows():
         patID = row["patient_id"]
         ecgID = int(row["ecg_id"])
-        valid = ast.literal_eval(row["validated_by_human"])
+        valid = row["validated_by_human"]
         # Dict that contains the classes
         scpDict = ast.literal_eval(row["scp_codes"])
         # If the patient is not in the list
@@ -137,7 +138,7 @@ def readPTB(countDict, classDict, metadataPath, dataPath, savePath1, savePath2):
     print(f"and are {classWeights}")
     np.save(f'/home/tzikos/Desktop/weights/PTBweights{num_classes}.npy', classWeights)
     return savePath2
-
+    
 def dataSplitterPTB(directory, segmentList):  
     """Function to create balanced datasets"""
     # Initialize the lists to save the files 

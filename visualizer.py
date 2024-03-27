@@ -143,3 +143,64 @@ def plotNSaveConfusion(cm, classNames, saveStr, text):
     # Save the figure as an HTML file
     fig.write_html(f"/home/tzikos/{saveStr}.html")
     return fig
+
+def dataLeadStatsVis(filePath="/home/tzikos/TableCreatorVis"):
+    typeExp = ["pre", "tachy"]
+    expList = ['normal', 'AVNRT', 'AVRT', 'concealed', 'EAT']
+    
+    for taip in typeExp:
+        data = pd.read_csv(f"{filePath}/{taip}VisTable.csv")
+        subplot_titles = []
+        
+        for clasS in expList:
+            for i in range(12):
+                dataTemp = data[(data['Class'] == clasS) & (data['Lead'] == i+1)]
+                mean_of_means = dataTemp['Mean'].mean()
+                sigma_of_means = dataTemp['Mean'].std()
+                mean_of_sigmas = dataTemp['Sigma'].mean()
+                sigma_of_sigmas = dataTemp['Sigma'].std()
+                subplot_titles.append(f'Lead {i+1} - MM:{mean_of_means:.2f}, SM:{sigma_of_means:.2f}, MS:{mean_of_sigmas:.2f}, SS:{sigma_of_sigmas:.2f}')
+            
+            # Create figure with dynamic subplot titles
+            fig = make_subplots(rows=3, cols=4, subplot_titles=subplot_titles)
+            
+            for i in range(12):
+                dataTemp = data[(data['Class'] == clasS) & (data['Lead'] == i+1)]
+                for dtype, color in zip(['Train', 'Val'], ['#33BEFF', '#DE4A0E']):
+                    x = np.array(dataTemp[dataTemp['Dataset'] == dtype]['Mean'])
+                    y = np.array(dataTemp[dataTemp['Dataset'] == dtype]['Sigma'])
+                    fig.add_trace(go.Scatter(x=x, y=y, mode='markers', name=f'{dtype} Lead {i+1}', 
+                                             marker=dict(color=color, size=6)),
+                                  row=i // 4 + 1, col=i % 4 + 1)
+            
+            fig.update_layout(title_text=f"For Class {clasS} in {taip}")
+            fig.write_html(f"{filePath}/{clasS}_{taip}.html")
+
+
+
+def dataLeadStatsVisPerLead(filePath="/home/tzikos/TableCreatorVis"):
+    typeExp = ["pre", "tachy"]
+    expList = ['normal', 'AVNRT', 'AVRT', 'concealed', 'EAT']
+    
+    for taip in typeExp:
+        data = pd.read_csv(f"{filePath}/{taip}VisTable.csv")
+        subplot_titles = []
+        
+        for clasS in expList:
+            for i in range(12):
+                # Create figure with dynamic subplot titles
+                fig = make_subplots(rows=1, cols=3, subplot_titles=subplot_titles)
+                for idx, (dtype, color) in enumerate(zip(['Train', 'Val', 'Test'], ['#33BEFF', '#DE4A0E', '#FFA500'])):
+                    dataTemp = data[(data['Class'] == clasS) & (data['Lead'] == i+1) & (data['Dataset'] == dtype)]
+                    mean_of_means = dataTemp['Mean'].mean()
+                    sigma_of_means = dataTemp['Mean'].std()
+                    mean_of_sigmas = dataTemp['Sigma'].mean()
+                    sigma_of_sigmas = dataTemp['Sigma'].std()
+                    subplot_titles.append(f'{dtype} Lead {i+1} - MM:{mean_of_means:.2f}, SM:{sigma_of_means:.2f}, MS:{mean_of_sigmas:.2f}, SS:{sigma_of_sigmas:.2f}')
+                    x = np.array(dataTemp['Mean'])
+                    y = np.array(dataTemp['Sigma'])
+                    fig.add_trace(go.Scatter(x=x, y=y, mode='markers', name=f'{dtype} Lead {i+1}', 
+                                             marker=dict(color=color, size=6)),
+                                  row=1, col=idx+1)
+                fig.update_layout(title_text=f"For Class {clasS} in {taip}")
+                fig.write_html(f"{filePath}/{clasS}_{taip}_Lead{i+1}.html")

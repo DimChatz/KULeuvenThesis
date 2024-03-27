@@ -64,7 +64,7 @@ class ECGDataset(torch.utils.data.Dataset):
     
 class PTBDataset(torch.utils.data.Dataset):
     '''Time series Dataset'''
-    def __init__(self, dirPath, numClasses, classWeights):
+    def __init__(self, dirPath, numClasses, classWeights, countDict):
         # Root of data
         self.dir = dirPath
         # Its files
@@ -73,15 +73,21 @@ class PTBDataset(torch.utils.data.Dataset):
         self.numClasses = numClasses
         # Class weights
         self.weights = classWeights
+        self.countDict = countDict 
 
     def __len__(self):
         return len(self.fileNames)
 
     def __getitem__(self, idx):
         # Create dict to ascribe labels
-        nameDict = {f"NORM":[1,0,0,0,0],f"MI":[0,1,0,0,0], 
-                    f"STTC":[0,0,1,0,0],f"CD":[0,0,0,1,0],
-                    "HYP":[0,0,0,0,1]}
+        # Creating a new dictionary with the same keys but with classification vectors as values
+        keyList = list(self.countDict.keys())
+        nameDict = {}
+
+        for i, key in enumerate(keyList):
+            classVector = [0] * len(keyList)  # Initialize a vector of zeros
+            classVector[i] = 1  # Set the ith position to 1
+            nameDict[key] = classVector
         # Get file
         filePath = os.path.join(self.dir, self.fileNames[idx])
         # Get class label
@@ -277,7 +283,6 @@ class ECGSimpleClassifier(nn.Module):
 ### FUNCTIONS ###
 #################
     
-
 def train(model, trainLoader, valLoader, classes, learningRate, epochs, 
     classWeights, earlyStopPatience, reduceLRPatience, device, expList, 
     dataset, lr, batchSize, L1=None, L2=None):
@@ -291,8 +296,8 @@ def train(model, trainLoader, valLoader, classes, learningRate, epochs,
 
     # Add weights to loss and optimizer
     classWeights = torch.from_numpy(classWeights).to(device)
-    #criterion = nn.CrossEntropyLoss()
-    criterion = nn.CrossEntropyLoss(weight=classWeights)
+    criterion = nn.CrossEntropyLoss()
+    #criterion = nn.CrossEntropyLoss(weight=classWeights)
     optimizer = optim.Adam(model.parameters(), lr=learningRate)
 
     # Trackers for callbacks
