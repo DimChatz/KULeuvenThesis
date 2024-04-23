@@ -3,7 +3,19 @@ import numpy as np
 import pandas as pd
 import warnings
 warnings.filterwarnings("ignore", message="Workbook contains no default style, apply openpyxl's default")
-from preprocessing import appendStratifiedFiles, downsampler
+from preprocessing import appendStratifiedFiles
+import random
+import torch
+
+def seedEverything(seed=42):
+    random.seed(seed)
+    os.environ['PYTHONHASHSEED'] = str(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)  # if using multi-GPU
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
 
 
 def classInstanceCalc(rootDir, targetDir,  segmentList, experiment):
@@ -131,37 +143,3 @@ def checkStats(dataPath, exp):
                 file.write("\n")
             file.write("\n")
             file.write("\n")
-
-
-def tableCreator(expList):
-    tableForVis = pd.DataFrame(columns = ['Dataset', 'Class', 'Lead', 'Mean', 'Sigma'])
-    for i in range(len(expList)):
-        excelFiles = []
-        for root, dirs, files in os.walk(f"/home/tzikos/Desktop/Data/Berts/{expList[i].split(" ")[0]}/{expList[i]}/{expList[i]}"):
-            for file in files:
-                # Check that excel files are picked, 
-                # they are not the general files for all the tests and 
-                if file.endswith('.xlsx') and ("overzicht" not in file):
-                    excelFiles.append(os.path.join(root, file))
-        trainFiles = excelFiles[:int(0.8*len(excelFiles))]
-        valFiles = excelFiles[int(0.8*len(excelFiles)):int(0.9*len(excelFiles))]
-        testFiles = excelFiles[int(0.9*len(excelFiles)):]
-        for file in trainFiles:
-            tempData = pd.read_excel(f"{file}")
-            tempData = downsampler(tempData)
-            tempData = tempData.drop(tempData.columns[0], axis=1)
-            for j in range(12):
-                tableForVis.loc[len(tableForVis)] = ["Train", expList[i].split(" ")[0], j+1, np.mean(tempData[tempData.columns[j]]), np.std(tempData[tempData.columns[j]])]
-        for file in valFiles:
-            tempData = pd.read_excel(f"{file}")
-            tempData = downsampler(tempData)
-            tempData = tempData.drop(tempData.columns[0], axis=1)
-            for j in range(12):
-                tableForVis.loc[len(tableForVis)] = ["Val", expList[i].split(" ")[0], j+1, np.mean(tempData[tempData.columns[j]]), np.std(tempData[tempData.columns[j]])]
-        for file in testFiles:
-            tempData = pd.read_excel(f"{file}")
-            tempData = downsampler(tempData)
-            tempData = tempData.drop(tempData.columns[0], axis=1)
-            for j in range(12):
-                tableForVis.loc[len(tableForVis)] = ["Test", expList[i].split(" ")[0], j+1, np.mean(tempData[tempData.columns[j]]), np.std(tempData[tempData.columns[j]])]
-    tableForVis.to_csv(f'/home/tzikos/TableCreatorVis/{expList[0].split(" ")[-1]}VisTable.csv', index=False)

@@ -1,48 +1,10 @@
 import pandas as pd
 import numpy as np
-from preprocessing import downsampler, noiseRemover, createMissingLeads
+from preprocessing import noiseRemover, createMissingLeads
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import plotly.figure_factory as ff
 import plotly.io as pio
-
-def preprocVis(filePath, mean, sigma, saveName):
-    """Function to visualize the preprocessing of Bert's data
-    at each step of the process"""
-    data = pd.read_excel(filePath)
-    data = downsampler(data)
-    # Get lead 1
-    orig = data[data.columns[1]].to_numpy()
-    data = data.drop(data.columns[0], axis=1)
-    data = data.to_numpy()
-    # Normalizing
-    normData = (data - mean) / sigma
-    # Noise removal
-    procData = noiseRemover(normData)
-    # Adding dimension and creating missing leads
-    procData = np.expand_dims(procData, axis = -1)
-    procData = createMissingLeads(procData)
-
-    # Generating plots for 3 seconds
-    x = np.linspace(0, 3, 750)
-    y1 = orig
-    y2 = normData[:750,0]
-    y3 = procData[:750,0,0]
-    y4 = procData[:750,0,1]
-
-    # Create figure with 2 subplots arranged in 1 row and 2 columns
-    fig = make_subplots(rows=2, cols=2)
-    # Adding plots
-    fig.add_trace(go.Scatter(x=x, y=y1, mode='lines', name='original'), row=1, col=1)
-    fig.add_trace(go.Scatter(x=x, y=y2, mode='lines', name='normalized data'), row=2, col=1)
-    fig.add_trace(go.Scatter(x=x, y=y3, mode='lines', name='fully processed Lead'), row=1, col=2)
-    fig.add_trace(go.Scatter(x=x, y=y4, mode='lines', name='should-be-missing lead'), row=2, col=2)
-    # Updating layout
-    fig.update_layout(title_text="ECG of Bert pre and after processing")
-    # Saving the plot to an html file
-    fig.write_html(f"/home/tzikos/{saveName}.html")
-    # Showing the plot
-    fig.show()
 
 
 def trainVisualizer(trainLossList, valLossList, trainAccList, valAccList, trainF1List, valF1List, saveName):
@@ -70,7 +32,7 @@ def trainVisualizer(trainLossList, valLossList, trainAccList, valAccList, trainF
         )
     )
     # Saving the plot to an html file
-    fig.write_html(f"/home/tzikos/{saveName}.html")
+    fig.write_html(f"/home/tzikos/histories{saveName}.html")
     fig.show()
 
 
@@ -139,7 +101,7 @@ def plotNSaveConfusion(cm, classNames, saveStr, text):
                       yaxis_autorange='reversed',  # This correctly flips the y-axis to match conventional confusion matrix layout
                       xaxis_tickangle=-45)
     # Show figure in the notebook or IDE
-    fig.show()
+    #fig.show()
     # Save the figure as an HTML file
     fig.write_html(f"/home/tzikos/{saveStr}.html")
     return fig

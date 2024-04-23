@@ -67,21 +67,19 @@ added working images and data for wnb
 trained on rhythm
 added data table for data stats
 
-**TODO**
-fix tracking losses for L1, L2 regs for better vis
-make cross validation for Berts
-change trackers to WNB run name
-create folders for better saving architecture
-create folders for ablation for ptbXL
 
+# 5-1-1
+### 15-22/4
+added gaussian augmentations
+overhauled pipeline
+fixed learning rate reset bug
+fixed loss visualization
+created 1 more CNN, and 1 transformer and LSTM
 
-**THOUGHTS**
-CROSSVAL-> no test else 90 instead of 10 else problem remains
-Need to go fast for new model
-gaussian all the data
-when data augmenting what to do with same patients with diff data?
-Fix downsampling
-
+# 5-2-1
+### 22-29/4
+added swin transformer
+added test for attia paper
 ---
 
 ## To do
@@ -90,26 +88,31 @@ Fix downsampling
 - Add visualization of training
 - Add F1 per class
 - Create CNN
-○ Check other models **Processing**
-○ Handle Foundation
+- Check other models
 - Add accuracy
 - Add F1
 - Add LR reduction callback 
 - Add early stoppying callbacks
 - Add ptbxl data
-- Add cross-validation **PROCESSING**
+- Add cross-validation
 - Add experiment tracker
 - Add model weight loader
 - check missing data of Bert
 - check duplicate patients for Bert
 - Add regularization
-- fix gaussian norms to be per channel
+- fix gaussian norms to be per channel </br>
 ○ ablation study
 ? Add explainable AI
 - Add PTBXL rhythm classes
 - Add savepaths in visualizations
 - Add mean and sigma efficient calculation
 - Add Confusion matrix
+- Added Gaussian scaling
+- Added Gaussian Noise
+- fix learning rate
+- fix loss visualization
+
+
 
 
 

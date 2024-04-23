@@ -28,7 +28,6 @@ def getGaussianParamsPTB(fileList):
     return mean, sigma
     
 
-
 def gaussianNormalizerPTB(fileList, dataPath, numClasses, savePath, weightsPath="/home/tzikos/Desktop/weights/"):
     """Function to Gaussian normalize the PTBXL dataset"""
     mean, sigma = getGaussianParamsPTB(fileList)
@@ -52,7 +51,6 @@ def gaussianNormalizerPTB(fileList, dataPath, numClasses, savePath, weightsPath=
                 for i in range(12):
                     tempArray[:, i] = (tempArray[:, i] - mean[i]) / sigma[i]
                 np.save(os.path.join(savePath, f"{root.split("/")[-1]}/{file}"), tempArray)
-
 
 
 def createMissingLeadsPTB(dataPath, countDict, savePath):

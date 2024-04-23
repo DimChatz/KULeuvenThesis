@@ -1,92 +1,47 @@
-from models import ECGDataset, PTBDataset, train, test, ECGCNNClassifier, ECGSimpleClassifier
-from torch.utils.data import DataLoader
-from preprocessing import appendStratifiedFiles, downsamplerNoiseRemover, gaussianCalcBert, gaussianNormalizerMissingLeadCreatorBert
-from torch.utils.data.sampler import WeightedRandomSampler
-import torch
+from models import PTBDataset
+from preprocessing import originalNBaseNPs, calcMeanSigma, calcClassWeights, foldCreator, processorBert
 from preprocPTBXL import readPTB, gaussianNormalizerPTB, dataSplitterPTB, createMissingLeadsPTB
 import numpy as np
-import wandb
 import os
+from utility import seedEverything
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-print(device)
+seedEverything(42)
 
 # HYPERPARAMETERS
-LEARNING_RATE_PTB = 0.00001
-LEARNING_RATE_BERT = 0.000001
+LEARNING_RATE_PTB = 0.001
+LEARNING_RATE_BERT = 1e-5
 BATCH = 64
-L1 = 0.0001
-L2 = 0.0001
+L1 = None
+L2 = 1
 A_BERT = 1
 A_PTB = 1
-
-# Stable
-EPOCHS = 1000
-EARLY_PAT = 12
-REDLR_PAT = 5
 
 # GLOBALS
 CLASSES_BERT = 5
 CLASSES_PTB = 12
-ROOT_DATA_PATH = '/home/tzikos/Desktop/Data'
-EXPERIMENT = "pre"
+ROOT_DATA_PATH = '/home/tzikos/Desktop/Data/'
+EXPERIMENT = "tachy"
 WEIGHT_PATH = "/home/tzikos/Desktop/weights/"
-PREPROC_PTB = False
+PREPROC_PTB = False 
 PREPROC_BERT = False
-PRETRAIN = True
-FINETUNE = False
+PRETRAIN = False
+FINETUNE = True
 VISUALIZE = False
 USE_PRETRAINED = False
+MODEL_STR = "CNN2020"
+#MODEL_STR = "GatedTransformer"
+#MODEL_STR = "CNNAttia"
+#MODEL_STR = "MLSTMFCN"
+#MODEL_STR = "swin"
+if MODEL_STR == "swin":
+    swin = True
+else:
+    swin = False
 
-if PRETRAIN or FINETUNE:
-    model = ECGCNNClassifier(CLASSES_BERT)
 
-    # start a new wandb run to track this script
-    run = wandb.init(
-        # set the wandb project where this run will be logged
-        project="KU AI Thesis",
-        
-        # track hyperparameters and run metadata
-        config={
-        "learning_rate_PTB": LEARNING_RATE_PTB,
-        "learning_rate_BERT": LEARNING_RATE_BERT,
-        "batch_size": BATCH,
-        "L1": L1,
-        "L2": L2,
-        "A_PTB": A_PTB,
-        "A_BERT": A_BERT,
-        "early_patience": EARLY_PAT,
-        "reduce_lr_patience": REDLR_PAT,
-        "architecture": model.__class__.__name__,
-        "experiment": EXPERIMENT,
-        "pretrain": PRETRAIN,
-        "finetune": FINETUNE,
-        "classes_PTB": CLASSES_PTB,
-        "use_pretrained": USE_PRETRAINED}
-    )
-
-if CLASSES_PTB == 44:
-    typeC = "AllDia"
-    countDict = {"NDT":0, "NST":0, "DIG":0, "LNGQT":0, "NORM":0, "IMI":0, "ASMI":0,
-                    "LVH":0, "LAFB":0, "ISC_":0, "IRBBB":0, "1AVB":0, "IVCD":0, "ISCAL":0,
-                    "CRBBB":0, "CLBBB":0, "ILMI":0, "LAO/LAE":0, "AMI":0, "ALMI":0, "ISCIN":0,
-                    "INJAS":0, "LMI":0, "ISCIL":0, "LPFB":0, "ISCAS":0, "INJAL":0, "ISCLA":0,
-                    "RVH":0, "ANEUR":0, "RAO/RAE":0, "EL":0, "WPW":0, "ILBBB":0, "IPLMI":0,
-                    "ISCAN":0, "IPMI":0, "SEHYP":0, "INJIN":0, "INJLA":0, "PMI":0, "3AVB":0,
-                    "INJIL":0, "2AVB":0}
-    classDict = {"NDT":"NDT", "NST":"NST", "DIG":"DIG", "LNGQT":"LNGQT", "NORM":"NORM", 
-                    "IMI":"IMI", "ASMI":"ASMI", "LVH":"LVH", "LAFB":"LAFB", "ISC_":"ISC_", 
-                    "IRBBB":"IRBB", "1AVB":"1AVB", "IVCD":"IVCD", "ISCAL":"ISCAL", "CRBBB":"CRBBB",
-                    "CLBBB":"CLBBB", "ILMI":"ILMI", "LAO/LAE":"LAO/:LAE", "AMI":"AMI", "ALMI":"ALMI",
-                    "ISCIN":"ISCIN", "INJAS":"INJAS", "LMI":"LMI", "ISCIL":"ISCIL", "LPFB":"LPFB", 
-                    "ISCAS":"ISCAS", "INJAL":"INJAL", "ISCLA":"ISCLA", "RVH":"RVH", "ANEUR":"ANEUR", 
-                    "RAO/RAE":"RAO/RAE", "EL":"EL", "WPW":"WPW", "ILBBB":"ILBB", "IPLMI":"IPLMI",
-                    "ISCAN":"ISCAN", "IPMI":"IPMI", "SEHYP":"SEHYP", "INJIN":"INJIN", "INJLA":"INJLA",
-                    "PMI":"PMI", "3AVB":"3AVB", "INJIL":"INJIN", "2AVB":"2AVB"}
-elif CLASSES_PTB == 5:
-    typeC = "Diagnostic"
-    countDict = {"NORM":0, "MI":0, "STTC":0, "CD":0, "HYP":0}
-    classDict = {"NDT":"STTC", "NST":"STTC", "DIG":"STTC", "LNGQT":"STTC", "NORM":"NORM", 
+typeC = "Diagnostic"
+countDict = {"NORM":0, "MI":0, "STTC":0, "CD":0, "HYP":0}
+classDict = {"NDT":"STTC", "NST":"STTC", "DIG":"STTC", "LNGQT":"STTC", "NORM":"NORM", 
                     "IMI":"MI", "ASMI":"MI", "LVH":"HYP", "LAFB":"CD", "ISC_":"STTC", 
                     "IRBBB":"CD", "1AVB":"CD", "IVCD":"CD", "ISCAL":"STTC", "CRBBB":"CD",
                     "CLBBB":"CD", "ILMI":"MI", "LAO/LAE":"HYP", "AMI":"MI", "ALMI":"MI",
@@ -95,13 +50,7 @@ elif CLASSES_PTB == 5:
                     "RAO/RAE":"HYP", "EL":"STTC"    , "WPW":"CD", "ILBBB":"CD", "IPLMI":"MI",
                     "ISCAN":"STTC", "IPMI":"MI", "SEHYP":"HYP", "INJIN":"MI", "INJLA":"MI",
                     "PMI":"MI", "3AVB":"CD", "INJIL":"MI", "2AVB":"CD"}
-elif CLASSES_PTB == 12:
-    typeC = "Rhythm"
-    countDict = {"SR":0, "AFIB":0, "STACH":0, "SARRH":0, "SBRAD":0, "PACE":0,
-                     "SVARR":0, "BIGU":0, "AFLT":0, "SVTAC":0, "PSVT":0, "TRIGU":0}
-    classDict = {"SR":"SR", "AFIB":"AFIB", "STACH":"STACH", "SARRH":"SARRH", "SBRAD":"SBRAD",
-                    "PACE":"PACE", "SVARR":"SVARR", "BIGU":"BIGU", "AFLT":"AFLT", "SVTAC":"SVTAC",
-                    "PSVT":"PSVT", "TRIGU":"TRIGU"}
+
 
 if PREPROC_PTB:
     metadataPath="/home/tzikos/Desktop/Data/PTBXL/ptbxl_database.csv"
@@ -118,45 +67,27 @@ if PREPROC_PTB:
     savePath4 = f"/home/tzikos/Desktop/Data/PTBXL {typeC} torch/"
     os.makedirs(f"{savePath4}train", exist_ok=True)
     os.makedirs(f"{savePath4}val", exist_ok=True)
-    #tempPath = readPTB(countDict, classDict, metadataPath, dataPath, savePath1, savePath2)
-    #trainList, valList = dataSplitterPTB(tempPath, list(classDict.values()))
-    #gaussianNormalizerPTB(trainList, savePath2, CLASSES_PTB, savePath3)
+    tempPath = readPTB(countDict, classDict, metadataPath, dataPath, savePath1, savePath2)
+    trainList, valList = dataSplitterPTB(tempPath, list(classDict.values()))
+    gaussianNormalizerPTB(trainList, savePath2, CLASSES_PTB, savePath3)
     createMissingLeadsPTB(savePath3, countDict, savePath4)
 
 expList = [f'normal {EXPERIMENT}', f'AVNRT {EXPERIMENT}', f'AVRT {EXPERIMENT}', f'concealed {EXPERIMENT}', f'EAT {EXPERIMENT}']
 
 if PREPROC_BERT:
-    trainFiles, valFiles, testFiles = appendStratifiedFiles(f"{ROOT_DATA_PATH}/Berts/", expList)
-    downsamplerNoiseRemover(trainFiles, f"{ROOT_DATA_PATH}/Berts downsapled/{EXPERIMENT}/train", 
-                            f"{ROOT_DATA_PATH}/Berts no noise/{EXPERIMENT}/train")
-    downsamplerNoiseRemover(valFiles, f"{ROOT_DATA_PATH}/Berts downsapled/{EXPERIMENT}/val", 
-                            f"{ROOT_DATA_PATH}/Berts no noise/{EXPERIMENT}/val")    
-    downsamplerNoiseRemover(testFiles, f"{ROOT_DATA_PATH}/Berts downsapled/{EXPERIMENT}/test", 
-                            f"{ROOT_DATA_PATH}/Berts no noise/{EXPERIMENT}/test")
-    print("End of downsampling and noise removal")
-    mean, sigma = gaussianCalcBert(f"{ROOT_DATA_PATH}/Berts no noise/{EXPERIMENT}/train", EXPERIMENT)
-    print(mean)
-    print(mean.shape)
-    print(sigma)
-    print(sigma.shape)
-    mean = np.load(f'{WEIGHT_PATH}meanBerts{EXPERIMENT}.npy')
-    sigma = np.load(f'{WEIGHT_PATH}sigmaBerts{EXPERIMENT}.npy') 
-    gaussianNormalizerMissingLeadCreatorBert(f"{ROOT_DATA_PATH}/Berts no noise/{EXPERIMENT}/train", 
-                                             f"{ROOT_DATA_PATH}/Berts gaussian/{EXPERIMENT}/train", 
-                                             f"{ROOT_DATA_PATH}/Berts torch/{EXPERIMENT}/train",
-                                             mean, sigma) 
-    gaussianNormalizerMissingLeadCreatorBert(f"{ROOT_DATA_PATH}/Berts no noise/{EXPERIMENT}/val", 
-                                             f"{ROOT_DATA_PATH}/Berts gaussian/{EXPERIMENT}/val", 
-                                             f"{ROOT_DATA_PATH}/Berts torch/{EXPERIMENT}/val",
-                                             mean, sigma) 
-    gaussianNormalizerMissingLeadCreatorBert(f"{ROOT_DATA_PATH}/Berts no noise/{EXPERIMENT}/test", 
-                                             f"{ROOT_DATA_PATH}/Berts gaussian/{EXPERIMENT}/test", 
-                                             f"{ROOT_DATA_PATH}/Berts torch/{EXPERIMENT}/test",
-                                             mean, sigma)
-    print("End of Berts preprocessing")
-    
+    print("Creating original numpys")
+    originalNBaseNPs(expList)
+    print("Calculating mean and sigma from normal data")
+    calcMeanSigma(f"{ROOT_DATA_PATH}/Berts orig/{EXPERIMENT}", EXPERIMENT)
+    print("Creating folds")
+    folds = foldCreator(expList)
+    print("Processing folds")
+    processorBert(folds, expList)
+    print("Calculating class weights")
+    calcClassWeights(expList)
+    print("Done Berts preprocessing")
 
-model = ECGCNNClassifier(CLASSES_PTB)
+
 if PRETRAIN:
     # Datasets
     classWeights = np.load(WEIGHT_PATH + f"PTBweights{CLASSES_PTB}.npy")
@@ -170,36 +101,14 @@ if PRETRAIN:
     filePath = train(model, trainLoader, valLoader, CLASSES_PTB, LEARNING_RATE_PTB,
           EPOCHS, classWeights, EARLY_PAT, REDLR_PAT, device, list(countDict.keys()),
           dataset="PTBXL", batchSize=BATCH, lr=LEARNING_RATE_PTB, L1=L1, L2=L2)
-
+    
 
 if FINETUNE:
-    classWeights = np.load(f'{WEIGHT_PATH}Bert{EXPERIMENT}Weights.npy')
+    calcClassWeights(expList)
+    classWeights = np.load(f'{WEIGHT_PATH}{EXPERIMENT}ClassWeights.npy')
+    print(classWeights)
     classWeight = A_BERT * classWeights
-    if USE_PRETRAINED:
-        # Path to pretrained weights
-        pretrainedWeightsPath = "/home/tzikos/Desktop/weights/ECGCNNClassifier_PTBXL_B64_L3e-07_13-03-24-23-28.pth"
-        pretrainedWeights = torch.load(pretrainedWeightsPath)
-        # Filter out the weights for the classification head
-        # Adjusting the key names
-        pretrainedWeights = {k: v for k, v in pretrainedWeights.items() if not k.startswith('fc')}
-        model = ECGCNNClassifier(CLASSES_BERT)
-        model.load_state_dict(pretrainedWeights, strict=False)
-    else:
-        model = ECGCNNClassifier(CLASSES_BERT)
-    # Datasets
-    trainDataset = ECGDataset(f"{ROOT_DATA_PATH}/Berts torch/{EXPERIMENT}/train/", EXPERIMENT, CLASSES_BERT, classWeights)
-    trainLoader = DataLoader(trainDataset, batch_size=BATCH, 
-                             #shuffle=True, 
-                             sampler=WeightedRandomSampler(weights=trainDataset.samplerWeights(), num_samples=len(trainDataset)),
-                             num_workers=8)
-    valDataset = ECGDataset(f"{ROOT_DATA_PATH}/Berts torch/{EXPERIMENT}/val/", EXPERIMENT, CLASSES_BERT, classWeights)
-    valLoader = DataLoader(valDataset, batch_size=BATCH, shuffle=True, num_workers=8)
-    filePath = train(model, trainLoader, valLoader, CLASSES_BERT, LEARNING_RATE_BERT,
-          EPOCHS, classWeights, EARLY_PAT, REDLR_PAT, device, expList,
-          dataset=EXPERIMENT, batchSize=BATCH, lr=LEARNING_RATE_BERT, L1=L1, L2=L2)   
-    testDataset = ECGDataset(f"{ROOT_DATA_PATH}/Berts torch/{EXPERIMENT}/test/", EXPERIMENT, CLASSES_BERT, classWeights)
-    testLoader = DataLoader(testDataset, batch_size=BATCH)
-    test(model, testLoader, CLASSES_BERT, device, filePath, expList)
-
-
-run = wandb.finish()
+    CVtrain(modelStr=MODEL_STR, learningRate=LEARNING_RATE_BERT, epochs=1000, classWeights=classWeights,
+            earlyStopPatience=12, reduceLRPatience=5, expList=expList, 
+            dataset=EXPERIMENT, batchSize=BATCH, L1=L1, L2=L2, usePretrained=USE_PRETRAINED, 
+            modelWeightPath=f"{WEIGHT_PATH}Models", scaler=A_BERT, swin=swin)
