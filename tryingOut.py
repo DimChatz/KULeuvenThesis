@@ -1,5 +1,6 @@
 
 import os
+import numpy as np
 '''
 Vis("/home/tzikos/Desktop/Data/Berts downsapled/pre/test/AVNRT pre-D659DA5A-12D1-4C15-A28A-6B3B7C6BA135_2F39RYB8MXRN_20090208_1.npy",
       "/home/tzikos/Desktop/Data/Berts downsapled/pre/test/normal pre-E6C4BEFB-02C5-4F61-B9F7-2D748DE7322E_QEPNJX5YU2FN_20120723_1.npy",
@@ -38,4 +39,6 @@ Vis("/home/tzikos/Desktop/Data/Berts torch/pre/test/AVNRT pre-D659DA5A-12D1-4C15
 #dataLeadStatsVisPerLead()
 
 
-print(os.listdir("/home/tzikos/Desktop/Data/Berts final/tachy/"))
+# Shape of the array
+print(np.load("/home/tzikos/Desktop/weights/meantachyBerts.npy"))
+print(np.load("/home/tzikos/Desktop/weights/sigmatachyBerts.npy"))

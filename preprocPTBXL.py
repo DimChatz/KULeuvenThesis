@@ -4,82 +4,65 @@ from preprocessing import noiseRemover
 import numpy as np
 import os
 import ast
-from visualizer import VisNP
-
-
+from tqdm import tqdm
 
 def getGaussianParamsPTB(fileList):
     """Function to calculate the Gaussian parameters for the PTBXL dataset"""
     # Initialize the array to stack the data
-    stacked = np.zeros((2500, 12))
+    stacked = np.zeros((5000, 12,))
     # Recursively search for excel files in the directory
-    for file in fileList:
-        if file.endswith('.npy'):
-            tempArray = np.load(file)
-            # Stack the data
-            stacked = np.vstack((stacked, tempArray))
+    newFileList = [file for file in fileList if "orig" in file and "NORM" in file]
+    print(len(newFileList))
+    for file in tqdm(newFileList):
+        tempArray = np.load(file)
+        # Stack the data
+        stacked = np.vstack((stacked, tempArray))
     # Remove the first duplicate of zeros
-    stacked = stacked[2500:, :]
+    stacked = stacked[5000:, :]
     # Calculate the mean and sigma
-    mean, sigma = [], []
-    for i in range(12):
-        mean.append(np.mean(stacked[:, i]))
-        sigma.append(np.std(stacked[:, i]))
+    mean = np.mean(stacked, axis=0)
+    sigma = np.std(stacked, axis=0)
+    np.save(f'/home/tzikos/Desktop/weights/meanPTB.npy', mean)
+    np.save(f'/home/tzikos/Desktop/weights/sigmaPTB.npy', sigma)
     return mean, sigma
     
 
-def gaussianNormalizerPTB(fileList, dataPath, numClasses, savePath, weightsPath="/home/tzikos/Desktop/weights/"):
+def gaussianNormalizerPTB(trainList, valList, segment, savePath):
     """Function to Gaussian normalize the PTBXL dataset"""
-    mean, sigma = getGaussianParamsPTB(fileList)
-    mean = np.array(mean, dtype=np.float32)
-    sigma = np.array(sigma, dtype=np.float32)
-    # Save the mean and sigma
-    # because it takes too long to calculate
-    np.save(f"{weightsPath}PTBXLmean{numClasses}.npy", mean)
-    np.save(f"{weightsPath}PTBXLsigma{numClasses}.npy", sigma)
-    # print the mean and sigma 
-    # for safety
-    print(f'mean is of shape {mean.shape}')
-    print(f'sigma is {sigma.shape}')
-    # Count for visualization
-    count = 0
+    mean = np.load(f'/home/tzikos/Desktop/weights/meanPTB.npy')
+    sigma = np.load(f'/home/tzikos/Desktop/weights/sigmaPTB.npy')
     # Recursively search for excel files in the directory
-    for root, dirs, files in os.walk(dataPath):
-        for file in files:
-            if file.endswith('.npy'):
-                tempArray = np.load(os.path.join(root, file))
-                for i in range(12):
-                    tempArray[:, i] = (tempArray[:, i] - mean[i]) / sigma[i]
-                np.save(os.path.join(savePath, f"{root.split("/")[-1]}/{file}"), tempArray)
+    tempTrain = [file for file in trainList if segment in file]
+    tempVal = [file for file in valList if segment in file]
+    for file in tqdm(tempTrain):            
+        tempArray = np.load(file)
+        tempArray = (tempArray - mean) / sigma
+        np.save(os.path.join(savePath, f"train/{file.split("/")[-1]}"), tempArray.astype(np.float32))
+    for file in tqdm(tempVal):
+        tempArray = np.load(file)
+        tempArray = (tempArray - mean) / sigma
+        np.save(os.path.join(savePath, f"val/{file.split("/")[-1]}"), tempArray.astype(np.float32))      
 
 
-def createMissingLeadsPTB(dataPath, countDict, savePath):
+def createMissingLeadsPTB(dataPath, savePath):
     """Function to create missing leads for the PTBXL dataset"""
     # Count for visualization
-    for key in countDict.keys():
-        fileList = []
-        for root, dirs, files in os.walk(f"{dataPath}/{key}/"):
-            for file in files:
-                if file.endswith('.npy'):
-                    fileList.append(os.path.join(root, file))
-        for file in fileList[:int(0.9*len(fileList))]:
-            data = np.load(os.path.join(root, file))
-            np.save(f"{savePath}/train/{file.split("/")[-2]}-{file.split("/")[-1][:-4]}-{0}.npy", data)
-            for i in range(12):
-                tempArray = data.copy()
-                tempArray[:, i] = 0.
-                np.save(f"{savePath}/train/{file.split("/")[-2]}-{file.split("/")[-1][:-4]}-{i+1}.npy", tempArray)
-        for file in fileList[int(0.9*len(fileList)):]:
-            data = np.load(os.path.join(root, file))
-            np.save(f"{savePath}/val/{file.split("/")[-2]}-{file.split("/")[-1][:-4]}-{0}.npy", data)
-            for i in range(12):
-                tempArray = data.copy()
-                tempArray[:, i] = 0.
-                np.save(f"{savePath}/val/{file.split("/")[-2]}-{file.split("/")[-1][:-4]}-{i+1}.npy", tempArray)
+    trainFileList = os.listdir(f"{dataPath}train")
+    trainFileList = [os.path.join(f"{dataPath}train", file) for file in trainFileList]
+    valFileList = os.listdir(f"{dataPath}val")
+    valFileList = [os.path.join(f"{dataPath}val", file) for file in valFileList if "orig" in file]
+    for file in tqdm(trainFileList):
+        openArray = np.load(file)
+        np.save(os.path.join(savePath, f"train/{file.split('/')[-1]}"), openArray.astype(np.float32))
+        for i in range(12):
+            tempArray = openArray.copy()
+            tempArray[:, i] = 0
+            np.save(os.path.join(savePath, f"train/missingLead{i+1}-{file.split('/')[-1]}"), tempArray.astype(np.float32))
+    for file in tqdm(valFileList):
+        openArray = np.load(file)
+        np.save(os.path.join(savePath, f"val/{file.split('/')[-1]}"), openArray.astype(np.float32))
 
-
-
-def readPTB(countDict, classDict, metadataPath, dataPath, savePath1, savePath2):
+def readPTB(countDict, classDict, metadataPath, dataPath, savePath):
     """Function to read the PTBXL dataset and save the data as npy files"""
     metaData = pd.read_csv(metadataPath)
     # Initialize the list to save the patient IDs
@@ -108,19 +91,12 @@ def readPTB(countDict, classDict, metadataPath, dataPath, savePath1, savePath2):
                     record = wfdb.rdrecord(recordName, sampfrom=0, sampto=None, channels=None, physical=True)
                     # Accessing the signal itself
                     signals = record.p_signal
-                    # Downsample to 250Hz - all are 500Hz
-                    signals = signals[::2, :]
-                    # Save downsampled
-                    np.save(f'{savePath1}{classDict[key]}/{ecgID}.npy', signals)
+                    # Save original
+                    np.save(f'{savePath}{classDict[key]}/orig-{classDict[key]}-{ecgID}.npy', signals)
                     # Remove noise and visualize
-                    if ecgID == 1:
-                        VisNP(signals, saveName="exampleBeforeNoiseRemoval", comment="Before noise removal")
-                        signals = noiseRemover(signals)
-                        VisNP(signals, saveName="exampleAfterNoiseRemoval", comment="After noise removal")
-                    else:
-                        signals = noiseRemover(signals)
+                    signals = noiseRemover(signals)
                     # Save Denoised
-                    np.save(f'{savePath2}{classDict[key]}/{ecgID}.npy', signals)
+                    np.save(f'{savePath}{classDict[key]}/denoised-{classDict[key]}-{ecgID}.npy', signals)
                     # Add to the count of class instances
                     countDict[classDict[key]] += 1
     # Total number of samples                
@@ -135,22 +111,22 @@ def readPTB(countDict, classDict, metadataPath, dataPath, savePath1, savePath2):
     print(f"The class weights for PTB are of shape {classWeights.shape}")
     print(f"and are {classWeights}")
     np.save(f'/home/tzikos/Desktop/weights/PTBweights{num_classes}.npy', classWeights)
-    return savePath2
     
+
 def dataSplitterPTB(directory, segmentList):  
     """Function to create balanced datasets"""
-    # Initialize the lists to save the files 
+    # Initialize the lists to save the files
     trainFiles, valFiles, = [], []
     # For all classes
     for i in range(len(segmentList)):
         # Initialize the list to save the npy files
-        npyFiles = []
-        for root, dirs, files in os.walk(f'{directory}/{segmentList[i]}'):
-            for file in files:
-                if file.endswith('.npy'):
-                    npyFiles.append(os.path.join(root, file))
+        npyFiles = os.listdir(f"{directory}/{segmentList[i]}")
+        origFiles = [os.path.join(f"{directory}/{segmentList[i]}", file) for file in npyFiles if "orig" in file]
+        trainAdd = origFiles[:int(np.round(0.85*len(origFiles)))]
+        valAdd = origFiles[int(np.round(0.85*len(origFiles))):]
+        trainDenoisedAdd = [file.replace("orig", "denoised") for file in trainAdd]
         # Split 90-10
-        trainFiles += npyFiles[:int(np.round(0.9*len(npyFiles)))]
-        valFiles += npyFiles[int(np.round(0.9*len(npyFiles))):]
+        trainFiles += trainAdd
+        trainFiles += trainDenoisedAdd
+        valFiles += valAdd
     return trainFiles, valFiles
-

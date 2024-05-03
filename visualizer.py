@@ -103,7 +103,7 @@ def plotNSaveConfusion(cm, classNames, saveStr, text):
     # Show figure in the notebook or IDE
     #fig.show()
     # Save the figure as an HTML file
-    fig.write_html(f"/home/tzikos/{saveStr}.html")
+    #fig.write_html(f"/home/tzikos/{saveStr}.html")
     return fig
 
 def dataLeadStatsVis(filePath="/home/tzikos/TableCreatorVis"):

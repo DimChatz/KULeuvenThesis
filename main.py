@@ -1,42 +1,47 @@
-from models import PTBDataset
+from trainingFuncs import train, CVtrain
 from preprocessing import originalNBaseNPs, calcMeanSigma, calcClassWeights, foldCreator, processorBert
-from preprocPTBXL import readPTB, gaussianNormalizerPTB, dataSplitterPTB, createMissingLeadsPTB
+from preprocPTBXL import readPTB, gaussianNormalizerPTB, dataSplitterPTB
+from preprocPTBXL import createMissingLeadsPTB, getGaussianParamsPTB
 import numpy as np
 import os
 from utility import seedEverything
+import pickle
+import shutil
 
+# Seed every library for reproducibility
 seedEverything(42)
-
-# HYPERPARAMETERS
-LEARNING_RATE_PTB = 0.001
-LEARNING_RATE_BERT = 1e-5
-BATCH = 64
-L1 = None
-L2 = 1
-A_BERT = 1
-A_PTB = 1
 
 # GLOBALS
 CLASSES_BERT = 5
-CLASSES_PTB = 12
+CLASSES_PTB = 5
 ROOT_DATA_PATH = '/home/tzikos/Desktop/Data/'
-EXPERIMENT = "tachy"
+EXPERIMENT = "pre"
 WEIGHT_PATH = "/home/tzikos/Desktop/weights/"
-PREPROC_PTB = False 
-PREPROC_BERT = False
+PREPROC_PTB = False
+PREPROC_BERT = True
 PRETRAIN = False
 FINETUNE = True
 VISUALIZE = False
 USE_PRETRAINED = False
-MODEL_STR = "CNN2020"
+#MODEL_STR = "CNN2020"
 #MODEL_STR = "GatedTransformer"
-#MODEL_STR = "CNNAttia"
+MODEL_STR = "CNNAttia"
 #MODEL_STR = "MLSTMFCN"
 #MODEL_STR = "swin"
 if MODEL_STR == "swin":
     swin = True
 else:
     swin = False
+
+
+# HYPERPARAMETERS
+LEARNING_RATE_PTB = 5e-7
+LEARNING_RATE_BERT = 5e-3
+BATCH = 64
+L1 = 0.0001
+L2 = 0.0001
+A_BERT = 1
+A_PTB = 1
 
 
 typeC = "Diagnostic"
@@ -55,25 +60,45 @@ classDict = {"NDT":"STTC", "NST":"STTC", "DIG":"STTC", "LNGQT":"STTC", "NORM":"N
 if PREPROC_PTB:
     metadataPath="/home/tzikos/Desktop/Data/PTBXL/ptbxl_database.csv"
     dataPath = "/home/tzikos/Desktop/Data/PTBXL/records500/"
-    savePath1 = f"/home/tzikos/Desktop/Data/PTBXL {typeC} Downsampled/"
+    savePath1 = f"/home/tzikos/Desktop/Data/PTBXL {typeC} Denoised and Orig/"
     for key in countDict.keys():
         os.makedirs(f"{savePath1}{key}", exist_ok=True)
-    savePath2 = f"/home/tzikos/Desktop/Data/PTBXL {typeC} Denoised/"
+    savePath2 = f"/home/tzikos/Desktop/Data/PTBXL {typeC} Normalized/"
     for key in countDict.keys():
-        os.makedirs(f"{savePath2}{key}", exist_ok=True)
-    savePath3 = f"/home/tzikos/Desktop/Data/PTBXL {typeC} Gaussian/"
-    for key in countDict.keys():
-        os.makedirs(f"{savePath3}{key}", exist_ok=True)
-    savePath4 = f"/home/tzikos/Desktop/Data/PTBXL {typeC} torch/"
-    os.makedirs(f"{savePath4}train", exist_ok=True)
-    os.makedirs(f"{savePath4}val", exist_ok=True)
-    tempPath = readPTB(countDict, classDict, metadataPath, dataPath, savePath1, savePath2)
-    trainList, valList = dataSplitterPTB(tempPath, list(classDict.values()))
-    gaussianNormalizerPTB(trainList, savePath2, CLASSES_PTB, savePath3)
-    createMissingLeadsPTB(savePath3, countDict, savePath4)
+        os.makedirs(f"{savePath2}train", exist_ok=True)
+        os.makedirs(f"{savePath2}val", exist_ok=True)
+    savePath3 = f"/home/tzikos/Desktop/Data/PTBXL {typeC} torch/"
+    os.makedirs(f"{savePath3}train", exist_ok=True)
+    os.makedirs(f"{savePath3}val", exist_ok=True)
+    print("Reading and transferring PTB data")
+    readPTB(countDict, classDict, metadataPath, dataPath, savePath1)
+    print("Starting PTB data splitting")
+    trainList, valList = dataSplitterPTB(savePath1, list(countDict.keys()))
+    with open(f'{ROOT_DATA_PATH}/PTBtrain.pkl', 'wb') as f:
+        pickle.dump(trainList, f)
+    with open(f'{ROOT_DATA_PATH}/PTBval.pkl', 'wb') as f:
+       pickle.dump(valList, f)
+    print("Calculating gaussian parameters for normalizing")
+    with open(f'{ROOT_DATA_PATH}/PTBtrain.pkl', 'rb') as f:
+        trainList = pickle.load(f)
+    mean, sigma = getGaussianParamsPTB(trainList)
+    print(f"Mean is {mean}")
+    print(f"Sigma is {sigma}")
+    with open(f'{ROOT_DATA_PATH}/PTBval.pkl', 'rb') as f:
+        valList = pickle.load(f)
+    print("Normalizing PTB data")
+    print(f"The classes are {list(countDict.keys())}")
+    for i in list(countDict.keys()):
+        gaussianNormalizerPTB(trainList, valList, i, savePath2)
+        print(f"Done with {i}")
+    shutil.rmtree(savePath1)
+    print("Creating missing leads for PTB data")
+    createMissingLeadsPTB(savePath2, savePath3)
+    print("Done PTB preprocessing")
+    shutil.rmtree(savePath2)
+
 
 expList = [f'normal {EXPERIMENT}', f'AVNRT {EXPERIMENT}', f'AVRT {EXPERIMENT}', f'concealed {EXPERIMENT}', f'EAT {EXPERIMENT}']
-
 if PREPROC_BERT:
     print("Creating original numpys")
     originalNBaseNPs(expList)
@@ -90,17 +115,12 @@ if PREPROC_BERT:
 
 if PRETRAIN:
     # Datasets
+    ptbList = [f'NORM ptb', f'MI ptb', f'STTC ptb', f'CD ptb', f'HYP ptb']
     classWeights = np.load(WEIGHT_PATH + f"PTBweights{CLASSES_PTB}.npy")
     classWeights = A_PTB * classWeights
-    #print(classWeights.shape)
-    #print(classWeights)
-    trainDataset = PTBDataset(f"{ROOT_DATA_PATH}/PTBXL {typeC} torch/train/", CLASSES_PTB, classWeights, countDict)
-    trainLoader = DataLoader(trainDataset, batch_size=BATCH, shuffle=True, num_workers=8)
-    valDataset = PTBDataset(f"{ROOT_DATA_PATH}/PTBXL {typeC} torch/val/", CLASSES_PTB, classWeights, countDict)
-    valLoader = DataLoader(valDataset, batch_size=BATCH, shuffle=True, num_workers=8)
-    filePath = train(model, trainLoader, valLoader, CLASSES_PTB, LEARNING_RATE_PTB,
-          EPOCHS, classWeights, EARLY_PAT, REDLR_PAT, device, list(countDict.keys()),
-          dataset="PTBXL", batchSize=BATCH, lr=LEARNING_RATE_PTB, L1=L1, L2=L2)
+    print(f"Class weights are {classWeights}")
+    train(modelStr=MODEL_STR, learningRate=LEARNING_RATE_PTB, classWeights=classWeights, expList=list(countDict.keys()),
+          batchSize=BATCH, modelWeightPath=f"{WEIGHT_PATH}Models", L1=L1, L2=L2)
     
 
 if FINETUNE:

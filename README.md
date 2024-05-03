@@ -80,7 +80,17 @@ created 1 more CNN, and 1 transformer and LSTM
 ### 22-29/4
 added swin transformer
 added test for attia paper
+
+# 5-2-1
+### 29/4 - 6/5
+Tried HeartBeit but failed due to versioning
+Working on proper ML
+Gaussian method failed
+Working on second gaussian
+
+
 ---
+
 
 ## To do
 - Preproc Berts
@@ -101,7 +111,6 @@ added test for attia paper
 - check duplicate patients for Bert
 - Add regularization
 - fix gaussian norms to be per channel </br>
-○ ablation study
 ? Add explainable AI
 - Add PTBXL rhythm classes
 - Add savepaths in visualizations
@@ -110,11 +119,4 @@ added test for attia paper
 - Added Gaussian scaling
 - Added Gaussian Noise
 - fix learning rate
-- fix loss visualization
-
-
-
-
-
-
-
+- fix loss visualization </br>

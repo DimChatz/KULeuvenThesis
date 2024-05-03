@@ -42,7 +42,7 @@ def lengthFinder(path, valNum):
             valPath = os.path.join(path, folder)
             valFiles = os.listdir(valPath)
             valFiles = [os.path.join(valPath, file) for file in valFiles]
-            valFiles = [file for file in valFiles if "normalized" in file and "denoised" not in file]
+            #valFiles = [file for file in valFiles if "normalized" in file and "denoised" not in file]
         elif folder == f"fold{(valNum+1)%10+1}":
             testPath = os.path.join(path, folder)
             testFiles = os.listdir(testPath)
@@ -52,11 +52,10 @@ def lengthFinder(path, valNum):
             trainPath = os.path.join(path, folder)
             trainFiles = os.listdir(trainPath)
             trainFiles = [os.path.join(trainPath, file) for file in trainFiles]
-            #trainFiles = [file for file in trainFiles if "normalized" in file and "denoised" not in file]
+            #trainFiles = [file for file in trainFiles if "denoised" in file]
             trainFilesList.append(trainFiles)
     trainFilesList = list(chain.from_iterable(trainFilesList))
-    trainNotes = "No Denoised, augs for balanced"
-    return trainFilesList, valFiles, testFiles, trainNotes
+    return trainFilesList, valFiles, testFiles
 
 
 ################
@@ -81,14 +80,14 @@ class ECGDataset2_0(torch.utils.data.Dataset):
                     f"AVRT {self.exp}" : [0,0,1,0,0], f"concealed {self.exp}" : [0,0,0,1,0],
                     f"EAT {self.exp}" : [0,0,0,0,1]}
         # Get file
-        inputData = np.load(self.fileList[idx])
+        inputData = np.load(self.fileList[idx]).astype(np.float32)
         # Get class label
         fileKey = self.fileList[idx].split("/")[-1].split("-")[-2]
         label = nameDict[f"{fileKey} {self.exp}"]
         # Reduce data shape (squeeze)
         # Transpose axis to proper format
         # and make it float32, not double
-        inputData = torch.from_numpy(inputData).float()
+        inputData = torch.from_numpy(inputData)
         ecgData = inputData.transpose(1, 0)
         ecgLabels = np.array(label, dtype=np.float32)
         # Make them torch tensors
@@ -99,36 +98,34 @@ class ECGDataset2_0(torch.utils.data.Dataset):
         return ecgData, ecgLabels
 
 #################################
-
-class ECGDataset(torch.utils.data.Dataset):
+    
+class PTBDataset(torch.utils.data.Dataset):
     '''Time series Dataset'''
-    def __init__(self, dirPath, experiment, numClasses, classWeights, valNum):
+    def __init__(self, dirPath, numClasses, swin=False):
         # Root of data
         self.dir = dirPath
         # Its files
         self.fileNames = os.listdir(dirPath)
-        # Type of classification task
-        self.exp = experiment
+        self.fileNames = [os.path.join(self.dir, file) for file in self.fileNames]
+        # self.fileNames = [file for file in self.fileNames if "orig" in file]
         # Number of classes
         self.numClasses = numClasses
-        self.weights = classWeights
-        self.valNum = valNum
-    
+        self.swin = swin
 
     def __len__(self):
         return len(self.fileNames)
 
     def __getitem__(self, idx):
         # Create dict to ascribe labels
-        nameDict = {f"normal {self.exp}": [1,0,0,0,0], f"AVNRT {self.exp}" : [0,1,0,0,0], 
-                    f"AVRT {self.exp}" : [0,0,1,0,0], f"concealed {self.exp}" : [0,0,0,1,0], f"EAT {self.exp}" : [0,0,0,0,1]}
-        # Get file
-        filePath = os.path.join(self.dir, self.fileNames[idx])
+        # Creating a new dictionary with the same keys but with classification vectors as values
+        nameDict = {"NORM": [1,0,0,0,0], "MI":[0,1,0,0,0], "STTC":[0,0,1,0,0],
+                    "CD":[0,0,0,1,0], "HYP":[0,0,0,0,1]}
         # Get class label
-        fileKey = filePath.split("/")[-1].split("-")[0]
+        fileKey = self.fileNames[idx].split("/")[-1].split("-")[-2]
         label = nameDict[fileKey]
         # Load ECG data
-        ecgData = np.load(filePath)
+        ecgData = np.load(self.fileNames[idx])
+        # Expand dims to make it 3D
         # Reduce data shape (squeeze)
         # Transpose axis to proper format
         # and make it float32, not double
@@ -137,58 +134,9 @@ class ECGDataset(torch.utils.data.Dataset):
         # Make them torch tensors
         ecgData = torch.from_numpy(ecgData)
         ecgLabels = torch.from_numpy(ecgLabels)
-        return ecgData, ecgLabels
-        
-    def samplerWeights(self):
-        nameDict = {f"normal {self.exp}": 0, f"AVNRT {self.exp}": 1, f"AVRT {self.exp}": 2, f"concealed {self.exp}": 3, f"EAT {self.exp}": 4}
-        # Use the class index from nameDict to get the weight directly from self.weights
-        return [self.weights[nameDict[fileName.split("-")[0]]] for fileName in self.fileNames]    
-
-#################################
-    
-class PTBDataset(torch.utils.data.Dataset):
-    '''Time series Dataset'''
-    def __init__(self, dirPath, numClasses, classWeights, countDict):
-        # Root of data
-        self.dir = dirPath
-        # Its files
-        self.fileNames = os.listdir(dirPath)
-        # Number of classes
-        self.numClasses = numClasses
-        # Class weights
-        self.weights = classWeights
-        self.countDict = countDict 
-
-    def __len__(self):
-        return len(self.fileNames)
-
-    def __getitem__(self, idx):
-        # Create dict to ascribe labels
-        # Creating a new dictionary with the same keys but with classification vectors as values
-        keyList = list(self.countDict.keys())
-        nameDict = {}
-
-        for i, key in enumerate(keyList):
-            classVector = [0] * len(keyList)  # Initialize a vector of zeros
-            classVector[i] = 1  # Set the ith position to 1
-            nameDict[key] = classVector
-        # Get file
-        filePath = os.path.join(self.dir, self.fileNames[idx])
-        # Get class label
-        fileKey = filePath.split("/")[-1].split("-")[0]
-        label = nameDict[fileKey]
-        # Load ECG data
-        ecgData = np.load(filePath)
-        # Expand dims to make it 3D
-        ecgData = np.expand_dims(ecgData, axis = -1)
-        # Reduce data shape (squeeze)
-        # Transpose axis to proper format
-        # and make it float32, not double
-        ecgData = ecgData.squeeze(-1).transpose(1, 0).astype(np.float32)
-        ecgLabels = np.array(label, dtype=np.float32)
-        # Make them torch tensors
-        ecgData = torch.from_numpy(ecgData)
-        ecgLabels = torch.from_numpy(ecgLabels)
+        if self.swin:
+            ecgData = ecgData.unsqueeze(0)
+            ecgData = torch.cat([ecgData, ecgData, ecgData], dim=0)
         return ecgData, ecgLabels
     
 ##############

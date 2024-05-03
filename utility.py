@@ -3,7 +3,6 @@ import numpy as np
 import pandas as pd
 import warnings
 warnings.filterwarnings("ignore", message="Workbook contains no default style, apply openpyxl's default")
-from preprocessing import appendStratifiedFiles
 import random
 import torch
 
