@@ -107,7 +107,7 @@ class PTBDataset(torch.utils.data.Dataset):
         # Its files
         self.fileNames = os.listdir(dirPath)
         self.fileNames = [os.path.join(self.dir, file) for file in self.fileNames]
-        # self.fileNames = [file for file in self.fileNames if "orig" in file]
+        self.fileNames = [file for file in self.fileNames if "missing" not in file]
         # Number of classes
         self.numClasses = numClasses
         self.swin = swin

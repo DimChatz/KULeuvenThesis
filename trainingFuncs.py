@@ -16,6 +16,7 @@ from models import lengthFinder, ECGDataset2_0, ECGCNNClassifier, Gated2TowerTra
 from models import MLSTMFCN, CNN2023Attia, PTBDataset
 from tqdm import tqdm
 
+
 #################
 ### TRAINING  ###
 ### FUNCTIONS ###
@@ -93,7 +94,7 @@ def CVtrain(modelStr, learningRate, epochs, classWeights, earlyStopPatience,
             "use_pretrained": usePretrained}
         )
         wandb.run.notes = trainNotes
-
+        model.load_state_dict(torch.load("/home/tzikos/Desktop/weights/Models/90-99/ECGCNNClassifier_fold8_tachy_B64_L1e-05_17-04-24-21-01.pth"), strict=False)
         tempRate = learningRate
         criterion = nn.CrossEntropyLoss(weight=classWeights)
         optimizer = optim.Adam(model.parameters(), lr=tempRate)
@@ -395,6 +396,7 @@ def train(modelStr, learningRate, classWeights, expList, batchSize, modelWeightP
         "experiment": dataset}
     )
     wandb.run.notes = trainNotes
+    model.load_state_dict(torch.load("/home/tzikos/Desktop/weights/Models/90-99/ECGCNNClassifier_fold8_tachy_B64_L1e-05_17-04-24-21-01.pth"), strict=False)
     criterion = nn.CrossEntropyLoss(weight=classWeights)
     optimizer = optim.Adam(model.parameters(), lr=learningRate)
     # Trackers for callbacks
@@ -419,8 +421,7 @@ def train(modelStr, learningRate, classWeights, expList, batchSize, modelWeightP
         # Initialize trackers
         trainLoss, trainVisLoss, correctTrainPreds, totalTrainPreds = 0, 0, 0, 0
         trainPredTensor, trainLabelTensor = torch.tensor([]).to(device), torch.tensor([]).to(device)
-        for inputs, labels in tqdm(trainLoader):
-            print(inputs.size())
+        for inputs, labels in trainLoader:
             inputs, labels = inputs.to(device), labels.to(device)
             # Reset gradients
             optimizer.zero_grad()
@@ -495,7 +496,6 @@ def train(modelStr, learningRate, classWeights, expList, batchSize, modelWeightP
             bestESEpoch = epoch
             bestLRepoch = epoch
             bestValF1 = epochValF1
-            modelPath = f'{modelWeightPath}/{model.__class__.__name__}_{dataset}_B{batchSize}_L{learningRate}_{formattedNow}.pth'
             wandb.log({"Best val F1": bestValF1, "Weight Name": f"{model.__class__.__name__}_{dataset}_B{batchSize}_L{learningRate}_{formattedNow}"}, step=epoch+1, commit=False)
             for i in range(classTrainF1.size(0)):
                 wandb.log({f"Best Val F1 {expList[i].split(" ")[0]}": classValF1[i]}, step=epoch+1, commit=False)

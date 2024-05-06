@@ -4,8 +4,9 @@ import os
 from plotly.subplots import make_subplots
 import torch
 import os
-from models import padSeqSymm
 import shutil
+
+
 # Load your data
 data1 = np.load("/home/tzikos/Desktop/Data/Berts final/tachy/fold10/missingLead3-AVNRT-patient331.npy")[:, 0]
 data2 = np.load("/home/tzikos/Desktop/Data/Berts final/tachy/fold6/missingLead4-denoised-AVNRT-patient137.npy")[:, 0]

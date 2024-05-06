@@ -44,7 +44,7 @@ def bandpass(lowF = 0.49, highF = 47, samplingF = 500, order = 5):
     return b, a
 
 
-def noiseRemover(data, lowF = 0.49, highF = 47, samplingF = 500, order = 5):
+def noiseRemover(data, lowF = 0.5, highF = 47, samplingF = 500, order = 5):
     '''Application of bandpass'''
     b, a = bandpass(lowF, highF, samplingF, order)
     y = filtfilt(b, a, data, axis = 0)
