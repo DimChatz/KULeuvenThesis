@@ -6,7 +6,7 @@ import torch
 import os
 import shutil
 
-
+'''
 # Load your data
 data1 = np.load("/home/tzikos/Desktop/Data/Berts final/tachy/fold10/missingLead3-AVNRT-patient331.npy")[:, 0]
 data2 = np.load("/home/tzikos/Desktop/Data/Berts final/tachy/fold6/missingLead4-denoised-AVNRT-patient137.npy")[:, 0]
@@ -43,5 +43,29 @@ fig.update_traces(mode='lines')
 
 # Save the figure as an HTML file
 os.makedirs("/home/tzikos/UsefulFigs", exist_ok=True)
-fig.write_html(f"/home/tzikos/UsefulFigs/BertsExample.html")
+fig.write_html(f"/home/tzikos/UsefulFigs/BertsExample.html")'''
 
+data1 = np.load("/home/tzikos/Desktop/Data/Berts orig/tachy/AVNRT-75E6EFE9-4EC8-4B3A-9E89-5004E6A326F2_3LH54G3SBRHR_20100222_1.npy")[:, 1]
+data2 = np.load("/home/tzikos/Desktop/Data/Berts orig/tachy/EAT-687F85B6-AC5D-46BF-A456-6098D50BE140_87NM76QGAK8Q_20180206_1.npy")[:, 1]
+data3 = np.load("/home/tzikos/Desktop/Data/Berts orig/tachy/normal-F9114E5C-32A1-4BD9-A688-A9362E171F93_RGHUBWWEV3BN_20080824_1.npy")[:, 1]
+
+# Create subplots
+fig = make_subplots(rows=3, cols=3, shared_xaxes=True)
+
+# Add traces, specifying which subplot they belong to
+fig.add_trace(go.Scatter(y=data1, name=f'Mean: {np.mean(data1)}, Sigma: {np.std(data1)}'), row=1, col=1)
+fig.add_trace(go.Scatter(y=data2, name=f'Mean: {np.mean(data2)}, Sigma: {np.std(data2)}'), row=2, col=1)
+fig.add_trace(go.Scatter(y=data3, name=f'Mean: {np.mean(data3)}, Sigma: {np.std(data3)}'), row=3, col=1)
+
+# Update layout for shared x-axis and set titles
+fig.update_layout(title_text=f"Col 1 tachy - Col 2 Pre - Col 3 PTBXL")
+fig.update_xaxes(title_text="Time", row=3, col=1)
+fig.update_yaxes(title_text="Amplitude")
+
+# Adjust subplot spacing and legend
+fig.update_layout(showlegend=True)
+fig.update_traces(mode='lines')
+
+# Save the figure as an HTML file
+os.makedirs("/home/tzikos/UsefulFigs", exist_ok=True)
+fig.write_html(f"/home/tzikos/UsefulFigs/testNorm.html")

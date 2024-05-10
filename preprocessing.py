@@ -4,6 +4,8 @@ import numpy as np
 from scipy.signal import butter, filtfilt
 import warnings
 warnings.filterwarnings("ignore", message="Workbook contains no default style, apply openpyxl's default")
+from tqdm import tqdm
+from functools import reduce
 
 
 def resampler(data, curFrequency):
@@ -29,11 +31,11 @@ def resampler(data, curFrequency):
         downsampledData[-1, :] = data[-1, :]
     else:
         # Frequency not recognized, return data as is
-        downsampledData = data.copy()
+        raise ValueError("Frequency not recognized")
     return downsampledData
 
 
-def bandpass(lowF = 0.49, highF = 47, samplingF = 500, order = 5):
+def bandpass(lowF = 0.5, highF = 49, samplingF = 500, order = 5):
     '''Buttersworth bandpass filter'''
     # Nyquist frequency
     nyqF = 0.5 * samplingF
@@ -44,7 +46,7 @@ def bandpass(lowF = 0.49, highF = 47, samplingF = 500, order = 5):
     return b, a
 
 
-def noiseRemover(data, lowF = 0.5, highF = 47, samplingF = 500, order = 5):
+def noiseRemover(data, lowF = 0.5, highF = 49, samplingF = 500, order = 5):
     '''Application of bandpass'''
     b, a = bandpass(lowF, highF, samplingF, order)
     y = filtfilt(b, a, data, axis = 0)
@@ -55,7 +57,7 @@ def calcClassWeights(segmentList):
     experiment = segmentList[0].split(" ")[-1]
     '''Function to calculate the class weights for Berts data'''
     classInstance = []
-    for i in range(len(segmentList)):
+    for i in tqdm(range(len(segmentList))):
         classType = segmentList[i].split(" ")[0]
         classTypeSearch = f"-{classType}-"
         fileList = os.listdir(f"/home/tzikos/Desktop/Data/Berts final/{experiment}/fold1/")
@@ -63,37 +65,38 @@ def calcClassWeights(segmentList):
         count = len(tempList)
         classInstance.append(count)
     totalInstances = int(sum(classInstance))
+    binaryInstances = int(sum(classInstance[1:]))
     classWeight = [totalInstances / (len(segmentList) * classInstance[i]) for i in range(len(segmentList))]
     print(f"class weights are: {classWeight}")
+    binaryClassWeight = [totalInstances / 2 / classInstance[0],  totalInstances / 2 / binaryInstances]
+    AVRTClassWeight = [totalInstances / 2 / classInstance[1],  totalInstances / 2 / classInstance[2]]
     np.save(f'/home/tzikos/Desktop/weights/{experiment}ClassWeights.npy', classWeight)
+    np.save(f'/home/tzikos/Desktop/weights/{experiment}ClassWeightsBinary.npy', binaryClassWeight)
+    np.save(f'/home/tzikos/Desktop/weights/{experiment}ClassWeightsAVRT.npy', AVRTClassWeight)
 
 
 def originalNBaseNPs(segmentList):
     experiment = segmentList[0].split(" ")[-1]
+    os.makedirs(f"/home/tzikos/Desktop/Data/Berts orig/{experiment}/", exist_ok=True)
     '''Function to create the original and base datasets for Berts data'''
     # Create the directories
-    os.makedirs(f"/home/tzikos/Desktop/Data/Berts orig/{experiment}/", exist_ok=True)
-    os.makedirs(f"/home/tzikos/Desktop/Data/Berts denoised/{experiment}/", exist_ok=True)
     # For each type of class
     for i in range(len(segmentList)):
         classType = segmentList[i].split(" ")[0]
         # Get the files
-        for root, dirs, files in os.walk(f"/home/tzikos/Desktop/Data/Berts/{classType}/{segmentList[i]}/{segmentList[i]}"):
-            for j, file in enumerate(files):
-                # Get the correct only excel files
-                if file.endswith(".xlsx") and "overzicht" not in file:
-                    tempDF = pd.read_excel(f"{root}/{file}")
-                    # Get the frequency
-                    curFrequency = round(1 / (tempDF[tempDF.columns[0]].iloc[1] - tempDF[tempDF.columns[0]].iloc[0]))
-                    # Transform dfs to np arrays
-                    tempNP = tempDF.iloc[:, 1:].to_numpy().astype(np.float32)
-                    tempNPDenoised = tempNP.copy()
-                    # Save the original and denoised datasets
-                    tempNPOrig = resampler(tempNP, curFrequency)
-                    np.save(f"/home/tzikos/Desktop/Data/Berts orig/{experiment}/{classType}-patient{j}.npy", tempNPOrig)
-                    tempNPDenoised = noiseRemover(tempNPDenoised, samplingF=curFrequency)
-                    tempNPDenoised = resampler(tempNPDenoised, curFrequency)
-                    np.save(f"/home/tzikos/Desktop/Data/Berts denoised/{experiment}/denoised-{classType}-patient{j}.npy", tempNPDenoised)
+        fileList = os.listdir(f"/home/tzikos/Desktop/Data/Berts/{classType}/{segmentList[i]}/{segmentList[i]}")
+        for file in tqdm(fileList):
+            # Get the correct only excel files
+            if file.endswith(".xlsx") and "overzicht" not in file:
+                tempDF = pd.read_excel(f"/home/tzikos/Desktop/Data/Berts/{classType}/{segmentList[i]}/{segmentList[i]}/{file}")
+                # Get the frequency
+                curFrequency = round(1 / (tempDF[tempDF.columns[0]].iloc[1] - tempDF[tempDF.columns[0]].iloc[0]))
+                # Transform dfs to np arrays
+                tempNP = tempDF.iloc[:, 1:].to_numpy()
+                # Save the original and denoised datasets
+                tempNPDenoised = noiseRemover(tempNP, highF=100, samplingF=curFrequency)
+                tempNPDenoised = resampler(tempNPDenoised, curFrequency)
+                np.save(f"/home/tzikos/Desktop/Data/Berts orig/{experiment}/orig-{classType}-{file.split(".")[-2]}.npy", tempNPDenoised)
 
 
 def foldCreator(segmentList):
@@ -106,90 +109,76 @@ def foldCreator(segmentList):
         os.makedirs(f"/home/tzikos/Desktop/Data/Berts final/{experiment}/fold{j+1}", exist_ok=True)
     for i in range(len(segmentList)):
         classType = segmentList[i].split(" ")[0]
-        fileList = [s for s in os.listdir(f"/home/tzikos/Desktop/Data/Berts orig/{experiment}") if classType in s]
-        for j, file in enumerate(fileList):
+        fileList = [file for file in os.listdir(f"/home/tzikos/Desktop/Data/Berts orig/{experiment}") if classType in file]
+        if segmentList[i] == "normal tachy":
+            fileList = fileList[:255]
+        elif segmentList[i] == "normal pre":
+            fileList = fileList[:1397]
+        print(f"Class {classType} has {len(fileList)} files")
+        for j, file in tqdm(enumerate(fileList)):
             # Check that excel files are picked, 
             # they are not the general files for all the tests and
             idx = j % 10
             foldFiles[idx].append(os.path.join(f"/home/tzikos/Desktop/Data/Berts orig/{experiment}", file))
-            foldFiles[idx].append(os.path.join(f"/home/tzikos/Desktop/Data/Berts denoised/{experiment}", f"denoised-{file.split('/')[-1]}"))
     return foldFiles
 
 
-def calcMeanSigma(directory, experiment):
+def calcMeanSigma(fileList, experiment):
     '''Function to create balanced datasets'''
-    # For all classes
-    toCalc = np.zeros((5000,12))
-    fileList = os.listdir(directory)
-    for file in fileList:
-        npArray = np.load(f"{directory}/{file}")
-        toCalc = np.concatenate((toCalc, npArray), axis = 0)
-    # Remove the first duplicate of zeros
-    toCalc = toCalc[5000:,:]
-    # Calculate the mean and sigma
-    mean = np.mean(toCalc, axis=0)
-    sigma = np.std(toCalc, axis=0)
-    print(f"means are {mean}")
-    print(f"sigmas are {sigma}")
-    np.save(f'/home/tzikos/Desktop/weights/mean{experiment}Berts.npy', mean)
-    np.save(f'/home/tzikos/Desktop/weights/sigma{experiment}Berts.npy', sigma)
+    flatList = [item for sublist in fileList for item in sublist]
+    normList = [file for file in flatList if "normal" in file]
+    if experiment == "tachy":
+        normList = normList[:255]
+    elif experiment == "pre":
+        normList = normList[:1397]
+    nonNormList = [file for file in flatList if "normal" not in file]
+    nonFlatList = [normList, nonNormList]
+    flatFileList = [item for sublist in nonFlatList for item in sublist]
+    meanArray = np.zeros(12, dtype=np.float64)
+    sigmaArray = np.zeros(12, dtype=np.float64)
+    for i in range(12):
+        # For all classes
+        toCalc = np.zeros((5000,1))
+        for file in tqdm(flatFileList):
+            npArray = np.expand_dims(np.load(file)[:,i], axis=-1)
+            if np.max(npArray) > 1e5:
+                print(f"File {file} has a max of {np.max(npArray)}")
+            toCalc = np.concatenate((toCalc, npArray), axis = 1)
+            # Remove the first duplicate of zeros
+        toCalc = toCalc[:,1:]
+        print(toCalc.shape)
+        # Calculate the mean and sigma
+        mean = np.mean(toCalc)
+        print(mean)
+        sigma = np.std(toCalc)
+        print(sigma)
+        meanArray[i] = mean
+        sigmaArray[i] = sigma
+    print(f"means are {meanArray}")
+    print(f"sigmas are {sigmaArray}")
+    np.save(f'/home/tzikos/Desktop/weights/mean{experiment}Berts.npy', meanArray)
+    np.save(f'/home/tzikos/Desktop/weights/sigma{experiment}Berts.npy', sigmaArray)
 
 
 def processorBert(foldList, segmentList):
     experiment = segmentList[0].split(" ")[-1]
     mean = np.load(f"/home/tzikos/Desktop/weights/mean{experiment}Berts.npy")
     sigma = np.load(f"/home/tzikos/Desktop/weights/mean{experiment}Berts.npy")
-    for i, fold in enumerate(foldList):
+    for i, fold in tqdm(enumerate(foldList)):
         for file in fold:
             tempNP = np.load(file)
             tempNP = (tempNP - mean) / sigma
-            np.save(f"/home/tzikos/Desktop/Data/Berts final/{experiment}/fold{i+1}/normalized-{file.split("/")[-1]}", tempNP)
+            np.save(f"/home/tzikos/Desktop/Data/Berts final/{experiment}/fold{i+1}/{file.split("/")[-1]}", tempNP)
             createMissingLeads(file, experiment, tempNP, i+1)
 
-'''
-def getTimesList(fileList, segmentList):
-    experiment = segmentList[0].split(" ")[-1]
-    countList = []
-    for segment in segmentList:
-        classType = segment.split(" ")[0]
-        tempList = [s for s in fileList if classType in s]
-        countList.append(len(tempList))
-    denom = max(countList)
-    timesList = [ int(denom / countList[i] - 1) for i in range(len(countList))]
-    print(timesList)
-    return timesList
-'''
 
 def createMissingLeads(file, experiment, startArray, foldNum):
-    '''Data Augmentation by removing one lead at a time''' 
-    startArray = np.expand_dims(startArray, axis=-1)
-    for i in range (startArray.shape[2]):
-        # For every column
-        for j in range(startArray.shape[1]):
-            # Copy the array...
-            tempArray = startArray[:,:,i].copy()
-            # ...to set the copy to 0...
-            tempArray[:, j, ] = 0.
-            # ...and save it
-            np.save(f"/home/tzikos/Desktop/Data/Berts final/{experiment}/fold{foldNum}/missingLead{j+1}-{file.split("/")[-1]}", tempArray)
-
-'''
-def augGaussianData(file, data, times, experiment, foldNum, independent=True):
-    scaleList = [0.2, 0.16, 0.12, 0.08, 0.04]
-    noiseList = [0.1, 0.08, 0.06, 0.04, 0.02]
-    appendNP = np.zeros((data.shape[0], data.shape[1], 1))
-    if times > 5:
-        times = 5
-    for i in range(times):
-        if independent:
-            gaussianScaler = np.random.normal(loc=1, scale=scaleList[i], size=data.shape)
-        else:
-            gaussianScaler = np.random.normal(loc=1, scale=scaleList[i], size=(data.shape[0], 1))
-        gaussianNoise = np.random.normal(loc=0, scale=noiseList[i], size=data.shape)        
-        augData = data * gaussianScaler + gaussianNoise
-        np.save(f"/home/tzikos/Desktop/Data/Berts final/{experiment}/fold{foldNum}/augmented{scaleList[i]}-{file.split("/")[-1]}", augData)
-        augData = np.expand_dims(augData, axis=-1)
-        appendNP = np.concatenate((appendNP, augData), axis=-1)
-    appendNP = appendNP[:,:,1:]
-    return appendNP
-'''
+    '''Data Augmentation by removing one lead at a time'''
+    # For every column
+    for j in range(startArray.shape[1]):
+        # Copy the array...
+        tempArray = startArray.copy()
+        # ...to set the copy to 0...
+        tempArray[:, j] = 0.
+        # ...and save it
+        np.save(f"/home/tzikos/Desktop/Data/Berts final/{experiment}/fold{foldNum}/missingLead{j+1}-{file.split("/")[-1]}", tempArray)

@@ -42,12 +42,12 @@ def lengthFinder(path, valNum):
             valPath = os.path.join(path, folder)
             valFiles = os.listdir(valPath)
             valFiles = [os.path.join(valPath, file) for file in valFiles]
-            #valFiles = [file for file in valFiles if "normalized" in file and "denoised" not in file]
+            valFiles = [file for file in valFiles if "missing" not in file]
         elif folder == f"fold{(valNum+1)%10+1}":
             testPath = os.path.join(path, folder)
             testFiles = os.listdir(testPath)
             testFiles = [os.path.join(testPath, file) for file in testFiles]
-            testFiles = [file for file in testFiles if "normalized" in file and "denoised" not in file]
+            testFiles = [file for file in testFiles if "missing" not in file]
         else:
             trainPath = os.path.join(path, folder)
             trainFiles = os.listdir(trainPath)
@@ -57,7 +57,27 @@ def lengthFinder(path, valNum):
     trainFilesList = list(chain.from_iterable(trainFilesList))
     return trainFilesList, valFiles, testFiles
 
-
+def lengthFinderBinary(path, valNum):
+    trainFilesList = []
+    for folder in os.listdir(path):
+        if folder == f"fold{valNum+1}":
+            valPath = os.path.join(path, folder)
+            valFiles = os.listdir(valPath)
+            valFiles = [os.path.join(valPath, file) for file in valFiles]
+            valFiles = [file for file in valFiles if ("missing" not in file) and (("AVNRT" in file) or ("AVRT" in file))]
+        elif folder == f"fold{(valNum+1)%10+1}":
+            testPath = os.path.join(path, folder)
+            testFiles = os.listdir(testPath)
+            testFiles = [os.path.join(testPath, file) for file in testFiles]
+            testFiles = [file for file in testFiles if "missing" not in file and (("AVNRT" in file) or ("AVRT" in file))]
+        else:
+            trainPath = os.path.join(path, folder)
+            trainFiles = os.listdir(trainPath)
+            trainFiles = [os.path.join(trainPath, file) for file in trainFiles]
+            trainFiles = [file for file in trainFiles if (("AVNRT" in file) or ("AVRT" in file))]
+            trainFilesList.append(trainFiles)
+    trainFilesList = list(chain.from_iterable(trainFilesList))
+    return trainFilesList, valFiles, testFiles
 ################
 ### DATASETS ###
 ################
@@ -70,20 +90,68 @@ class ECGDataset2_0(torch.utils.data.Dataset):
         self.exp = experiment
         self.lengthData = len(fileList)
         self.swin = swin
+        # Define the name dictionary
+        self.nameDict = {f"normal {self.exp}": [1, 0, 0, 0, 0],
+                         f"AVNRT {self.exp}": [0, 1, 0, 0, 0],
+                         f"AVRT {self.exp}": [0, 0, 1, 0, 0],
+                         f"concealed {self.exp}": [0, 0, 0, 1, 0],
+                         f"EAT {self.exp}": [0, 0, 0, 0, 1]}
 
     def __len__(self):
         return self.lengthData
 
     def __getitem__(self, idx):
-        # Create dict to ascribe labels
-        nameDict = {f"normal {self.exp}": [1,0,0,0,0], f"AVNRT {self.exp}" : [0,1,0,0,0],
-                    f"AVRT {self.exp}" : [0,0,1,0,0], f"concealed {self.exp}" : [0,0,0,1,0],
-                    f"EAT {self.exp}" : [0,0,0,0,1]}
         # Get file
         inputData = np.load(self.fileList[idx]).astype(np.float32)
         # Get class label
-        fileKey = self.fileList[idx].split("/")[-1].split("-")[-2]
-        label = nameDict[f"{fileKey} {self.exp}"]
+        fileKey = self.fileList[idx].split("/")[-1].split("-")[-6]
+        label = self.nameDict[f"{fileKey} {self.exp}"]
+        # Reduce data shape (squeeze)
+        # Transpose axis to proper format
+        # and make it float32, not double
+        inputData = torch.from_numpy(inputData)
+        ecgData = inputData.transpose(1, 0)
+        ecgLabels = np.array(label, dtype=np.float32)
+        # Make them torch tensors
+        ecgLabels = torch.from_numpy(ecgLabels)
+        if self.swin:
+            ecgData = ecgData.unsqueeze(0)
+            ecgData = torch.cat([ecgData, ecgData, ecgData], dim=0)
+        return ecgData, ecgLabels
+
+#################################
+
+class ECGDataset2_0Binary(torch.utils.data.Dataset):
+    '''Time series Dataset'''
+    def __init__(self, fileList, experiment, swin=False, AVRT=False):
+        # Root of data
+        self.fileList = fileList
+        # Type of classification task
+        self.exp = experiment
+        self.lengthData = len(fileList)
+        self.swin = swin
+        # Define the name dictionary
+        self.AVRT = AVRT
+        if not self.AVRT:
+            self.nameDict = {f"normal {self.exp}": [1, 0],
+                            f"AVNRT {self.exp}": [0, 1],
+                            f"AVRT {self.exp}": [0, 1],
+                            f"concealed {self.exp}": [0, 1],
+                            f"EAT {self.exp}": [0, 1]}
+        else:
+            self.nameDict = {f"AVNRT {self.exp}": [1, 0],
+                            f"AVRT {self.exp}": [0, 1]}
+
+
+    def __len__(self):
+        return self.lengthData
+
+    def __getitem__(self, idx):
+        # Get file
+        inputData = np.load(self.fileList[idx]).astype(np.float32)
+        # Get class label
+        fileKey = self.fileList[idx].split("/")[-1].split("-")[-6]
+        label = self.nameDict[f"{fileKey} {self.exp}"]
         # Reduce data shape (squeeze)
         # Transpose axis to proper format
         # and make it float32, not double
@@ -107,7 +175,7 @@ class PTBDataset(torch.utils.data.Dataset):
         # Its files
         self.fileNames = os.listdir(dirPath)
         self.fileNames = [os.path.join(self.dir, file) for file in self.fileNames]
-        self.fileNames = [file for file in self.fileNames if "missing" not in file]
+        #self.fileNames = [file for file in self.fileNames if "missing" not in file]
         # Number of classes
         self.numClasses = numClasses
         self.swin = swin
@@ -118,8 +186,11 @@ class PTBDataset(torch.utils.data.Dataset):
     def __getitem__(self, idx):
         # Create dict to ascribe labels
         # Creating a new dictionary with the same keys but with classification vectors as values
-        nameDict = {"NORM": [1,0,0,0,0], "MI":[0,1,0,0,0], "STTC":[0,0,1,0,0],
-                    "CD":[0,0,0,1,0], "HYP":[0,0,0,0,1]}
+        nameDict = {"NORM": [1,0,0,0,0], 
+                    "MI":[0,1,0,0,0], 
+                    "STTC":[0,0,1,0,0],
+                    "CD":[0,0,0,1,0], 
+                    "HYP":[0,0,0,0,1]}
         # Get class label
         fileKey = self.fileNames[idx].split("/")[-1].split("-")[-2]
         label = nameDict[fileKey]
@@ -371,8 +442,6 @@ class Encoder(torch.nn.Module):
 ##################
 ### MLSTMFCNN ###
 ##################
-
-
 class LSTMConvBlock(nn.Module):
     def __init__(self, ni, no, ks):
         super(LSTMConvBlock, self).__init__() 
