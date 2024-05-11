@@ -39,9 +39,10 @@ def CVtrain(modelStr, learningRate, epochs, classWeights, earlyStopPatience,
     classWeights = torch.from_numpy(classWeights).to(device)
 
     for foldNum in range(10):
-            # start a new wandb run to track this script
+        #foldNum += 2
+        # start a new wandb run to track this script
         '''Training function for the model'''
-        print(f"Starting training fold {foldNum+1}")
+        print(f"Started training fold {foldNum+1}")
         trainFileList, valFileList, testFileList = lengthFinder(f"/home/tzikos/Desktop/Data/Berts final/{experiment}/", foldNum)
         if usePretrained:
             # Path to pretrained weights
@@ -55,7 +56,7 @@ def CVtrain(modelStr, learningRate, epochs, classWeights, earlyStopPatience,
                 model.load_state_dict(pretrainedWeights, strict=False)
             elif modelStr == "GatedTransformer":
                 model = Gated2TowerTransformer(dimModel=512, dimHidden=2048, dimFeature=12, dimTimestep=5000, 
-                                         q=8, v=8, h=8, N=8, classNum=len(classWeights), stage='train', dropout=0.2).to(device)
+                                        q=8, v=8, h=8, N=8, classNum=len(classWeights), stage='train', dropout=0.2).to(device)
                 model.load_state_dict(pretrainedWeights, strict=False)
             elif modelStr == "MLSTMFCN":
                 model = MLSTMFCN(len(classWeights)).to(device)
@@ -65,7 +66,7 @@ def CVtrain(modelStr, learningRate, epochs, classWeights, earlyStopPatience,
                 model = ECGCNNClassifier(len(classWeights)).to(device)
             elif modelStr == "GatedTransformer":
                 model = Gated2TowerTransformer(dimModel=128, dimHidden=512, dimFeature=12, dimTimestep=5000, 
-                                         q=8, v=8, h=8, N=4, classNum=len(classWeights), stage='train', dropout=0.2).to(device)
+                                        q=8, v=8, h=8, N=4, classNum=len(classWeights), stage='train', dropout=0.2).to(device)
             elif modelStr == "MLSTMFCN":
                 model = MLSTMFCN(len(classWeights)).to(device)
             elif modelStr == "CNNAttia":
@@ -110,12 +111,12 @@ def CVtrain(modelStr, learningRate, epochs, classWeights, earlyStopPatience,
 
         trainDataset = ECGDataset2_0(trainFileList, experiment, swin=swin)
         trainLoader = DataLoader(trainDataset, batch_size=batchSize, 
-                             shuffle=True, 
-                             num_workers=8)
+                            shuffle=True, 
+                            num_workers=8)
         valDataset = ECGDataset2_0(valFileList, experiment, swin=swin)
         valLoader = DataLoader(valDataset, batch_size=batchSize, 
-                               shuffle=True, 
-                               num_workers=8)
+                            shuffle=True, 
+                            num_workers=8)
 
         ################
         ### TRAINING ###
@@ -271,7 +272,7 @@ def CVtrain(modelStr, learningRate, epochs, classWeights, earlyStopPatience,
         # Visualize training
         trainVisualizer(trainVisLossList, valLossList, trainAccList, valAccList, trainF1List, valF1List,
                         saveName=f"Train_hist_{model.__class__.__name__}_fold{foldNum+1}_{dataset}_B{batchSize}_L{learningRate}_{formattedNow}")
-        ###############
+    ###############
         ### TESTING ###
         ############### 
         '''Testing function for the model'''
@@ -544,6 +545,7 @@ def CVtrainBinary(modelStr, learningRate, epochs, classWeights, earlyStopPatienc
     classWeights = torch.from_numpy(classWeights).to(device)
 
     for foldNum in range(10):
+        #foldNum += 8
             # start a new wandb run to track this script
         '''Training function for the model'''
         print(f"Starting training fold {foldNum+1}")
@@ -804,8 +806,8 @@ def CVtrainBinary(modelStr, learningRate, epochs, classWeights, earlyStopPatienc
         testPredTensor, testLabelTensor = torch.tensor([]).to(device), torch.tensor([]).to(device)
 
 
-        testDataset = ECGDataset2_0Binary(valFileList, experiment, swin=swin, AVRT=AVRT)
-        testLoader = DataLoader(valDataset, batch_size=batchSize, 
+        testDataset = ECGDataset2_0Binary(testFileList, experiment, swin=swin, AVRT=AVRT)
+        testLoader = DataLoader(testDataset, batch_size=batchSize, 
                             shuffle=True, 
                             num_workers=8)
         

@@ -68,8 +68,9 @@ def calcClassWeights(segmentList):
     binaryInstances = int(sum(classInstance[1:]))
     classWeight = [totalInstances / (len(segmentList) * classInstance[i]) for i in range(len(segmentList))]
     print(f"class weights are: {classWeight}")
+    AVRTTotal = classInstance[1] + classInstance[2] + classInstance[3]
     binaryClassWeight = [totalInstances / 2 / classInstance[0],  totalInstances / 2 / binaryInstances]
-    AVRTClassWeight = [totalInstances / 2 / classInstance[1],  totalInstances / 2 / classInstance[2]]
+    AVRTClassWeight = [AVRTTotal / 2 / classInstance[1],  AVRTTotal / 2 / (classInstance[2]+classInstance[3])]
     np.save(f'/home/tzikos/Desktop/weights/{experiment}ClassWeights.npy', classWeight)
     np.save(f'/home/tzikos/Desktop/weights/{experiment}ClassWeightsBinary.npy', binaryClassWeight)
     np.save(f'/home/tzikos/Desktop/weights/{experiment}ClassWeightsAVRT.npy', AVRTClassWeight)
@@ -110,10 +111,6 @@ def foldCreator(segmentList):
     for i in range(len(segmentList)):
         classType = segmentList[i].split(" ")[0]
         fileList = [file for file in os.listdir(f"/home/tzikos/Desktop/Data/Berts orig/{experiment}") if classType in file]
-        if segmentList[i] == "normal tachy":
-            fileList = fileList[:255]
-        elif segmentList[i] == "normal pre":
-            fileList = fileList[:1397]
         print(f"Class {classType} has {len(fileList)} files")
         for j, file in tqdm(enumerate(fileList)):
             # Check that excel files are picked, 
@@ -127,10 +124,6 @@ def calcMeanSigma(fileList, experiment):
     '''Function to create balanced datasets'''
     flatList = [item for sublist in fileList for item in sublist]
     normList = [file for file in flatList if "normal" in file]
-    if experiment == "tachy":
-        normList = normList[:255]
-    elif experiment == "pre":
-        normList = normList[:1397]
     nonNormList = [file for file in flatList if "normal" not in file]
     nonFlatList = [normList, nonNormList]
     flatFileList = [item for sublist in nonFlatList for item in sublist]

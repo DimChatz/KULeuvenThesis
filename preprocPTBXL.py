@@ -101,7 +101,7 @@ def readPTB(countDict, classDict, metadataPath, dataPath, savePath):
     for key in countDict.keys():
         countDict[key] = len(os.listdir(f"{savePath}{key}"))
         print(f"Class {key} has {countDict[key]} samples")
-    countDict["NORM"] = np.max(list(countDict.values())[1:])
+    #countDict["NORM"] = np.max(list(countDict.values())[1:])
     print(f"Class NORM has {countDict['NORM']} samples")
     # Number of classes
     num_classes = len(countDict)
@@ -124,8 +124,8 @@ def dataSplitterPTB(directory, segmentList, countNorm):
     for i in range(len(segmentList)):
         # Initialize the list to save the npy files
         npyFiles = os.listdir(f"{directory}/{segmentList[i]}")
-        if "NORM" in segmentList[i]:
-            npyFiles = npyFiles[:countNorm]
+        #if "NORM" in segmentList[i]:
+        #    npyFiles = npyFiles[:countNorm]
         origFiles = [os.path.join(f"{directory}/{segmentList[i]}", file) for file in npyFiles]
         trainAdd = origFiles[:int(np.round(0.8*len(origFiles)))]
         valAdd = origFiles[int(np.round(0.8*len(origFiles))):]

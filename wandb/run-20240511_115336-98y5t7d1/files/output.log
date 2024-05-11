@@ -1,0 +1,46 @@
+Epoch 1: Train Loss: 0.6930, Train Vis Loss: 0.6930, Val Loss: 0.6460, Train Acc: 62.98%, Val Accuracy: 67.31%, Train F1 Score: 56.25%, Val F1 Score: 56.41%
+For class normal the Train F1: 73.41% and Val F1: 78.21%
+For class PSVT the Train F1: 39.09% and Val F1: 34.62%
+Time taken for epoch 1: 0.31 minutes
+Epoch 2: Train Loss: 0.6164, Train Vis Loss: 0.6164, Val Loss: 0.6863, Train Acc: 69.02%, Val Accuracy: 63.46%, Train F1 Score: 65.93%, Val F1 Score: 43.32%
+For class normal the Train F1: 76.19% and Val F1: 77.11%
+For class PSVT the Train F1: 55.67% and Val F1: 9.52%
+Time taken for epoch 2: 0.29 minutes
+Epoch 3: Train Loss: 0.5614, Train Vis Loss: 0.5614, Val Loss: 0.6492, Train Acc: 74.76%, Val Accuracy: 65.38%, Train F1 Score: 72.53%, Val F1 Score: 48.12%
+For class normal the Train F1: 80.35% and Val F1: 78.05%
+For class PSVT the Train F1: 64.72% and Val F1: 18.18%
+Time taken for epoch 3: 0.29 minutes
+Epoch 4: Train Loss: 0.4728, Train Vis Loss: 0.4728, Val Loss: 0.5330, Train Acc: 82.71%, Val Accuracy: 78.85%, Train F1 Score: 81.39%, Val F1 Score: 73.70%
+For class normal the Train F1: 86.36% and Val F1: 85.33%
+For class PSVT the Train F1: 76.42% and Val F1: 62.07%
+Time taken for epoch 4: 0.30 minutes
+Epoch 5: Train Loss: 0.3817, Train Vis Loss: 0.3817, Val Loss: 0.3388, Train Acc: 87.60%, Val Accuracy: 91.35%, Train F1 Score: 86.80%, Val F1 Score: 90.62%
+For class normal the Train F1: 90.04% and Val F1: 93.23%
+For class PSVT the Train F1: 83.57% and Val F1: 88.00%
+Time taken for epoch 5: 0.31 minutes
+Traceback (most recent call last):
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/runpy.py", line 198, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/runpy.py", line 88, in _run_code
+    exec(code, run_globals)
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.6.0-linux-x64/bundled/libs/debugpy/adapter/../../debugpy/launcher/../../debugpy/__main__.py", line 39, in <module>
+    cli.main()
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.6.0-linux-x64/bundled/libs/debugpy/adapter/../../debugpy/launcher/../../debugpy/../debugpy/server/cli.py", line 430, in main
+    run()
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.6.0-linux-x64/bundled/libs/debugpy/adapter/../../debugpy/launcher/../../debugpy/../debugpy/server/cli.py", line 284, in run_file
+    runpy.run_path(target, run_name="__main__")
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.6.0-linux-x64/bundled/libs/debugpy/_vendored/pydevd/_pydevd_bundle/pydevd_runpy.py", line 321, in run_path
+    return _run_module_code(code, init_globals, run_name,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.6.0-linux-x64/bundled/libs/debugpy/_vendored/pydevd/_pydevd_bundle/pydevd_runpy.py", line 135, in _run_module_code
+    _run_code(code, mod_globals, init_globals,
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.6.0-linux-x64/bundled/libs/debugpy/_vendored/pydevd/_pydevd_bundle/pydevd_runpy.py", line 124, in _run_code
+    exec(code, run_globals)
+  File "/home/tzikos/Desktop/KULeuvenThesis/main.py", line 143, in <module>
+    CVtrainBinary(modelStr=MODEL_STR, learningRate=LEARNING_RATE_BERT, epochs=1000, classWeights=classWeights,
+  File "/home/tzikos/Desktop/KULeuvenThesis/trainingFuncs.py", line 692, in CVtrainBinary
+    print(f'Epoch {epoch+1}: Train Loss: {epochTrainLoss:.4f}, Train Vis Loss: {epochTrainVisLoss:.4f}, Val Loss: {epochValLoss:.4f}, Train Acc: {epochTrainAcc:.2f}%, Val Accuracy: {epochValAcc:.2f}%, Train F1 Score: {epochTrainF1:.2f}%, Val F1 Score: {epochValF1:.2f}%')
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/wandb/sdk/lib/redirect.py", line 640, in write
+    self._old_write(data)
+KeyboardInterrupt

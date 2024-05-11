@@ -22,11 +22,13 @@ WEIGHT_PATH = "/home/tzikos/Desktop/weights/"
 PREPROC_PTB = False
 PREPROC_BERT = False
 PRETRAIN = False
-FINETUNE = False
+FINETUNE = True
 VISUALIZE = False
 USE_PRETRAINED = False
+
+# MODEL
 BINARY = False
-AVNRT_AVRT = False
+AVNRT_AVRT = True
 MODEL_STR = "CNN2020"
 #MODEL_STR = "GatedTransformer"
 #MODEL_STR = "CNNAttia"
@@ -40,7 +42,7 @@ else:
 
 # HYPERPARAMETERS
 LEARNING_RATE_PTB = 5e-8
-LEARNING_RATE_BERT = 3e-6
+LEARNING_RATE_BERT = 1e-5
 BATCH = 64
 L1 = None
 L2 = None
@@ -135,8 +137,8 @@ if FINETUNE:
         classWeights = np.load(f'{WEIGHT_PATH}{EXPERIMENT}ClassWeightsAVRT.npy')
     else:
         classWeights = np.load(f'{WEIGHT_PATH}{EXPERIMENT}ClassWeights.npy')
-    print(classWeights)
     classWeight = A_BERT * classWeights
+    print(classWeights)
     if BINARY or AVNRT_AVRT:
         CVtrainBinary(modelStr=MODEL_STR, learningRate=LEARNING_RATE_BERT, epochs=1000, classWeights=classWeights,
                 earlyStopPatience=12, reduceLRPatience=5, expList=expList, 
@@ -144,6 +146,6 @@ if FINETUNE:
                 modelWeightPath=f"{WEIGHT_PATH}Models", scaler=A_BERT, swin=swin, AVRT=AVNRT_AVRT)
     else:
         CVtrain(modelStr=MODEL_STR, learningRate=LEARNING_RATE_BERT, epochs=1000, classWeights=classWeights,
-                earlyStopPatience=50, reduceLRPatience=10, expList=expList, 
+                earlyStopPatience=12, reduceLRPatience=5, expList=expList, 
                 dataset=EXPERIMENT, batchSize=BATCH, L1=L1, L2=L2, usePretrained=USE_PRETRAINED, 
                 modelWeightPath=f"{WEIGHT_PATH}Models", scaler=A_BERT, swin=swin)

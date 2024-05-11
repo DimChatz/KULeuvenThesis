@@ -57,6 +57,7 @@ def lengthFinder(path, valNum):
     trainFilesList = list(chain.from_iterable(trainFilesList))
     return trainFilesList, valFiles, testFiles
 
+
 def lengthFinderBinary(path, valNum):
     trainFilesList = []
     for folder in os.listdir(path):
@@ -140,9 +141,9 @@ class ECGDataset2_0Binary(torch.utils.data.Dataset):
                             f"EAT {self.exp}": [0, 1]}
         else:
             self.nameDict = {f"AVNRT {self.exp}": [1, 0],
-                            f"AVRT {self.exp}": [0, 1]}
-
-
+                            f"AVRT {self.exp}": [0, 1],
+                            f"concealed {self.exp}": [0, 1]}
+            
     def __len__(self):
         return self.lengthData
 
@@ -267,6 +268,7 @@ class ConvMaxBlock(torch.nn.Module):
         x = padSeqSymm(x, self.targetLength // self.maxPoolKernel, 2)
         return x
     
+
 class ConvBlockAlone(torch.nn.Module):
     def __init__(self, inChannels, numFilters, kernelSize, targetLength, stride=1):
         super().__init__()
@@ -282,6 +284,7 @@ class ConvBlockAlone(torch.nn.Module):
         x = self.relu(x)
         return x
 
+
 class FFN(torch.nn.Module):
     def __init__(self, inFeatures, outFeatures):
         super().__init__()
@@ -296,7 +299,6 @@ class FFN(torch.nn.Module):
 #########################
 ### Gated Transformer ###
 #########################
-
 def position_encode(x):
     pe = torch.ones_like(x[0])
     position = torch.arange(0, x.shape[1]).unsqueeze(-1)
@@ -336,6 +338,7 @@ class MultiHeadAttention(torch.nn.Module):
         weight_V = torch.cat(torch.matmul(score, V).chunk(self.h, dim=0), dim=-1)
         out = self.W_out(weight_V)
         return out, heatmapScore
+
 
 class PositionFeedforward(torch.nn.Module):
     def __init__(self, dimModel, dimHidden=2048):
@@ -401,6 +404,7 @@ class Gated2TowerTransformer(torch.nn.Module):
         out = self.linear_out(gateOut)
         return out
 
+
 class Embedding(nn.Module):   
     def __init__(self, dimFeature, dimTimestep, dimModel, wise):
         super(Embedding, self).__init__()
@@ -438,10 +442,10 @@ class Encoder(torch.nn.Module):
         x = self.feedforward(x)
         return x, heatmapScore
 
-
 ##################
 ### MLSTMFCNN ###
 ##################
+
 class LSTMConvBlock(nn.Module):
     def __init__(self, ni, no, ks):
         super(LSTMConvBlock, self).__init__() 
@@ -467,6 +471,7 @@ class SqueezeExciteBlock(nn.Module):
         y = self.fc(y).unsqueeze(2)
         return x * y.expand_as(x)
 
+
 class Concat(nn.Module):
     def __init__(self, dim=1):
         super(Concat, self).__init__() 
@@ -474,12 +479,14 @@ class Concat(nn.Module):
     def forward(self, x): 
         return torch.cat(x, dim=self.dim)
 
+
 class Reshape(nn.Module):
     def __init__(self, *shape): 
         super(Reshape, self).__init__()
         self.shape = shape
     def forward(self, x):
         return x.reshape(x.shape[0], -1) if not self.shape else x.reshape(-1) if self.shape == (-1,) else x.reshape(x.shape[0], *self.shape)
+
 
 class GAP1d(nn.Module):
     "Global Adaptive Pooling + Flatten"
