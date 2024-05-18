@@ -1,0 +1,116 @@
+Epoch 1: Train Loss: 14.8199, Train Vis Loss: 0.7194, Val Loss: 0.6922, Train Acc: 40.10%, Val Accuracy: 33.24%, Train F1 Score: 39.16%, Val F1 Score: 25.10%
+For class normal the Train F1: 31.57% and Val F1: 0.40%
+For class PSVT the Train F1: 46.75% and Val F1: 49.80%
+Time taken for epoch 1: 0.27 minutes
+Epoch 2: Train Loss: 14.7722, Train Vis Loss: 0.7006, Val Loss: 0.6812, Train Acc: 46.17%, Val Accuracy: 49.00%, Train F1 Score: 46.16%, Val F1 Score: 48.97%
+For class normal the Train F1: 46.69% and Val F1: 50.26%
+For class PSVT the Train F1: 45.63% and Val F1: 47.67%
+Traceback (most recent call last):
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/runpy.py", line 198, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/runpy.py", line 88, in _run_code
+    exec(code, run_globals)
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.6.0-linux-x64/bundled/libs/debugpy/adapter/../../debugpy/launcher/../../debugpy/__main__.py", line 39, in <module>
+    cli.main()
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.6.0-linux-x64/bundled/libs/debugpy/adapter/../../debugpy/launcher/../../debugpy/../debugpy/server/cli.py", line 430, in main
+    run()
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.6.0-linux-x64/bundled/libs/debugpy/adapter/../../debugpy/launcher/../../debugpy/../debugpy/server/cli.py", line 284, in run_file
+    runpy.run_path(target, run_name="__main__")
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.6.0-linux-x64/bundled/libs/debugpy/_vendored/pydevd/_pydevd_bundle/pydevd_runpy.py", line 321, in run_path
+    return _run_module_code(code, init_globals, run_name,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.6.0-linux-x64/bundled/libs/debugpy/_vendored/pydevd/_pydevd_bundle/pydevd_runpy.py", line 135, in _run_module_code
+    _run_code(code, mod_globals, init_globals,
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.6.0-linux-x64/bundled/libs/debugpy/_vendored/pydevd/_pydevd_bundle/pydevd_runpy.py", line 124, in _run_code
+    exec(code, run_globals)
+  File "/home/tzikos/Desktop/KULeuvenThesis/main.py", line 143, in <module>
+    CVtrainBinary(modelStr=MODEL_STR, learningRate=LEARNING_RATE_BERT, epochs=1000, classWeights=classWeights,
+  File "/home/tzikos/Desktop/KULeuvenThesis/trainingFuncs.py", line 759, in CVtrainBinary
+    wandb.log({'Validation Confusion Matrix': valCMTable}, step=epoch+1, commit=False)
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/wandb/sdk/wandb_run.py", line 420, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/wandb/sdk/wandb_run.py", line 371, in wrapper_fn
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/wandb/sdk/wandb_run.py", line 361, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/wandb/sdk/wandb_run.py", line 1828, in log
+    self._log(data=data, step=step, commit=commit)
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/wandb/sdk/wandb_run.py", line 1596, in _log
+    self._partial_history_callback(data, step, commit)
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/wandb/sdk/wandb_run.py", line 1468, in _partial_history_callback
+    self._backend.interface.publish_partial_history(
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/wandb/sdk/interface/interface.py", line 561, in publish_partial_history
+    data = history_dict_to_json(run, data, step=user_step, ignore_copy_err=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/wandb/sdk/data_types/utils.py", line 52, in history_dict_to_json
+    payload[key] = val_to_json(
+                   ^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/wandb/sdk/data_types/utils.py", line 157, in val_to_json
+    run.log_artifact(art)
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/wandb/sdk/wandb_run.py", line 371, in wrapper_fn
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/wandb/sdk/wandb_run.py", line 361, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/wandb/sdk/wandb_run.py", line 2883, in log_artifact
+    return self._log_artifact(
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/wandb/sdk/wandb_run.py", line 3022, in _log_artifact
+    self._assert_can_log_artifact(artifact)
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/wandb/sdk/wandb_run.py", line 3070, in _assert_can_log_artifact
+    expected_type = Artifact._expected_type(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/wandb/sdk/artifacts/artifact.py", line 2137, in _expected_type
+    response = client.execute(
+               ^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/wandb/sdk/lib/retry.py", line 212, in wrapped_fn
+    return retrier(*args, **kargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/wandb/sdk/lib/retry.py", line 131, in __call__
+    result = self._call_fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/wandb/apis/public/api.py", line 73, in execute
+    return self._client.execute(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/client.py", line 52, in execute
+    result = self._get_result(document, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/client.py", line 60, in _get_result
+    return self.transport.execute(document, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/wandb/sdk/lib/gql_request.py", line 58, in execute
+    request = self.session.post(self.url, **post_args)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/requests/sessions.py", line 637, in post
+    return self.request("POST", url, data=data, json=json, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/requests/sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/requests/sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/requests/adapters.py", line 486, in send
+    resp = conn.urlopen(
+           ^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/urllib3/connectionpool.py", line 793, in urlopen
+    response = self._make_request(
+               ^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/urllib3/connectionpool.py", line 467, in _make_request
+    self._validate_conn(conn)
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/urllib3/connectionpool.py", line 1099, in _validate_conn
+    conn.connect()
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/urllib3/connection.py", line 653, in connect
+    sock_and_verified = _ssl_wrap_socket_and_match_hostname(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/urllib3/connection.py", line 806, in _ssl_wrap_socket_and_match_hostname
+    ssl_sock = ssl_wrap_socket(
+               ^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/urllib3/util/ssl_.py", line 440, in ssl_wrap_socket
+    context.load_verify_locations(ca_certs, ca_cert_dir, ca_cert_data)
+KeyboardInterrupt

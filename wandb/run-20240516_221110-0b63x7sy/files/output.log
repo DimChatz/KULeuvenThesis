@@ -1,0 +1,41 @@
+Epoch 1: Train Loss: 14.8191, Train Vis Loss: 0.7185, Val Loss: 0.6733, Train Acc: 40.07%, Val Accuracy: 33.51%, Train F1 Score: 39.07%, Val F1 Score: 25.25%
+For class normal the Train F1: 31.24% and Val F1: 0.40%
+For class PSVT the Train F1: 46.89% and Val F1: 50.10%
+Traceback (most recent call last):
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/runpy.py", line 198, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/runpy.py", line 88, in _run_code
+    exec(code, run_globals)
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.6.0-linux-x64/bundled/libs/debugpy/adapter/../../debugpy/launcher/../../debugpy/__main__.py", line 39, in <module>
+    cli.main()
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.6.0-linux-x64/bundled/libs/debugpy/adapter/../../debugpy/launcher/../../debugpy/../debugpy/server/cli.py", line 430, in main
+    run()
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.6.0-linux-x64/bundled/libs/debugpy/adapter/../../debugpy/launcher/../../debugpy/../debugpy/server/cli.py", line 284, in run_file
+    runpy.run_path(target, run_name="__main__")
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.6.0-linux-x64/bundled/libs/debugpy/_vendored/pydevd/_pydevd_bundle/pydevd_runpy.py", line 321, in run_path
+    return _run_module_code(code, init_globals, run_name,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.6.0-linux-x64/bundled/libs/debugpy/_vendored/pydevd/_pydevd_bundle/pydevd_runpy.py", line 135, in _run_module_code
+    _run_code(code, mod_globals, init_globals,
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.6.0-linux-x64/bundled/libs/debugpy/_vendored/pydevd/_pydevd_bundle/pydevd_runpy.py", line 124, in _run_code
+    exec(code, run_globals)
+  File "/home/tzikos/Desktop/KULeuvenThesis/main.py", line 143, in <module>
+    CVtrainBinary(modelStr=MODEL_STR, learningRate=LEARNING_RATE_BERT, epochs=1000, classWeights=classWeights,
+  File "/home/tzikos/Desktop/KULeuvenThesis/trainingFuncs.py", line 743, in CVtrainBinary
+    pio.write_image(figTrain, f"/home/tzikos/Confusions/Confusion_train_{model.__class__.__name__}_fold{foldNum+1}_{dataset}_B{batchSize}_L{learningRate}_{formattedNow}.png",
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/plotly/io/_kaleido.py", line 266, in write_image
+    img_data = to_image(
+               ^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/plotly/io/_kaleido.py", line 143, in to_image
+    img_bytes = scope.transform(
+                ^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/kaleido/scopes/plotly.py", line 153, in transform
+    response = self._perform_transform(
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/kaleido/scopes/base.py", line 293, in _perform_transform
+    self._ensure_kaleido()
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/kaleido/scopes/base.py", line 192, in _ensure_kaleido
+    startup_response_string = self._proc.stdout.readline().decode('utf-8')
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt

@@ -17,7 +17,6 @@ def padSeqSymm(batch, targetLength, dimension):
     - batch: A batch of input data of shape (batchSize, channels, sequenceLength)
     - targetLength: The desired length for all sequences.
     - dimension: Dimension along which to pad. For our task it's 2."""
-
     # Calculate the current length of the sequences
     currentLength = batch.size(dimension)
     # Calculate the total padding needed
@@ -87,9 +86,10 @@ class ECGDataset2_0(torch.utils.data.Dataset):
     def __init__(self, fileList, experiment, swin=False):
         # Root of data
         self.fileList = fileList
+        #self.fileList = [file for file in self.fileList if "missing" not in file]
         # Type of classification task
         self.exp = experiment
-        self.lengthData = len(fileList)
+        self.lengthData = len(self.fileList)
         self.swin = swin
         # Define the name dictionary
         self.nameDict = {f"normal {self.exp}": [1, 0, 0, 0, 0],
@@ -127,9 +127,10 @@ class ECGDataset2_0Binary(torch.utils.data.Dataset):
     def __init__(self, fileList, experiment, swin=False, AVRT=False):
         # Root of data
         self.fileList = fileList
+        #self.fileList = [file for file in self.fileList if "missing" not in file]
         # Type of classification task
         self.exp = experiment
-        self.lengthData = len(fileList)
+        self.lengthData = len(self.fileList)
         self.swin = swin
         # Define the name dictionary
         self.AVRT = AVRT

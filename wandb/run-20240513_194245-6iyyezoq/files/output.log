@@ -1,0 +1,67 @@
+Epoch 1: Train Loss: 0.7222, Train Vis Loss: 0.7222, Val Loss: 0.6829, Train Acc: 50.77%, Val Accuracy: 63.55%, Train F1 Score: 49.53%, Val F1 Score: 46.83%
+For class normal the Train F1: 57.44% and Val F1: 76.65%
+For class PSVT the Train F1: 41.63% and Val F1: 17.02%
+Time taken for epoch 1: 0.13 minutes
+Epoch 2: Train Loss: 0.7055, Train Vis Loss: 0.7055, Val Loss: 0.6725, Train Acc: 52.43%, Val Accuracy: 68.22%, Train F1 Score: 50.96%, Val F1 Score: 59.79%
+For class normal the Train F1: 59.45% and Val F1: 78.21%
+For class PSVT the Train F1: 42.47% and Val F1: 41.38%
+Time taken for epoch 2: 0.14 minutes
+Epoch 3: Train Loss: 0.6952, Train Vis Loss: 0.6952, Val Loss: 0.6577, Train Acc: 54.21%, Val Accuracy: 73.83%, Train F1 Score: 53.01%, Val F1 Score: 70.28%
+For class normal the Train F1: 60.53% and Val F1: 80.56%
+For class PSVT the Train F1: 45.48% and Val F1: 60.00%
+Time taken for epoch 3: 0.14 minutes
+Epoch 4: Train Loss: 0.6690, Train Vis Loss: 0.6690, Val Loss: 0.6446, Train Acc: 58.48%, Val Accuracy: 73.83%, Train F1 Score: 57.25%, Val F1 Score: 71.43%
+For class normal the Train F1: 64.50% and Val F1: 79.71%
+For class PSVT the Train F1: 50.00% and Val F1: 63.16%
+Time taken for epoch 4: 0.14 minutes
+Traceback (most recent call last):
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/runpy.py", line 198, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/runpy.py", line 88, in _run_code
+    exec(code, run_globals)
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.6.0-linux-x64/bundled/libs/debugpy/adapter/../../debugpy/launcher/../../debugpy/__main__.py", line 39, in <module>
+    cli.main()
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.6.0-linux-x64/bundled/libs/debugpy/adapter/../../debugpy/launcher/../../debugpy/../debugpy/server/cli.py", line 430, in main
+    run()
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.6.0-linux-x64/bundled/libs/debugpy/adapter/../../debugpy/launcher/../../debugpy/../debugpy/server/cli.py", line 284, in run_file
+    runpy.run_path(target, run_name="__main__")
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.6.0-linux-x64/bundled/libs/debugpy/_vendored/pydevd/_pydevd_bundle/pydevd_runpy.py", line 321, in run_path
+    return _run_module_code(code, init_globals, run_name,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.6.0-linux-x64/bundled/libs/debugpy/_vendored/pydevd/_pydevd_bundle/pydevd_runpy.py", line 135, in _run_module_code
+    _run_code(code, mod_globals, init_globals,
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.6.0-linux-x64/bundled/libs/debugpy/_vendored/pydevd/_pydevd_bundle/pydevd_runpy.py", line 124, in _run_code
+    exec(code, run_globals)
+  File "/home/tzikos/Desktop/KULeuvenThesis/main.py", line 143, in <module>
+    CVtrainBinary(modelStr=MODEL_STR, learningRate=LEARNING_RATE_BERT, epochs=1000, classWeights=classWeights,
+  File "/home/tzikos/Desktop/KULeuvenThesis/trainingFuncs.py", line 639, in CVtrainBinary
+    for inputs, labels in trainLoader:
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/torch/utils/data/dataloader.py", line 631, in __next__
+    data = self._next_data()
+           ^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/torch/utils/data/dataloader.py", line 1329, in _next_data
+    idx, data = self._get_data()
+                ^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/torch/utils/data/dataloader.py", line 1295, in _get_data
+    success, data = self._try_get_data()
+                    ^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/torch/utils/data/dataloader.py", line 1133, in _try_get_data
+    data = self._data_queue.get(timeout=timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/multiprocessing/queues.py", line 113, in get
+    if not self._poll(timeout):
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/multiprocessing/connection.py", line 257, in poll
+    return self._poll(timeout)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/multiprocessing/connection.py", line 440, in _poll
+    r = wait([self], timeout)
+        ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/multiprocessing/connection.py", line 1135, in wait
+    ready = selector.select(timeout)
+            ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/selectors.py", line 415, in select
+    fd_event_list = self._selector.poll(timeout)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt
