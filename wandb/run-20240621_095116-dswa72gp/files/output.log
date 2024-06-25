@@ -1,0 +1,63 @@
+Epoch 1: Train Loss: 1.5680, Train Vis Loss: 1.5680, Val Loss: 1.5355, Train Acc: 18.69%, Val Accuracy: 32.58%, Train F1 Score: 15.63%, Val F1 Score: 23.25%
+For class normal the Train F1: 20.75% and Val F1: 37.50%
+For class AVNRT the Train F1: 22.21% and Val F1: 29.43%
+For class AVRT the Train F1: 25.45% and Val F1: 38.46%
+For class concealed the Train F1: 5.97% and Val F1: 10.85%
+For class EAT the Train F1: 3.78% and Val F1: 0.00%
+Time taken for epoch 1: 2.19 minutes
+Epoch 2: Train Loss: 1.4697, Train Vis Loss: 1.4697, Val Loss: 1.4453, Train Acc: 33.63%, Val Accuracy: 54.21%, Train F1 Score: 25.78%, Val F1 Score: 30.00%
+For class normal the Train F1: 44.33% and Val F1: 71.87%
+For class AVNRT the Train F1: 24.61% and Val F1: 14.44%
+For class AVRT the Train F1: 44.97% and Val F1: 55.35%
+For class concealed the Train F1: 10.40% and Val F1: 8.33%
+For class EAT the Train F1: 4.59% and Val F1: 0.00%
+Time taken for epoch 2: 1.94 minutes
+Epoch 3: Train Loss: 1.3955, Train Vis Loss: 1.3955, Val Loss: 1.3987, Train Acc: 36.07%, Val Accuracy: 58.08%, Train F1 Score: 29.47%, Val F1 Score: 31.00%
+For class normal the Train F1: 47.50% and Val F1: 75.26%
+For class AVNRT the Train F1: 24.63% and Val F1: 13.58%
+For class AVRT the Train F1: 56.69% and Val F1: 55.62%
+For class concealed the Train F1: 11.93% and Val F1: 10.53%
+For class EAT the Train F1: 6.61% and Val F1: 0.00%
+Time taken for epoch 3: 1.88 minutes
+Epoch 4: Train Loss: 1.3273, Train Vis Loss: 1.3273, Val Loss: 1.3811, Train Acc: 39.21%, Val Accuracy: 50.60%, Train F1 Score: 31.54%, Val F1 Score: 34.95%
+For class normal the Train F1: 52.47% and Val F1: 65.32%
+For class AVNRT the Train F1: 21.60% and Val F1: 29.39%
+For class AVRT the Train F1: 62.40% and Val F1: 65.60%
+For class concealed the Train F1: 14.51% and Val F1: 14.46%
+For class EAT the Train F1: 6.72% and Val F1: 0.00%
+Time taken for epoch 4: 2.01 minutes
+Epoch 5: Train Loss: 1.2677, Train Vis Loss: 1.2677, Val Loss: 1.2974, Train Acc: 43.63%, Val Accuracy: 63.42%, Train F1 Score: 35.69%, Val F1 Score: 37.79%
+For class normal the Train F1: 56.64% and Val F1: 78.67%
+For class AVNRT the Train F1: 23.63% and Val F1: 22.94%
+For class AVRT the Train F1: 69.22% and Val F1: 63.80%
+For class concealed the Train F1: 17.69% and Val F1: 15.53%
+For class EAT the Train F1: 11.28% and Val F1: 8.00%
+Time taken for epoch 5: 1.88 minutes
+Traceback (most recent call last):
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/runpy.py", line 198, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/runpy.py", line 88, in _run_code
+    exec(code, run_globals)
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.6.0-linux-x64/bundled/libs/debugpy/adapter/../../debugpy/launcher/../../debugpy/__main__.py", line 39, in <module>
+    cli.main()
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.6.0-linux-x64/bundled/libs/debugpy/adapter/../../debugpy/launcher/../../debugpy/../debugpy/server/cli.py", line 430, in main
+    run()
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.6.0-linux-x64/bundled/libs/debugpy/adapter/../../debugpy/launcher/../../debugpy/../debugpy/server/cli.py", line 284, in run_file
+    runpy.run_path(target, run_name="__main__")
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.6.0-linux-x64/bundled/libs/debugpy/_vendored/pydevd/_pydevd_bundle/pydevd_runpy.py", line 321, in run_path
+    return _run_module_code(code, init_globals, run_name,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.6.0-linux-x64/bundled/libs/debugpy/_vendored/pydevd/_pydevd_bundle/pydevd_runpy.py", line 135, in _run_module_code
+    _run_code(code, mod_globals, init_globals,
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.6.0-linux-x64/bundled/libs/debugpy/_vendored/pydevd/_pydevd_bundle/pydevd_runpy.py", line 124, in _run_code
+    exec(code, run_globals)
+  File "/home/tzikos/Desktop/KULeuvenThesis/main.py", line 146, in <module>
+    CVtrain(modelStr=MODEL_STR, learningRate=LEARNING_RATE_BERT, epochs=1000, classWeights=classWeights,
+  File "/home/tzikos/Desktop/KULeuvenThesis/trainingFuncs.py", line 152, in CVtrain
+    loss.backward()
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/torch/_tensor.py", line 522, in backward
+    torch.autograd.backward(
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/torch/autograd/__init__.py", line 266, in backward
+    Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+KeyboardInterrupt

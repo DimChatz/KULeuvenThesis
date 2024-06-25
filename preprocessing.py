@@ -35,7 +35,7 @@ def resampler(data, curFrequency):
     return downsampledData
 
 
-def bandpass(lowF = 0.5, highF = 49, samplingF = 500, order = 5):
+def bandpass(lowF = 0.5, highF = 100, samplingF = 500, order = 5):
     '''Buttersworth bandpass filter'''
     # Nyquist frequency
     nyqF = 0.5 * samplingF
@@ -46,7 +46,7 @@ def bandpass(lowF = 0.5, highF = 49, samplingF = 500, order = 5):
     return b, a
 
 
-def noiseRemover(data, lowF = 0.5, highF = 49, samplingF = 500, order = 5):
+def noiseRemover(data, lowF = 0.5, highF = 100, samplingF = 500, order = 5):
     '''Application of bandpass'''
     b, a = bandpass(lowF, highF, samplingF, order)
     y = filtfilt(b, a, data, axis = 0)
@@ -95,7 +95,7 @@ def originalNBaseNPs(segmentList):
                 # Transform dfs to np arrays
                 tempNP = tempDF.iloc[:, 1:].to_numpy()
                 # Save the original and denoised datasets
-                tempNPDenoised = noiseRemover(tempNP, highF=100, samplingF=curFrequency)
+                tempNPDenoised = noiseRemover(tempNP, lowF=0.5, highF=100, samplingF=curFrequency)
                 tempNPDenoised = resampler(tempNPDenoised, curFrequency)
                 np.save(f"/home/tzikos/Desktop/Data/Berts orig/{experiment}/orig-{classType}-{file.split(".")[-2]}.npy", tempNPDenoised)
 
@@ -156,8 +156,8 @@ def calcMeanSigma(fileList, experiment):
 def processorBert(foldList, segmentList):
     experiment = segmentList[0].split(" ")[-1]
     mean = np.load(f"/home/tzikos/Desktop/weights/mean{experiment}Berts.npy")
-    sigma = np.load(f"/home/tzikos/Desktop/weights/mean{experiment}Berts.npy")
-    for i, fold in tqdm(enumerate(foldList)):
+    sigma = np.load(f"/home/tzikos/Desktop/weights/sigma{experiment}Berts.npy")
+    for i, fold in enumerate(tqdm(foldList)):
         for file in fold:
             tempNP = np.load(file)
             tempNP = (tempNP - mean) / sigma

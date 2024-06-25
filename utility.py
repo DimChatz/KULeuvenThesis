@@ -5,6 +5,7 @@ import warnings
 warnings.filterwarnings("ignore", message="Workbook contains no default style, apply openpyxl's default")
 import random
 import torch
+from tqdm import tqdm
 
 def seedEverything(seed=42):
     random.seed(seed)
@@ -84,7 +85,7 @@ def checkBertMissing(directory):
 def findDuplicatePatients(directory):
     """Function to find duplicate patients in the data"""
     for root, dirs, files in os.walk(directory):
-        for file in files:
+        for file in tqdm(files):
             # Check that excel files are picked, 
             # they are not the general files for all the tests and 
             # that they are of the correct experiment type (pre, tachy)
@@ -95,12 +96,6 @@ def findDuplicatePatients(directory):
                 # Print the duplicates if any along with the file name
                 if not duplicates.empty:
                     print(f"Duplicates found in geadnr in {file}")
-                    print(duplicates)
-                # Check for duplicates in column 'pseudo ID'
-                duplicates = df[df.duplicated(subset=['pseudo ID'], keep=False)]
-                # Print the duplicates if any along with the file name
-                if not duplicates.empty:
-                    print(f"Duplicates found in pseudo ID in {file}")
                     print(duplicates)
 
 def checkStats(dataPath, exp):

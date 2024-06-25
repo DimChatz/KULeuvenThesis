@@ -31,7 +31,12 @@ def CVtrain(modelStr, learningRate, epochs, classWeights, earlyStopPatience,
     # Get date for saving model weights
     now = datetime.now()
     formattedNow = now.strftime("%d-%m-%y-%H-%M")
-
+    if torch.cuda.is_available():
+        print("CUDA is available. Listing devices:")
+        for i in range(torch.cuda.device_count()):
+            print(f"Device {i}: {torch.cuda.get_device_name(i)}")
+    else:
+        print("CUDA is not available. Running on CPU.")
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Model running on {device}")
     experiment = expList[0].split(" ")[-1]

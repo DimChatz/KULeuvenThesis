@@ -8,10 +8,8 @@ from utility import seedEverything
 import pickle
 import shutil
 
-
 # Seed every library for reproducibility
 seedEverything(42)
-
 
 # GLOBALS
 CLASSES_BERT = 5
@@ -44,8 +42,8 @@ else:
 LEARNING_RATE_PTB = 1e-7
 LEARNING_RATE_BERT = 1e-6
 BATCH = 64
-L1 = 0.0001
-L2 = 0.0001
+L1 = 1e-4
+L2 = None
 A_BERT = 1
 A_PTB = 1
 

@@ -51,7 +51,7 @@ def lengthFinder(path, valNum):
             trainPath = os.path.join(path, folder)
             trainFiles = os.listdir(trainPath)
             trainFiles = [os.path.join(trainPath, file) for file in trainFiles]
-            #trainFiles = [file for file in trainFiles if "denoised" in file]
+            #trainFiles = [file for file in trainFiles if "missing" not in file]
             trainFilesList.append(trainFiles)
     trainFilesList = list(chain.from_iterable(trainFilesList))
     return trainFilesList, valFiles, testFiles
