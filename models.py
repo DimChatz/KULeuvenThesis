@@ -34,25 +34,45 @@ def padSeqSymm(batch, targetLength, dimension):
     return symPadBatch
 
 
-def lengthFinder(path, valNum):
+def lengthFinder(path, valNum, norm_psvt=False):
     trainFilesList = []
-    for folder in os.listdir(path):
-        if folder == f"fold{valNum+1}":
-            valPath = os.path.join(path, folder)
-            valFiles = os.listdir(valPath)
-            valFiles = [os.path.join(valPath, file) for file in valFiles]
-            valFiles = [file for file in valFiles if "missing" not in file]
-        elif folder == f"fold{(valNum+1)%10+1}":
-            testPath = os.path.join(path, folder)
-            testFiles = os.listdir(testPath)
-            testFiles = [os.path.join(testPath, file) for file in testFiles]
-            testFiles = [file for file in testFiles if "missing" not in file]
-        else:
-            trainPath = os.path.join(path, folder)
-            trainFiles = os.listdir(trainPath)
-            trainFiles = [os.path.join(trainPath, file) for file in trainFiles]
-            #trainFiles = [file for file in trainFiles if "missing" not in file]
-            trainFilesList.append(trainFiles)
+    if norm_psvt:
+        for folder in os.listdir(path):
+            if folder == f"fold{valNum+1}":
+                valPath = os.path.join(path, folder)
+                valFiles = os.listdir(valPath)
+                valFiles = [os.path.join(valPath, file) for file in valFiles]
+                valFiles = [file for file in valFiles if (("missing" not in file) and ("AVRT" not in file))]
+            elif folder == f"fold{(valNum+1)%10+1}":
+                testPath = os.path.join(path, folder)
+                testFiles = os.listdir(testPath)
+                testFiles = [os.path.join(testPath, file) for file in testFiles]
+                testFiles = [file for file in testFiles if (("missing" not in file) and ("AVRT" not in file))]
+            else:
+                trainPath = os.path.join(path, folder)
+                trainFiles = os.listdir(trainPath)
+                trainFiles = [os.path.join(trainPath, file) for file in trainFiles]
+                trainFiles = [file for file in trainFiles if "AVRT" not in file]
+                trainFiles = [file for file in trainFiles if "missing" not in file]
+                trainFilesList.append(trainFiles)  
+    else:
+        for folder in os.listdir(path):
+            if folder == f"fold{valNum+1}":
+                valPath = os.path.join(path, folder)
+                valFiles = os.listdir(valPath)
+                valFiles = [os.path.join(valPath, file) for file in valFiles]
+                valFiles = [file for file in valFiles if "missing" not in file]
+            elif folder == f"fold{(valNum+1)%10+1}":
+                testPath = os.path.join(path, folder)
+                testFiles = os.listdir(testPath)
+                testFiles = [os.path.join(testPath, file) for file in testFiles]
+                testFiles = [file for file in testFiles if "missing" not in file]
+            else:
+                trainPath = os.path.join(path, folder)
+                trainFiles = os.listdir(trainPath)
+                trainFiles = [os.path.join(trainPath, file) for file in trainFiles]
+                trainFiles = [file for file in trainFiles if "missing" not in file]
+                trainFilesList.append(trainFiles)
     trainFilesList = list(chain.from_iterable(trainFilesList))
     return trainFilesList, valFiles, testFiles
 
@@ -64,17 +84,18 @@ def lengthFinderBinary(path, valNum):
             valPath = os.path.join(path, folder)
             valFiles = os.listdir(valPath)
             valFiles = [os.path.join(valPath, file) for file in valFiles]
-            valFiles = [file for file in valFiles if ("missing" not in file) and (("AVNRT" in file) or ("AVRT" in file))]
+            valFiles = [file for file in valFiles if ("missing" not in file) and (("AVNRT" in file) or ("AVRT" in file) or ("concealed" in file))]
         elif folder == f"fold{(valNum+1)%10+1}":
             testPath = os.path.join(path, folder)
             testFiles = os.listdir(testPath)
             testFiles = [os.path.join(testPath, file) for file in testFiles]
-            testFiles = [file for file in testFiles if "missing" not in file and (("AVNRT" in file) or ("AVRT" in file))]
+            testFiles = [file for file in testFiles if "missing" not in file and (("AVNRT" in file) or ("AVRT" in file) or ("concealed" in file))]
         else:
             trainPath = os.path.join(path, folder)
             trainFiles = os.listdir(trainPath)
             trainFiles = [os.path.join(trainPath, file) for file in trainFiles]
-            trainFiles = [file for file in trainFiles if (("AVNRT" in file) or ("AVRT" in file))]
+            trainFiles = [file for file in trainFiles if ((("AVNRT" in file) or ("AVRT" in file) or ("concealed" in file)))]
+            #trainFiles = [file for file in trainFiles if "missing" not in file]
             trainFilesList.append(trainFiles)
     trainFilesList = list(chain.from_iterable(trainFilesList))
     return trainFilesList, valFiles, testFiles
@@ -127,7 +148,6 @@ class ECGDataset2_0Binary(torch.utils.data.Dataset):
     def __init__(self, fileList, experiment, swin=False, AVRT=False):
         # Root of data
         self.fileList = fileList
-        #self.fileList = [file for file in self.fileList if "missing" not in file]
         # Type of classification task
         self.exp = experiment
         self.lengthData = len(self.fileList)

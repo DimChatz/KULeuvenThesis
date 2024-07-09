@@ -1,0 +1,917 @@
+2024-07-01 15:34:56,479 INFO    StreamThr :40384 [internal.py:wandb_internal():85] W&B internal server running at pid: 40384, started at: 2024-07-01 15:34:56.478856
+2024-07-01 15:34:56,484 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: status
+2024-07-01 15:34:56,486 INFO    WriterThread:40384 [datastore.py:open_for_write():87] open: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/run-5qcmlse8.wandb
+2024-07-01 15:34:56,486 DEBUG   SenderThread:40384 [sender.py:send():379] send: header
+2024-07-01 15:34:56,487 DEBUG   SenderThread:40384 [sender.py:send():379] send: run
+2024-07-01 15:34:57,504 INFO    SenderThread:40384 [dir_watcher.py:__init__():211] watching files in: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files
+2024-07-01 15:34:57,504 INFO    SenderThread:40384 [sender.py:_start_run_threads():1188] run started: 5qcmlse8 with start time 1719837295.913303
+2024-07-01 15:34:57,518 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: check_version
+2024-07-01 15:34:57,519 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: check_version
+2024-07-01 15:34:57,890 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: run_start
+2024-07-01 15:34:57,891 DEBUG   HandlerThread:40384 [system_info.py:__init__():26] System info init
+2024-07-01 15:34:57,891 DEBUG   HandlerThread:40384 [system_info.py:__init__():41] System info init done
+2024-07-01 15:34:57,892 INFO    HandlerThread:40384 [system_monitor.py:start():194] Starting system monitor
+2024-07-01 15:34:57,893 INFO    HandlerThread:40384 [system_monitor.py:probe():214] Collecting system info
+2024-07-01 15:34:57,893 INFO    SystemMonitor:40384 [system_monitor.py:_start():158] Starting system asset monitoring threads
+2024-07-01 15:34:57,894 INFO    SystemMonitor:40384 [interfaces.py:start():188] Started cpu monitoring
+2024-07-01 15:34:57,895 INFO    SystemMonitor:40384 [interfaces.py:start():188] Started disk monitoring
+2024-07-01 15:34:57,897 INFO    SystemMonitor:40384 [interfaces.py:start():188] Started gpu monitoring
+2024-07-01 15:34:57,897 INFO    SystemMonitor:40384 [interfaces.py:start():188] Started memory monitoring
+2024-07-01 15:34:57,898 INFO    SystemMonitor:40384 [interfaces.py:start():188] Started network monitoring
+2024-07-01 15:34:57,905 DEBUG   HandlerThread:40384 [system_info.py:probe():152] Probing system
+2024-07-01 15:34:57,905 DEBUG   HandlerThread:40384 [system_info.py:_probe_git():137] Probing git
+2024-07-01 15:34:57,966 DEBUG   HandlerThread:40384 [system_info.py:_probe_git():145] Probing git done
+2024-07-01 15:34:57,966 DEBUG   HandlerThread:40384 [system_info.py:probe():200] Probing system done
+2024-07-01 15:34:57,966 DEBUG   HandlerThread:40384 [system_monitor.py:probe():223] {'os': 'Linux-6.5.0-41-generic-x86_64-with-glibc2.35', 'python': '3.12.2', 'heartbeatAt': '2024-07-01T12:34:57.905353', 'startedAt': '2024-07-01T12:34:55.907329', 'docker': None, 'cuda': None, 'args': (), 'state': 'running', 'program': '/home/tzikos/Desktop/KULeuvenThesis/main.py', 'codePathLocal': 'main.py', 'codePath': 'main.py', 'git': {'remote': 'git@github.com:DimChatz/KULeuvenThesis.git', 'commit': '3464ffcd722c984be7e733ec8f86e9405d988115'}, 'email': 'dimichatzakis@gmail.com', 'root': '/home/tzikos/Desktop/KULeuvenThesis', 'host': 'xatzospito', 'username': 'tzikos', 'executable': '/home/tzikos/anaconda3/envs/KUThesis/bin/python', 'cpu_count': 8, 'cpu_count_logical': 16, 'cpu_freq': {'current': 3735.6220000000003, 'min': 400.0, 'max': 5804.75}, 'cpu_freq_per_core': [{'current': 1949.587, 'min': 400.0, 'max': 5263.0}, {'current': 3305.704, 'min': 400.0, 'max': 5743.0}, {'current': 4686.845, 'min': 400.0, 'max': 5423.0}, {'current': 4208.068, 'min': 400.0, 'max': 6228.0}, {'current': 3780.075, 'min': 400.0, 'max': 5903.0}, {'current': 3322.914, 'min': 400.0, 'max': 6228.0}, {'current': 3665.999, 'min': 400.0, 'max': 5583.0}, {'current': 2347.54, 'min': 400.0, 'max': 6067.0}, {'current': 2136.479, 'min': 400.0, 'max': 5263.0}, {'current': 3985.49, 'min': 400.0, 'max': 5743.0}, {'current': 4182.979, 'min': 400.0, 'max': 5423.0}, {'current': 2630.831, 'min': 400.0, 'max': 6228.0}, {'current': 4024.341, 'min': 400.0, 'max': 5903.0}, {'current': 3164.129, 'min': 400.0, 'max': 6228.0}, {'current': 3748.079, 'min': 400.0, 'max': 5583.0}, {'current': 2345.31, 'min': 400.0, 'max': 6067.0}], 'disk': {'/': {'total': 431.4849548339844, 'used': 280.0287666320801}}, 'gpu': 'NVIDIA GeForce RTX 4060 Laptop GPU', 'gpu_count': 1, 'gpu_devices': [{'name': 'NVIDIA GeForce RTX 4060 Laptop GPU', 'memory_total': 8585740288}], 'memory': {'total': 14.839210510253906}}
+2024-07-01 15:34:57,966 INFO    HandlerThread:40384 [system_monitor.py:probe():224] Finished collecting system info
+2024-07-01 15:34:57,966 INFO    HandlerThread:40384 [system_monitor.py:probe():227] Publishing system info
+2024-07-01 15:34:57,966 DEBUG   HandlerThread:40384 [system_info.py:_save_conda():209] Saving list of conda packages installed into the current environment
+2024-07-01 15:34:58,512 INFO    Thread-243:40384 [dir_watcher.py:_on_file_created():271] file/dir created: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/conda-environment.yaml
+2024-07-01 15:35:00,505 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/conda-environment.yaml
+2024-07-01 15:35:00,589 DEBUG   HandlerThread:40384 [system_info.py:_save_conda():224] Saving conda packages done
+2024-07-01 15:35:00,592 INFO    HandlerThread:40384 [system_monitor.py:probe():229] Finished publishing system info
+2024-07-01 15:35:00,593 DEBUG   SenderThread:40384 [sender.py:send():379] send: files
+2024-07-01 15:35:00,593 INFO    SenderThread:40384 [sender.py:_save_file():1454] saving file wandb-metadata.json with policy now
+2024-07-01 15:35:00,726 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: python_packages
+2024-07-01 15:35:00,727 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: python_packages
+2024-07-01 15:35:00,729 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: stop_status
+2024-07-01 15:35:00,730 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: stop_status
+2024-07-01 15:35:00,772 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:01,327 DEBUG   SenderThread:40384 [sender.py:send():379] send: telemetry
+2024-07-01 15:35:01,327 DEBUG   SenderThread:40384 [sender.py:send():379] send: run
+2024-07-01 15:35:01,505 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/config.yaml
+2024-07-01 15:35:01,506 INFO    Thread-243:40384 [dir_watcher.py:_on_file_created():271] file/dir created: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/requirements.txt
+2024-07-01 15:35:01,506 INFO    Thread-243:40384 [dir_watcher.py:_on_file_created():271] file/dir created: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/wandb-metadata.json
+2024-07-01 15:35:01,525 INFO    wandb-upload_0:40384 [upload_job.py:push():130] Uploaded file /tmp/tmpdo_0v_exwandb/csvuf1f8-wandb-metadata.json
+2024-07-01 15:35:01,578 INFO    SenderThread:40384 [sender.py:send_run():1035] updated run: 5qcmlse8
+2024-07-01 15:35:01,579 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: status_report
+2024-07-01 15:35:01,730 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:02,730 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:03,730 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:04,730 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:05,730 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:06,730 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: status_report
+2024-07-01 15:35:06,731 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:07,731 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:08,731 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:09,731 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:10,732 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:11,732 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: status_report
+2024-07-01 15:35:11,732 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:12,733 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:13,733 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:14,157 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:35:14,157 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:35:14,157 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:35:14,157 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:35:14,157 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:35:14,158 DEBUG   SenderThread:40384 [sender.py:send():379] send: telemetry
+2024-07-01 15:35:14,512 INFO    Thread-243:40384 [dir_watcher.py:_on_file_created():271] file/dir created: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/output.log
+2024-07-01 15:35:14,733 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:14,896 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: log_artifact
+2024-07-01 15:35:14,897 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: log_artifact
+2024-07-01 15:35:14,940 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:35:14,984 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:35:15,513 INFO    Thread-243:40384 [dir_watcher.py:_on_file_created():271] file/dir created: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/table/Training Confusion Matrix_1_248613a6887be2ecfb27.table.json
+2024-07-01 15:35:15,514 INFO    Thread-243:40384 [dir_watcher.py:_on_file_created():271] file/dir created: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/images/Training Confusion Matrix Heatmap_1_cdfdd26b00d3b203b43a.png
+2024-07-01 15:35:15,515 INFO    Thread-243:40384 [dir_watcher.py:_on_file_created():271] file/dir created: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/images
+2024-07-01 15:35:15,515 INFO    Thread-243:40384 [dir_watcher.py:_on_file_created():271] file/dir created: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/table
+2024-07-01 15:35:15,515 INFO    Thread-243:40384 [dir_watcher.py:_on_file_created():271] file/dir created: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media
+2024-07-01 15:35:15,586 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: log_artifact
+2024-07-01 15:35:15,606 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:35:15,672 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:35:15,673 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:35:15,673 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:35:15,740 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:15,804 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: stop_status
+2024-07-01 15:35:15,998 INFO    wandb-upload_0:40384 [upload_job.py:push():130] Uploaded file /tmp/tmpdo_0v_exwandb/pl5rejrh-media/table/Training Confusion Matrix_1_248613a6887be2ecfb27.table.json
+2024-07-01 15:35:16,514 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/output.log
+2024-07-01 15:35:16,515 INFO    Thread-243:40384 [dir_watcher.py:_on_file_created():271] file/dir created: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/table/Validation Confusion Matrix_1_615ce5785713240476da.table.json
+2024-07-01 15:35:16,515 INFO    Thread-243:40384 [dir_watcher.py:_on_file_created():271] file/dir created: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/images/Validation Confusion Matrix Heatmap_1_ed8522717126f138badd.png
+2024-07-01 15:35:16,516 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/images
+2024-07-01 15:35:16,516 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/table
+2024-07-01 15:35:16,740 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:16,852 INFO    wandb-upload_1:40384 [upload_job.py:push():130] Uploaded file /tmp/tmpdo_0v_exwandb/am7ghp0u-media/images/Training Confusion Matrix Heatmap_1_cdfdd26b00d3b203b43a.png
+2024-07-01 15:35:16,886 INFO    wandb-upload_2:40384 [upload_job.py:push():88] Uploaded file /home/tzikos/.local/share/wandb/artifacts/staging/tmp6lpco995
+2024-07-01 15:35:17,216 INFO    wandb-upload_0:40384 [upload_job.py:push():130] Uploaded file /tmp/tmpdo_0v_exwandb/kalj3n7k-media/table/Validation Confusion Matrix_1_615ce5785713240476da.table.json
+2024-07-01 15:35:17,716 INFO    wandb-upload_3:40384 [upload_job.py:push():130] Uploaded file /tmp/tmpdo_0v_exwandb/rdi9vc4w-media/images/Validation Confusion Matrix Heatmap_1_ed8522717126f138badd.png
+2024-07-01 15:35:17,739 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:17,967 INFO    SenderThread:40384 [sender.py:send_request_log_artifact():1518] logged artifact run-5qcmlse8-TrainingConfusionMatrix - {'id': 'QXJ0aWZhY3Q6OTM1MDE5NjA4', 'state': 'PENDING', 'artifactSequence': {'id': 'QXJ0aWZhY3RDb2xsZWN0aW9uOjIzNzY5NzAzMQ==', 'latestArtifact': None}}
+2024-07-01 15:35:17,967 DEBUG   SenderThread:40384 [sender.py:send():379] send: files
+2024-07-01 15:35:17,967 INFO    SenderThread:40384 [sender.py:_save_file():1454] saving file media/table/Training Confusion Matrix_1_248613a6887be2ecfb27.table.json with policy now
+2024-07-01 15:35:17,968 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: status_report
+2024-07-01 15:35:17,968 DEBUG   SenderThread:40384 [sender.py:send():379] send: files
+2024-07-01 15:35:17,968 INFO    SenderThread:40384 [sender.py:_save_file():1454] saving file media/images/Training Confusion Matrix Heatmap_1_cdfdd26b00d3b203b43a.png with policy now
+2024-07-01 15:35:17,969 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: log_artifact
+2024-07-01 15:35:18,595 INFO    wandb-upload_1:40384 [upload_job.py:push():130] Uploaded file /tmp/tmpdo_0v_exwandb/pkkw1wxp-media/table/Training Confusion Matrix_1_248613a6887be2ecfb27.table.json
+2024-07-01 15:35:18,739 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:19,172 INFO    wandb-upload_0:40384 [upload_job.py:push():130] Uploaded file /tmp/tmpdo_0v_exwandb/8s6iftau-media/images/Training Confusion Matrix Heatmap_1_cdfdd26b00d3b203b43a.png
+2024-07-01 15:35:19,471 INFO    wandb-upload_2:40384 [upload_job.py:push():88] Uploaded file /home/tzikos/.local/share/wandb/artifacts/staging/tmpoeibtmux
+2024-07-01 15:35:19,740 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:20,318 INFO    SenderThread:40384 [sender.py:send_request_log_artifact():1518] logged artifact run-5qcmlse8-ValidationConfusionMatrix - {'id': 'QXJ0aWZhY3Q6OTM1MDE5Njcw', 'state': 'PENDING', 'artifactSequence': {'id': 'QXJ0aWZhY3RDb2xsZWN0aW9uOjIzNzY5NzA0Mw==', 'latestArtifact': None}}
+2024-07-01 15:35:20,318 DEBUG   SenderThread:40384 [sender.py:send():379] send: files
+2024-07-01 15:35:20,318 INFO    SenderThread:40384 [sender.py:_save_file():1454] saving file media/table/Validation Confusion Matrix_1_615ce5785713240476da.table.json with policy now
+2024-07-01 15:35:20,319 DEBUG   SenderThread:40384 [sender.py:send():379] send: files
+2024-07-01 15:35:20,319 INFO    SenderThread:40384 [sender.py:_save_file():1454] saving file media/images/Validation Confusion Matrix Heatmap_1_ed8522717126f138badd.png with policy now
+2024-07-01 15:35:20,319 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: stop_status
+2024-07-01 15:35:20,740 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:20,948 INFO    wandb-upload_1:40384 [upload_job.py:push():130] Uploaded file /tmp/tmpdo_0v_exwandb/5vii7xjk-media/table/Validation Confusion Matrix_1_615ce5785713240476da.table.json
+2024-07-01 15:35:21,479 INFO    wandb-upload_0:40384 [upload_job.py:push():130] Uploaded file /tmp/tmpdo_0v_exwandb/r8g3dqne-media/images/Validation Confusion Matrix Heatmap_1_ed8522717126f138badd.png
+2024-07-01 15:35:21,740 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:22,520 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/output.log
+2024-07-01 15:35:22,740 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:23,740 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:23,742 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: status_report
+2024-07-01 15:35:24,741 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:25,745 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:26,741 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:27,741 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:28,741 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:28,748 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: status_report
+2024-07-01 15:35:29,032 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:35:29,034 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:35:29,035 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:35:29,035 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:35:29,036 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:35:29,062 DEBUG   SenderThread:40384 [sender.py:send():379] send: history
+2024-07-01 15:35:29,063 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: summary_record
+2024-07-01 15:35:29,065 INFO    SenderThread:40384 [sender.py:_save_file():1454] saving file wandb-summary.json with policy end
+2024-07-01 15:35:29,527 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/config.yaml
+2024-07-01 15:35:29,527 INFO    Thread-243:40384 [dir_watcher.py:_on_file_created():271] file/dir created: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/wandb-summary.json
+2024-07-01 15:35:29,742 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:29,830 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: log_artifact
+2024-07-01 15:35:29,830 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: log_artifact
+2024-07-01 15:35:29,872 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:35:29,923 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:35:30,528 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/output.log
+2024-07-01 15:35:30,529 INFO    Thread-243:40384 [dir_watcher.py:_on_file_created():271] file/dir created: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/table/Training Confusion Matrix_2_b3a75d6b3994d020f3f5.table.json
+2024-07-01 15:35:30,529 INFO    Thread-243:40384 [dir_watcher.py:_on_file_created():271] file/dir created: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/images/Training Confusion Matrix Heatmap_2_343eb05ac6d4bfffbdf6.png
+2024-07-01 15:35:30,529 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/images
+2024-07-01 15:35:30,530 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/table
+2024-07-01 15:35:30,743 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:30,762 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: stop_status
+2024-07-01 15:35:31,026 INFO    wandb-upload_1:40384 [upload_job.py:push():130] Uploaded file /tmp/tmpdo_0v_exwandb/bflqib3w-media/table/Training Confusion Matrix_2_b3a75d6b3994d020f3f5.table.json
+2024-07-01 15:35:31,650 INFO    wandb-upload_2:40384 [upload_job.py:push():130] Uploaded file /tmp/tmpdo_0v_exwandb/9rlo3pzw-media/images/Training Confusion Matrix Heatmap_2_343eb05ac6d4bfffbdf6.png
+2024-07-01 15:35:31,698 INFO    wandb-upload_3:40384 [upload_job.py:push():88] Uploaded file /home/tzikos/.local/share/wandb/artifacts/staging/tmp0ice8waf
+2024-07-01 15:35:31,742 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:32,742 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:32,778 INFO    SenderThread:40384 [sender.py:send_request_log_artifact():1518] logged artifact run-5qcmlse8-TrainingConfusionMatrix - {'id': 'QXJ0aWZhY3Q6OTM1MDE5ODE1', 'state': 'PENDING', 'artifactSequence': {'id': 'QXJ0aWZhY3RDb2xsZWN0aW9uOjIzNzY5NzAzMQ==', 'latestArtifact': {'id': 'QXJ0aWZhY3Q6OTM1MDE5NjA4', 'versionIndex': 0}}}
+2024-07-01 15:35:32,778 DEBUG   SenderThread:40384 [sender.py:send():379] send: files
+2024-07-01 15:35:32,778 INFO    SenderThread:40384 [sender.py:_save_file():1454] saving file media/table/Training Confusion Matrix_2_b3a75d6b3994d020f3f5.table.json with policy now
+2024-07-01 15:35:32,779 DEBUG   SenderThread:40384 [sender.py:send():379] send: files
+2024-07-01 15:35:32,779 INFO    SenderThread:40384 [sender.py:_save_file():1454] saving file media/images/Training Confusion Matrix Heatmap_2_343eb05ac6d4bfffbdf6.png with policy now
+2024-07-01 15:35:32,779 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: stop_status
+2024-07-01 15:35:33,377 INFO    wandb-upload_0:40384 [upload_job.py:push():130] Uploaded file /tmp/tmpdo_0v_exwandb/lbt69bwk-media/table/Training Confusion Matrix_2_b3a75d6b3994d020f3f5.table.json
+2024-07-01 15:35:33,743 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:33,904 INFO    wandb-upload_2:40384 [upload_job.py:push():130] Uploaded file /tmp/tmpdo_0v_exwandb/yznzhryn-media/images/Training Confusion Matrix Heatmap_2_343eb05ac6d4bfffbdf6.png
+2024-07-01 15:35:34,744 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:35,000 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: status_report
+2024-07-01 15:35:35,329 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: log_artifact
+2024-07-01 15:35:35,329 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: log_artifact
+2024-07-01 15:35:35,372 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:35:35,410 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:35:35,411 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:35:35,411 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:35:35,534 INFO    Thread-243:40384 [dir_watcher.py:_on_file_created():271] file/dir created: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/table/Validation Confusion Matrix_2_1644961ac95ced9e2607.table.json
+2024-07-01 15:35:35,535 INFO    Thread-243:40384 [dir_watcher.py:_on_file_created():271] file/dir created: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/images/Validation Confusion Matrix Heatmap_2_0231a161d51957be071a.png
+2024-07-01 15:35:35,535 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/table
+2024-07-01 15:35:35,536 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/images
+2024-07-01 15:35:35,743 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:36,056 INFO    wandb-upload_1:40384 [upload_job.py:push():130] Uploaded file /tmp/tmpdo_0v_exwandb/2g7hc57o-media/table/Validation Confusion Matrix_2_1644961ac95ced9e2607.table.json
+2024-07-01 15:35:36,546 INFO    wandb-upload_0:40384 [upload_job.py:push():130] Uploaded file /tmp/tmpdo_0v_exwandb/hjf9unbo-media/images/Validation Confusion Matrix Heatmap_2_0231a161d51957be071a.png
+2024-07-01 15:35:36,744 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:36,764 INFO    wandb-upload_3:40384 [upload_job.py:push():88] Uploaded file /home/tzikos/.local/share/wandb/artifacts/staging/tmpm06p7k91
+2024-07-01 15:35:37,694 INFO    SenderThread:40384 [sender.py:send_request_log_artifact():1518] logged artifact run-5qcmlse8-ValidationConfusionMatrix - {'id': 'QXJ0aWZhY3Q6OTM1MDE5ODgz', 'state': 'PENDING', 'artifactSequence': {'id': 'QXJ0aWZhY3RDb2xsZWN0aW9uOjIzNzY5NzA0Mw==', 'latestArtifact': {'id': 'QXJ0aWZhY3Q6OTM1MDE5Njcw', 'versionIndex': 0}}}
+2024-07-01 15:35:37,694 DEBUG   SenderThread:40384 [sender.py:send():379] send: files
+2024-07-01 15:35:37,695 INFO    SenderThread:40384 [sender.py:_save_file():1454] saving file media/table/Validation Confusion Matrix_2_1644961ac95ced9e2607.table.json with policy now
+2024-07-01 15:35:37,695 DEBUG   SenderThread:40384 [sender.py:send():379] send: files
+2024-07-01 15:35:37,696 INFO    SenderThread:40384 [sender.py:_save_file():1454] saving file media/images/Validation Confusion Matrix Heatmap_2_0231a161d51957be071a.png with policy now
+2024-07-01 15:35:37,744 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:38,305 INFO    wandb-upload_2:40384 [upload_job.py:push():130] Uploaded file /tmp/tmpdo_0v_exwandb/inaofiua-media/table/Validation Confusion Matrix_2_1644961ac95ced9e2607.table.json
+2024-07-01 15:35:38,745 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:38,858 INFO    wandb-upload_0:40384 [upload_job.py:push():130] Uploaded file /tmp/tmpdo_0v_exwandb/fz0dxus6-media/images/Validation Confusion Matrix Heatmap_2_0231a161d51957be071a.png
+2024-07-01 15:35:39,745 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:40,539 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/output.log
+2024-07-01 15:35:40,697 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: status_report
+2024-07-01 15:35:40,745 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:41,745 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:42,745 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:43,745 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:44,745 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:45,743 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: status_report
+2024-07-01 15:35:45,746 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:45,763 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: stop_status
+2024-07-01 15:35:45,763 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: stop_status
+2024-07-01 15:35:46,746 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:47,746 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:48,688 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:35:48,690 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:35:48,690 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:35:48,690 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:35:48,690 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:35:48,692 DEBUG   SenderThread:40384 [sender.py:send():379] send: history
+2024-07-01 15:35:48,692 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: summary_record
+2024-07-01 15:35:48,694 INFO    SenderThread:40384 [sender.py:_save_file():1454] saving file wandb-summary.json with policy end
+2024-07-01 15:35:48,776 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:49,549 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/wandb-summary.json
+2024-07-01 15:35:49,633 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: log_artifact
+2024-07-01 15:35:49,634 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: log_artifact
+2024-07-01 15:35:49,680 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:35:49,721 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:35:49,776 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:50,292 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: log_artifact
+2024-07-01 15:35:50,332 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:35:50,382 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:35:50,383 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:35:50,383 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:35:50,550 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/output.log
+2024-07-01 15:35:50,551 INFO    Thread-243:40384 [dir_watcher.py:_on_file_created():271] file/dir created: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/table/Validation Confusion Matrix_3_b5a0e38bce4304dfc2a5.table.json
+2024-07-01 15:35:50,551 INFO    Thread-243:40384 [dir_watcher.py:_on_file_created():271] file/dir created: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/images/Training Confusion Matrix Heatmap_3_c1665fa3ea593942c520.png
+2024-07-01 15:35:50,552 INFO    Thread-243:40384 [dir_watcher.py:_on_file_created():271] file/dir created: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/images/Validation Confusion Matrix Heatmap_3_c9904fd9e3cd4e5b15b9.png
+2024-07-01 15:35:50,552 INFO    Thread-243:40384 [dir_watcher.py:_on_file_created():271] file/dir created: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/table/Training Confusion Matrix_3_cc53779c1d7f7e2583d0.table.json
+2024-07-01 15:35:50,552 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/images
+2024-07-01 15:35:50,552 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/table
+2024-07-01 15:35:50,776 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:50,891 INFO    wandb-upload_1:40384 [upload_job.py:push():88] Uploaded file /home/tzikos/.local/share/wandb/artifacts/staging/tmp57_gdz6g
+2024-07-01 15:35:51,040 INFO    wandb-upload_2:40384 [upload_job.py:push():130] Uploaded file /tmp/tmpdo_0v_exwandb/mu83oj61-media/table/Validation Confusion Matrix_3_b5a0e38bce4304dfc2a5.table.json
+2024-07-01 15:35:51,525 INFO    wandb-upload_3:40384 [upload_job.py:push():130] Uploaded file /tmp/tmpdo_0v_exwandb/mwg45zow-media/images/Training Confusion Matrix Heatmap_3_c1665fa3ea593942c520.png
+2024-07-01 15:35:51,776 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:52,030 INFO    SenderThread:40384 [sender.py:send_request_log_artifact():1518] logged artifact run-5qcmlse8-TrainingConfusionMatrix - {'id': 'QXJ0aWZhY3Q6OTM1MDIwMDcy', 'state': 'PENDING', 'artifactSequence': {'id': 'QXJ0aWZhY3RDb2xsZWN0aW9uOjIzNzY5NzAzMQ==', 'latestArtifact': {'id': 'QXJ0aWZhY3Q6OTM1MDE5ODE1', 'versionIndex': 1}}}
+2024-07-01 15:35:52,031 DEBUG   SenderThread:40384 [sender.py:send():379] send: files
+2024-07-01 15:35:52,031 INFO    SenderThread:40384 [sender.py:_save_file():1454] saving file media/table/Training Confusion Matrix_3_cc53779c1d7f7e2583d0.table.json with policy now
+2024-07-01 15:35:52,032 DEBUG   SenderThread:40384 [sender.py:send():379] send: files
+2024-07-01 15:35:52,032 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: status_report
+2024-07-01 15:35:52,032 INFO    SenderThread:40384 [sender.py:_save_file():1454] saving file media/images/Training Confusion Matrix Heatmap_3_c1665fa3ea593942c520.png with policy now
+2024-07-01 15:35:52,033 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: log_artifact
+2024-07-01 15:35:52,777 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:53,074 INFO    wandb-upload_1:40384 [upload_job.py:push():130] Uploaded file /tmp/tmpdo_0v_exwandb/9cev7qjt-media/images/Training Confusion Matrix Heatmap_3_c1665fa3ea593942c520.png
+2024-07-01 15:35:53,630 INFO    wandb-upload_3:40384 [upload_job.py:push():88] Uploaded file /home/tzikos/.local/share/wandb/artifacts/staging/tmpngsbgckt
+2024-07-01 15:35:53,777 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:54,693 INFO    SenderThread:40384 [sender.py:send_request_log_artifact():1518] logged artifact run-5qcmlse8-ValidationConfusionMatrix - {'id': 'QXJ0aWZhY3Q6OTM1MDIwMTA3', 'state': 'PENDING', 'artifactSequence': {'id': 'QXJ0aWZhY3RDb2xsZWN0aW9uOjIzNzY5NzA0Mw==', 'latestArtifact': {'id': 'QXJ0aWZhY3Q6OTM1MDE5ODgz', 'versionIndex': 1}}}
+2024-07-01 15:35:54,693 DEBUG   SenderThread:40384 [sender.py:send():379] send: files
+2024-07-01 15:35:54,693 INFO    SenderThread:40384 [sender.py:_save_file():1454] saving file media/table/Validation Confusion Matrix_3_b5a0e38bce4304dfc2a5.table.json with policy now
+2024-07-01 15:35:54,694 DEBUG   SenderThread:40384 [sender.py:send():379] send: files
+2024-07-01 15:35:54,694 INFO    SenderThread:40384 [sender.py:_save_file():1454] saving file media/images/Validation Confusion Matrix Heatmap_3_c9904fd9e3cd4e5b15b9.png with policy now
+2024-07-01 15:35:54,777 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:55,278 INFO    wandb-upload_2:40384 [upload_job.py:push():130] Uploaded file /tmp/tmpdo_0v_exwandb/v10sv0hw-media/table/Validation Confusion Matrix_3_b5a0e38bce4304dfc2a5.table.json
+2024-07-01 15:35:55,777 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:56,558 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/output.log
+2024-07-01 15:35:56,700 INFO    wandb-upload_4:40384 [upload_job.py:push():130] Uploaded file /tmp/tmpdo_0v_exwandb/6tyib0id-media/table/Training Confusion Matrix_3_cc53779c1d7f7e2583d0.table.json
+2024-07-01 15:35:56,777 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:57,028 INFO    wandb-upload_0:40384 [upload_job.py:push():130] Uploaded file /tmp/tmpdo_0v_exwandb/2hdkdrjp-media/images/Validation Confusion Matrix Heatmap_3_c9904fd9e3cd4e5b15b9.png
+2024-07-01 15:35:57,662 INFO    wandb-upload_3:40384 [upload_job.py:push():130] Uploaded file /tmp/tmpdo_0v_exwandb/k4w6twf8-media/table/Training Confusion Matrix_3_cc53779c1d7f7e2583d0.table.json
+2024-07-01 15:35:57,744 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: status_report
+2024-07-01 15:35:57,778 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:57,899 DEBUG   SystemMonitor:40384 [system_monitor.py:_start():172] Starting system metrics aggregation loop
+2024-07-01 15:35:57,900 DEBUG   SenderThread:40384 [sender.py:send():379] send: stats
+2024-07-01 15:35:58,654 INFO    wandb-upload_2:40384 [upload_job.py:push():130] Uploaded file /tmp/tmpdo_0v_exwandb/6eg4q1v2-media/images/Validation Confusion Matrix Heatmap_3_c9904fd9e3cd4e5b15b9.png
+2024-07-01 15:35:58,778 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:35:59,779 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:00,762 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: stop_status
+2024-07-01 15:36:00,763 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: stop_status
+2024-07-01 15:36:00,805 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:01,778 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:02,779 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:03,065 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: status_report
+2024-07-01 15:36:03,650 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:36:03,651 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:36:03,651 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:36:03,651 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:36:03,651 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:36:03,653 DEBUG   SenderThread:40384 [sender.py:send():379] send: history
+2024-07-01 15:36:03,653 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: summary_record
+2024-07-01 15:36:03,655 INFO    SenderThread:40384 [sender.py:_save_file():1454] saving file wandb-summary.json with policy end
+2024-07-01 15:36:03,779 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:04,430 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: log_artifact
+2024-07-01 15:36:04,430 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: log_artifact
+2024-07-01 15:36:04,476 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:36:04,522 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:36:04,569 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/output.log
+2024-07-01 15:36:04,569 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/wandb-summary.json
+2024-07-01 15:36:04,569 INFO    Thread-243:40384 [dir_watcher.py:_on_file_created():271] file/dir created: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/table/Training Confusion Matrix_4_49da5472ae3eef1b2ee7.table.json
+2024-07-01 15:36:04,569 INFO    Thread-243:40384 [dir_watcher.py:_on_file_created():271] file/dir created: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/images/Training Confusion Matrix Heatmap_4_12982abcb2228e5aa117.png
+2024-07-01 15:36:04,570 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/table
+2024-07-01 15:36:04,570 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/images
+2024-07-01 15:36:04,780 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:05,055 INFO    wandb-upload_0:40384 [upload_job.py:push():130] Uploaded file /tmp/tmpdo_0v_exwandb/ec5brvs3-media/table/Training Confusion Matrix_4_49da5472ae3eef1b2ee7.table.json
+2024-07-01 15:36:05,754 INFO    wandb-upload_3:40384 [upload_job.py:push():130] Uploaded file /tmp/tmpdo_0v_exwandb/nsd024qr-media/images/Training Confusion Matrix Heatmap_4_12982abcb2228e5aa117.png
+2024-07-01 15:36:05,786 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:06,572 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/output.log
+2024-07-01 15:36:06,781 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:07,781 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:07,906 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: log_artifact
+2024-07-01 15:36:07,952 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:36:07,989 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:36:07,989 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:36:07,989 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:36:08,574 INFO    Thread-243:40384 [dir_watcher.py:_on_file_created():271] file/dir created: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/images/Validation Confusion Matrix Heatmap_4_d806fc0d52a212412852.png
+2024-07-01 15:36:08,575 INFO    Thread-243:40384 [dir_watcher.py:_on_file_created():271] file/dir created: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/table/Validation Confusion Matrix_4_cf98cd910623d8958cf3.table.json
+2024-07-01 15:36:08,575 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/table
+2024-07-01 15:36:08,576 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/images
+2024-07-01 15:36:08,782 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:09,184 INFO    wandb-upload_3:40384 [upload_job.py:push():130] Uploaded file /tmp/tmpdo_0v_exwandb/5bhtwhj5-media/table/Validation Confusion Matrix_4_cf98cd910623d8958cf3.table.json
+2024-07-01 15:36:09,482 INFO    wandb-upload_2:40384 [upload_job.py:push():88] Uploaded file /home/tzikos/.local/share/wandb/artifacts/staging/tmp1mgqgkpk
+2024-07-01 15:36:09,545 INFO    wandb-upload_4:40384 [upload_job.py:push():130] Uploaded file /tmp/tmpdo_0v_exwandb/3jybn5or-media/images/Validation Confusion Matrix Heatmap_4_d806fc0d52a212412852.png
+2024-07-01 15:36:09,782 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:10,447 INFO    SenderThread:40384 [sender.py:send_request_log_artifact():1518] logged artifact run-5qcmlse8-TrainingConfusionMatrix - {'id': 'QXJ0aWZhY3Q6OTM1MDIwMjUw', 'state': 'PENDING', 'artifactSequence': {'id': 'QXJ0aWZhY3RDb2xsZWN0aW9uOjIzNzY5NzAzMQ==', 'latestArtifact': {'id': 'QXJ0aWZhY3Q6OTM1MDIwMDcy', 'versionIndex': 2}}}
+2024-07-01 15:36:10,448 DEBUG   SenderThread:40384 [sender.py:send():379] send: files
+2024-07-01 15:36:10,448 INFO    SenderThread:40384 [sender.py:_save_file():1454] saving file media/table/Training Confusion Matrix_4_49da5472ae3eef1b2ee7.table.json with policy now
+2024-07-01 15:36:10,448 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: status_report
+2024-07-01 15:36:10,449 DEBUG   SenderThread:40384 [sender.py:send():379] send: files
+2024-07-01 15:36:10,449 INFO    SenderThread:40384 [sender.py:_save_file():1454] saving file media/images/Training Confusion Matrix Heatmap_4_12982abcb2228e5aa117.png with policy now
+2024-07-01 15:36:10,450 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: log_artifact
+2024-07-01 15:36:10,788 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:11,133 INFO    wandb-upload_0:40384 [upload_job.py:push():130] Uploaded file /tmp/tmpdo_0v_exwandb/kxbums30-media/table/Training Confusion Matrix_4_49da5472ae3eef1b2ee7.table.json
+2024-07-01 15:36:11,604 INFO    wandb-upload_3:40384 [upload_job.py:push():130] Uploaded file /tmp/tmpdo_0v_exwandb/rddmki6p-media/images/Training Confusion Matrix Heatmap_4_12982abcb2228e5aa117.png
+2024-07-01 15:36:11,782 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:12,090 INFO    wandb-upload_4:40384 [upload_job.py:push():88] Uploaded file /home/tzikos/.local/share/wandb/artifacts/staging/tmp4vtqsz67
+2024-07-01 15:36:12,782 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:13,026 INFO    SenderThread:40384 [sender.py:send_request_log_artifact():1518] logged artifact run-5qcmlse8-ValidationConfusionMatrix - {'id': 'QXJ0aWZhY3Q6OTM1MDIwMzA3', 'state': 'PENDING', 'artifactSequence': {'id': 'QXJ0aWZhY3RDb2xsZWN0aW9uOjIzNzY5NzA0Mw==', 'latestArtifact': {'id': 'QXJ0aWZhY3Q6OTM1MDIwMTA3', 'versionIndex': 2}}}
+2024-07-01 15:36:13,027 DEBUG   SenderThread:40384 [sender.py:send():379] send: files
+2024-07-01 15:36:13,027 INFO    SenderThread:40384 [sender.py:_save_file():1454] saving file media/table/Validation Confusion Matrix_4_cf98cd910623d8958cf3.table.json with policy now
+2024-07-01 15:36:13,028 DEBUG   SenderThread:40384 [sender.py:send():379] send: files
+2024-07-01 15:36:13,028 INFO    SenderThread:40384 [sender.py:_save_file():1454] saving file media/images/Validation Confusion Matrix Heatmap_4_d806fc0d52a212412852.png with policy now
+2024-07-01 15:36:13,577 INFO    wandb-upload_2:40384 [upload_job.py:push():130] Uploaded file /tmp/tmpdo_0v_exwandb/8ljtdvd3-media/table/Validation Confusion Matrix_4_cf98cd910623d8958cf3.table.json
+2024-07-01 15:36:13,782 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:14,151 INFO    wandb-upload_1:40384 [upload_job.py:push():130] Uploaded file /tmp/tmpdo_0v_exwandb/b58p1xbd-media/images/Validation Confusion Matrix Heatmap_4_d806fc0d52a212412852.png
+2024-07-01 15:36:14,581 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/output.log
+2024-07-01 15:36:14,782 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:15,744 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: status_report
+2024-07-01 15:36:15,763 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: stop_status
+2024-07-01 15:36:15,763 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: stop_status
+2024-07-01 15:36:15,808 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:16,783 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:17,784 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:18,784 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:19,783 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:20,745 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: status_report
+2024-07-01 15:36:20,784 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:21,273 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:36:21,274 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:36:21,274 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:36:21,274 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:36:21,274 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:36:21,274 DEBUG   SenderThread:40384 [sender.py:send():379] send: history
+2024-07-01 15:36:21,275 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: summary_record
+2024-07-01 15:36:21,276 INFO    SenderThread:40384 [sender.py:_save_file():1454] saving file wandb-summary.json with policy end
+2024-07-01 15:36:21,590 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/wandb-summary.json
+2024-07-01 15:36:21,784 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:21,983 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: log_artifact
+2024-07-01 15:36:21,983 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: log_artifact
+2024-07-01 15:36:22,028 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:36:22,077 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:36:22,591 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/output.log
+2024-07-01 15:36:22,592 INFO    Thread-243:40384 [dir_watcher.py:_on_file_created():271] file/dir created: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/images/Training Confusion Matrix Heatmap_5_789fd5022aaf45d58784.png
+2024-07-01 15:36:22,592 INFO    Thread-243:40384 [dir_watcher.py:_on_file_created():271] file/dir created: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/table/Training Confusion Matrix_5_a499764f4df92933b5b7.table.json
+2024-07-01 15:36:22,592 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/table
+2024-07-01 15:36:22,593 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/images
+2024-07-01 15:36:22,673 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: log_artifact
+2024-07-01 15:36:22,690 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:36:22,758 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:36:22,758 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:36:22,759 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:36:22,822 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:23,220 INFO    wandb-upload_1:40384 [upload_job.py:push():130] Uploaded file /tmp/tmpdo_0v_exwandb/0bvcewj4-media/table/Training Confusion Matrix_5_a499764f4df92933b5b7.table.json
+2024-07-01 15:36:23,443 INFO    wandb-upload_4:40384 [upload_job.py:push():88] Uploaded file /home/tzikos/.local/share/wandb/artifacts/staging/tmpurdv928s
+2024-07-01 15:36:23,593 INFO    Thread-243:40384 [dir_watcher.py:_on_file_created():271] file/dir created: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/images/Validation Confusion Matrix Heatmap_5_f903d5fb0318b6f25d07.png
+2024-07-01 15:36:23,594 INFO    Thread-243:40384 [dir_watcher.py:_on_file_created():271] file/dir created: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/table/Validation Confusion Matrix_5_d2230748dd00b0d6cabe.table.json
+2024-07-01 15:36:23,594 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/table
+2024-07-01 15:36:23,594 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/images
+2024-07-01 15:36:23,777 INFO    wandb-upload_3:40384 [upload_job.py:push():130] Uploaded file /tmp/tmpdo_0v_exwandb/dy7f0yzr-media/images/Training Confusion Matrix Heatmap_5_789fd5022aaf45d58784.png
+2024-07-01 15:36:23,826 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:24,809 INFO    SenderThread:40384 [sender.py:send_request_log_artifact():1518] logged artifact run-5qcmlse8-TrainingConfusionMatrix - {'id': 'QXJ0aWZhY3Q6OTM1MDIwNDY0', 'state': 'PENDING', 'artifactSequence': {'id': 'QXJ0aWZhY3RDb2xsZWN0aW9uOjIzNzY5NzAzMQ==', 'latestArtifact': {'id': 'QXJ0aWZhY3Q6OTM1MDIwMjUw', 'versionIndex': 3}}}
+2024-07-01 15:36:24,810 DEBUG   SenderThread:40384 [sender.py:send():379] send: files
+2024-07-01 15:36:24,810 INFO    SenderThread:40384 [sender.py:_save_file():1454] saving file media/table/Training Confusion Matrix_5_a499764f4df92933b5b7.table.json with policy now
+2024-07-01 15:36:24,810 DEBUG   SenderThread:40384 [sender.py:send():379] send: files
+2024-07-01 15:36:24,810 INFO    SenderThread:40384 [sender.py:_save_file():1454] saving file media/images/Training Confusion Matrix Heatmap_5_789fd5022aaf45d58784.png with policy now
+2024-07-01 15:36:24,811 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: log_artifact
+2024-07-01 15:36:24,822 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:25,302 INFO    wandb-upload_0:40384 [upload_job.py:push():130] Uploaded file /tmp/tmpdo_0v_exwandb/s0or45p7-media/table/Validation Confusion Matrix_5_d2230748dd00b0d6cabe.table.json
+2024-07-01 15:36:25,522 INFO    wandb-upload_4:40384 [upload_job.py:push():130] Uploaded file /tmp/tmpdo_0v_exwandb/rtnkxl7z-media/table/Training Confusion Matrix_5_a499764f4df92933b5b7.table.json
+2024-07-01 15:36:25,822 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:26,460 INFO    wandb-upload_2:40384 [upload_job.py:push():130] Uploaded file /tmp/tmpdo_0v_exwandb/4k22m329-media/images/Validation Confusion Matrix Heatmap_5_f903d5fb0318b6f25d07.png
+2024-07-01 15:36:26,597 INFO    wandb-upload_1:40384 [upload_job.py:push():130] Uploaded file /tmp/tmpdo_0v_exwandb/vik6yick-media/images/Training Confusion Matrix Heatmap_5_789fd5022aaf45d58784.png
+2024-07-01 15:36:26,811 INFO    wandb-upload_3:40384 [upload_job.py:push():88] Uploaded file /home/tzikos/.local/share/wandb/artifacts/staging/tmp25pc8jjg
+2024-07-01 15:36:26,823 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:27,731 INFO    SenderThread:40384 [sender.py:send_request_log_artifact():1518] logged artifact run-5qcmlse8-ValidationConfusionMatrix - {'id': 'QXJ0aWZhY3Q6OTM1MDIwNDk3', 'state': 'PENDING', 'artifactSequence': {'id': 'QXJ0aWZhY3RDb2xsZWN0aW9uOjIzNzY5NzA0Mw==', 'latestArtifact': {'id': 'QXJ0aWZhY3Q6OTM1MDIwMzA3', 'versionIndex': 3}}}
+2024-07-01 15:36:27,732 DEBUG   SenderThread:40384 [sender.py:send():379] send: files
+2024-07-01 15:36:27,732 INFO    SenderThread:40384 [sender.py:_save_file():1454] saving file media/table/Validation Confusion Matrix_5_d2230748dd00b0d6cabe.table.json with policy now
+2024-07-01 15:36:27,733 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: status_report
+2024-07-01 15:36:27,734 DEBUG   SenderThread:40384 [sender.py:send():379] send: files
+2024-07-01 15:36:27,734 INFO    SenderThread:40384 [sender.py:_save_file():1454] saving file media/images/Validation Confusion Matrix Heatmap_5_f903d5fb0318b6f25d07.png with policy now
+2024-07-01 15:36:27,823 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:27,903 DEBUG   SenderThread:40384 [sender.py:send():379] send: stats
+2024-07-01 15:36:28,303 INFO    wandb-upload_4:40384 [upload_job.py:push():130] Uploaded file /tmp/tmpdo_0v_exwandb/9uaef3vs-media/table/Validation Confusion Matrix_5_d2230748dd00b0d6cabe.table.json
+2024-07-01 15:36:28,823 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:29,037 INFO    wandb-upload_2:40384 [upload_job.py:push():130] Uploaded file /tmp/tmpdo_0v_exwandb/klx7yt31-media/images/Validation Confusion Matrix Heatmap_5_f903d5fb0318b6f25d07.png
+2024-07-01 15:36:29,823 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:30,601 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/output.log
+2024-07-01 15:36:30,763 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: stop_status
+2024-07-01 15:36:30,763 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: stop_status
+2024-07-01 15:36:30,823 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:31,823 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:32,824 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:33,061 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: status_report
+2024-07-01 15:36:33,824 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:34,825 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:35,825 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:36,101 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:36:36,103 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:36:36,103 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:36:36,103 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:36:36,104 DEBUG   SenderThread:40384 [sender.py:send():379] send: history
+2024-07-01 15:36:36,104 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: summary_record
+2024-07-01 15:36:36,107 INFO    SenderThread:40384 [sender.py:_save_file():1454] saving file wandb-summary.json with policy end
+2024-07-01 15:36:36,609 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/wandb-summary.json
+2024-07-01 15:36:36,825 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:37,825 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:38,108 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: status_report
+2024-07-01 15:36:38,611 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/output.log
+2024-07-01 15:36:38,825 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:39,825 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:40,826 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:41,826 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:42,826 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:43,746 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: status_report
+2024-07-01 15:36:43,826 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:44,826 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:45,764 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: stop_status
+2024-07-01 15:36:45,764 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: stop_status
+2024-07-01 15:36:45,826 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:46,827 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:47,828 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:48,829 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:49,050 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: status_report
+2024-07-01 15:36:49,329 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:36:49,330 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:36:49,330 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:36:49,330 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:36:49,331 DEBUG   SenderThread:40384 [sender.py:send():379] send: history
+2024-07-01 15:36:49,331 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: summary_record
+2024-07-01 15:36:49,332 INFO    SenderThread:40384 [sender.py:_save_file():1454] saving file wandb-summary.json with policy end
+2024-07-01 15:36:49,626 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/wandb-summary.json
+2024-07-01 15:36:49,829 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:50,627 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/output.log
+2024-07-01 15:36:50,829 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:51,829 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:52,829 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:53,829 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:54,764 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: status_report
+2024-07-01 15:36:54,829 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:55,829 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:56,829 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:57,830 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:57,904 DEBUG   SenderThread:40384 [sender.py:send():379] send: stats
+2024-07-01 15:36:58,832 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:59,832 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:36:59,905 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: status_report
+2024-07-01 15:37:00,763 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: stop_status
+2024-07-01 15:37:00,763 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: stop_status
+2024-07-01 15:37:00,832 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:01,832 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:02,497 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:37:02,498 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:37:02,498 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:37:02,498 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:37:02,500 DEBUG   SenderThread:40384 [sender.py:send():379] send: history
+2024-07-01 15:37:02,500 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: summary_record
+2024-07-01 15:37:02,503 INFO    SenderThread:40384 [sender.py:_save_file():1454] saving file wandb-summary.json with policy end
+2024-07-01 15:37:02,643 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/wandb-summary.json
+2024-07-01 15:37:02,833 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:03,834 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:04,646 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/output.log
+2024-07-01 15:37:04,833 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:05,504 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: status_report
+2024-07-01 15:37:05,833 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:06,833 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:07,834 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:08,834 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:09,834 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:10,763 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: status_report
+2024-07-01 15:37:10,834 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:11,835 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:12,836 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:13,836 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:14,836 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:15,657 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:37:15,658 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:37:15,658 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:37:15,658 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:37:15,659 DEBUG   SenderThread:40384 [sender.py:send():379] send: history
+2024-07-01 15:37:15,659 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: summary_record
+2024-07-01 15:37:15,660 INFO    SenderThread:40384 [sender.py:_save_file():1454] saving file wandb-summary.json with policy end
+2024-07-01 15:37:15,782 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: stop_status
+2024-07-01 15:37:15,783 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: stop_status
+2024-07-01 15:37:15,836 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:16,032 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: status_report
+2024-07-01 15:37:16,662 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/output.log
+2024-07-01 15:37:16,663 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/wandb-summary.json
+2024-07-01 15:37:16,837 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:17,837 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:18,837 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:19,837 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:20,837 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:21,782 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: status_report
+2024-07-01 15:37:21,838 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:22,838 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:23,838 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:24,838 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:25,838 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:26,784 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: status_report
+2024-07-01 15:37:26,838 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:27,838 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:27,907 DEBUG   SenderThread:40384 [sender.py:send():379] send: stats
+2024-07-01 15:37:28,839 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:28,932 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:37:28,933 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:37:28,933 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:37:28,933 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:37:28,935 DEBUG   SenderThread:40384 [sender.py:send():379] send: history
+2024-07-01 15:37:28,935 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: summary_record
+2024-07-01 15:37:28,936 INFO    SenderThread:40384 [sender.py:_save_file():1454] saving file wandb-summary.json with policy end
+2024-07-01 15:37:29,679 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/wandb-summary.json
+2024-07-01 15:37:29,839 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:30,682 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/output.log
+2024-07-01 15:37:30,782 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: stop_status
+2024-07-01 15:37:30,782 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: stop_status
+2024-07-01 15:37:30,839 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:31,839 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:32,059 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: status_report
+2024-07-01 15:37:32,839 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:33,839 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:34,839 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:35,840 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:36,840 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:37,783 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: status_report
+2024-07-01 15:37:37,840 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:38,840 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:39,842 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:40,841 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:41,841 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:42,369 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:37:42,370 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:37:42,370 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:37:42,370 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:37:42,372 DEBUG   SenderThread:40384 [sender.py:send():379] send: history
+2024-07-01 15:37:42,372 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: summary_record
+2024-07-01 15:37:42,373 INFO    SenderThread:40384 [sender.py:_save_file():1454] saving file wandb-summary.json with policy end
+2024-07-01 15:37:42,696 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/wandb-summary.json
+2024-07-01 15:37:42,842 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:43,374 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: status_report
+2024-07-01 15:37:43,842 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:44,700 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/output.log
+2024-07-01 15:37:44,842 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:45,782 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: stop_status
+2024-07-01 15:37:45,783 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: stop_status
+2024-07-01 15:37:45,842 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:46,842 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:47,843 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:48,843 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:49,043 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: status_report
+2024-07-01 15:37:49,843 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:50,843 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:51,844 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:52,845 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:53,845 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:54,784 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: status_report
+2024-07-01 15:37:54,844 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:55,660 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:37:55,661 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:37:55,662 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:37:55,662 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:37:55,662 DEBUG   SenderThread:40384 [sender.py:send():379] send: history
+2024-07-01 15:37:55,663 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: summary_record
+2024-07-01 15:37:55,664 INFO    SenderThread:40384 [sender.py:_save_file():1454] saving file wandb-summary.json with policy end
+2024-07-01 15:37:55,715 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/wandb-summary.json
+2024-07-01 15:37:55,845 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:56,715 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/output.log
+2024-07-01 15:37:56,845 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:57,845 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:57,906 DEBUG   SenderThread:40384 [sender.py:send():379] send: stats
+2024-07-01 15:37:58,845 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:59,845 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:37:59,907 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: status_report
+2024-07-01 15:38:00,782 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: stop_status
+2024-07-01 15:38:00,783 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: stop_status
+2024-07-01 15:38:00,846 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:01,846 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:02,846 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:03,846 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:04,847 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:05,022 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: status_report
+2024-07-01 15:38:05,846 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:06,846 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:07,847 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:08,848 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:08,980 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:38:08,981 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:38:08,981 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:38:08,981 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:38:08,983 DEBUG   SenderThread:40384 [sender.py:send():379] send: history
+2024-07-01 15:38:08,983 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: summary_record
+2024-07-01 15:38:08,984 INFO    SenderThread:40384 [sender.py:_save_file():1454] saving file wandb-summary.json with policy end
+2024-07-01 15:38:09,733 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/wandb-summary.json
+2024-07-01 15:38:09,848 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:10,733 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/output.log
+2024-07-01 15:38:10,795 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: status_report
+2024-07-01 15:38:10,848 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:11,848 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:12,848 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:13,848 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:14,848 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:15,782 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: stop_status
+2024-07-01 15:38:15,782 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: stop_status
+2024-07-01 15:38:15,848 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:16,104 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: status_report
+2024-07-01 15:38:16,849 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:17,849 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:18,849 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:19,850 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:20,850 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:21,796 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: status_report
+2024-07-01 15:38:21,853 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:22,180 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:38:22,182 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:38:22,182 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:38:22,182 DEBUG   SenderThread:40384 [sender.py:send():379] send: history
+2024-07-01 15:38:22,182 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:38:22,183 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: summary_record
+2024-07-01 15:38:22,184 INFO    SenderThread:40384 [sender.py:_save_file():1454] saving file wandb-summary.json with policy end
+2024-07-01 15:38:22,748 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/wandb-summary.json
+2024-07-01 15:38:22,853 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:23,853 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:24,751 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/output.log
+2024-07-01 15:38:24,853 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:25,853 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:26,796 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: status_report
+2024-07-01 15:38:26,854 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:27,854 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:27,908 DEBUG   SenderThread:40384 [sender.py:send():379] send: stats
+2024-07-01 15:38:28,853 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:29,855 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:30,782 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: stop_status
+2024-07-01 15:38:30,783 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: stop_status
+2024-07-01 15:38:30,854 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:31,871 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:32,169 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: status_report
+2024-07-01 15:38:32,871 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:33,872 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:34,871 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:35,492 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:38:35,494 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:38:35,495 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:38:35,495 DEBUG   SenderThread:40384 [sender.py:send():379] send: history
+2024-07-01 15:38:35,495 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:38:35,495 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: summary_record
+2024-07-01 15:38:35,499 INFO    SenderThread:40384 [sender.py:_save_file():1454] saving file wandb-summary.json with policy end
+2024-07-01 15:38:35,765 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/wandb-summary.json
+2024-07-01 15:38:35,872 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:36,767 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/output.log
+2024-07-01 15:38:36,872 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:37,796 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: status_report
+2024-07-01 15:38:37,872 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:38,872 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:39,872 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:40,872 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:41,872 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:42,796 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: status_report
+2024-07-01 15:38:42,872 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:43,873 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:44,873 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:45,783 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: stop_status
+2024-07-01 15:38:45,784 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: stop_status
+2024-07-01 15:38:45,873 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:46,873 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:47,874 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:48,082 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: status_report
+2024-07-01 15:38:48,768 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:38:48,769 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:38:48,770 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:38:48,770 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:38:48,770 DEBUG   SenderThread:40384 [sender.py:send():379] send: history
+2024-07-01 15:38:48,771 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: summary_record
+2024-07-01 15:38:48,771 INFO    SenderThread:40384 [sender.py:_save_file():1454] saving file wandb-summary.json with policy end
+2024-07-01 15:38:48,782 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/wandb-summary.json
+2024-07-01 15:38:48,877 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:49,878 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:50,785 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/output.log
+2024-07-01 15:38:50,877 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:51,878 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:52,879 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:53,797 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: status_report
+2024-07-01 15:38:53,878 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:54,878 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:55,878 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:56,878 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:57,879 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:57,909 DEBUG   SenderThread:40384 [sender.py:send():379] send: stats
+2024-07-01 15:38:58,880 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:38:58,910 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: status_report
+2024-07-01 15:38:59,879 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:39:00,783 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: stop_status
+2024-07-01 15:39:00,784 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: stop_status
+2024-07-01 15:39:00,880 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:39:01,880 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:39:02,092 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:39:02,094 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:39:02,095 DEBUG   SenderThread:40384 [sender.py:send():379] send: history
+2024-07-01 15:39:02,095 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: summary_record
+2024-07-01 15:39:02,096 INFO    SenderThread:40384 [sender.py:_save_file():1454] saving file wandb-summary.json with policy end
+2024-07-01 15:39:02,800 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/wandb-summary.json
+2024-07-01 15:39:02,881 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:39:03,881 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:39:04,096 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: status_report
+2024-07-01 15:39:04,803 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/output.log
+2024-07-01 15:39:04,881 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:39:05,882 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:39:06,164 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:39:06,165 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:39:06,165 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:39:06,165 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:39:06,165 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:39:06,165 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:39:06,881 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:39:06,959 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: log_artifact
+2024-07-01 15:39:06,960 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: log_artifact
+2024-07-01 15:39:07,004 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:39:07,047 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:39:07,047 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: partial_history
+2024-07-01 15:39:07,049 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: server_info
+2024-07-01 15:39:07,809 INFO    Thread-243:40384 [dir_watcher.py:_on_file_created():271] file/dir created: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/table/Testing Confusion Matrix_17_1da3b889caf765ef5237.table.json
+2024-07-01 15:39:07,809 INFO    Thread-243:40384 [dir_watcher.py:_on_file_created():271] file/dir created: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/images/Testing Confusion Matrix Heatmap_17_15d2a78d01cdcae3181b.png
+2024-07-01 15:39:07,810 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/table
+2024-07-01 15:39:07,810 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/images
+2024-07-01 15:39:08,190 INFO    wandb-upload_3:40384 [upload_job.py:push():88] Uploaded file /home/tzikos/.local/share/wandb/artifacts/staging/tmpvkxnzc8l
+2024-07-01 15:39:08,299 INFO    wandb-upload_1:40384 [upload_job.py:push():130] Uploaded file /tmp/tmpdo_0v_exwandb/rv6wtn6t-media/table/Testing Confusion Matrix_17_1da3b889caf765ef5237.table.json
+2024-07-01 15:39:08,807 INFO    wandb-upload_2:40384 [upload_job.py:push():130] Uploaded file /tmp/tmpdo_0v_exwandb/ir8qdnv2-media/images/Testing Confusion Matrix Heatmap_17_15d2a78d01cdcae3181b.png
+2024-07-01 15:39:08,810 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/output.log
+2024-07-01 15:39:09,368 INFO    SenderThread:40384 [sender.py:send_request_log_artifact():1518] logged artifact run-5qcmlse8-TestingConfusionMatrix - {'id': 'QXJ0aWZhY3Q6OTM1MDIzNjU1', 'state': 'PENDING', 'artifactSequence': {'id': 'QXJ0aWZhY3RDb2xsZWN0aW9uOjIzNzY5OTA0MA==', 'latestArtifact': None}}
+2024-07-01 15:39:09,369 DEBUG   SenderThread:40384 [sender.py:send():379] send: files
+2024-07-01 15:39:09,369 INFO    SenderThread:40384 [sender.py:_save_file():1454] saving file media/table/Testing Confusion Matrix_17_1da3b889caf765ef5237.table.json with policy now
+2024-07-01 15:39:09,369 DEBUG   SenderThread:40384 [sender.py:send():379] send: files
+2024-07-01 15:39:09,369 INFO    SenderThread:40384 [sender.py:_save_file():1454] saving file media/images/Testing Confusion Matrix Heatmap_17_15d2a78d01cdcae3181b.png with policy now
+2024-07-01 15:39:09,370 DEBUG   SenderThread:40384 [sender.py:send():379] send: history
+2024-07-01 15:39:09,370 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: summary_record
+2024-07-01 15:39:09,370 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: status_report
+2024-07-01 15:39:09,371 INFO    SenderThread:40384 [sender.py:_save_file():1454] saving file wandb-summary.json with policy end
+2024-07-01 15:39:09,371 DEBUG   SenderThread:40384 [sender.py:send():379] send: telemetry
+2024-07-01 15:39:09,372 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: server_info
+2024-07-01 15:39:09,643 DEBUG   SenderThread:40384 [sender.py:send():379] send: exit
+2024-07-01 15:39:09,643 INFO    SenderThread:40384 [sender.py:send_exit():586] handling exit code: 0
+2024-07-01 15:39:09,644 INFO    SenderThread:40384 [sender.py:send_exit():588] handling runtime: 251
+2024-07-01 15:39:09,644 INFO    SenderThread:40384 [sender.py:_save_file():1454] saving file wandb-summary.json with policy end
+2024-07-01 15:39:09,644 INFO    SenderThread:40384 [sender.py:send_exit():594] send defer
+2024-07-01 15:39:09,644 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: defer
+2024-07-01 15:39:09,644 INFO    HandlerThread:40384 [handler.py:handle_request_defer():184] handle defer: 0
+2024-07-01 15:39:09,645 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: defer
+2024-07-01 15:39:09,645 INFO    SenderThread:40384 [sender.py:send_request_defer():610] handle sender defer: 0
+2024-07-01 15:39:09,645 INFO    SenderThread:40384 [sender.py:transition_state():614] send defer: 1
+2024-07-01 15:39:09,645 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: defer
+2024-07-01 15:39:09,645 INFO    HandlerThread:40384 [handler.py:handle_request_defer():184] handle defer: 1
+2024-07-01 15:39:09,645 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: defer
+2024-07-01 15:39:09,645 INFO    SenderThread:40384 [sender.py:send_request_defer():610] handle sender defer: 1
+2024-07-01 15:39:09,645 INFO    SenderThread:40384 [sender.py:transition_state():614] send defer: 2
+2024-07-01 15:39:09,645 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: defer
+2024-07-01 15:39:09,645 INFO    HandlerThread:40384 [handler.py:handle_request_defer():184] handle defer: 2
+2024-07-01 15:39:09,645 INFO    HandlerThread:40384 [system_monitor.py:finish():203] Stopping system monitor
+2024-07-01 15:39:09,646 DEBUG   SystemMonitor:40384 [system_monitor.py:_start():179] Finished system metrics aggregation loop
+2024-07-01 15:39:09,646 DEBUG   SystemMonitor:40384 [system_monitor.py:_start():183] Publishing last batch of metrics
+2024-07-01 15:39:09,646 INFO    HandlerThread:40384 [interfaces.py:finish():200] Joined cpu monitor
+2024-07-01 15:39:09,647 INFO    HandlerThread:40384 [interfaces.py:finish():200] Joined disk monitor
+2024-07-01 15:39:09,707 INFO    HandlerThread:40384 [interfaces.py:finish():200] Joined gpu monitor
+2024-07-01 15:39:09,707 INFO    HandlerThread:40384 [interfaces.py:finish():200] Joined memory monitor
+2024-07-01 15:39:09,708 INFO    HandlerThread:40384 [interfaces.py:finish():200] Joined network monitor
+2024-07-01 15:39:09,708 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: defer
+2024-07-01 15:39:09,708 INFO    SenderThread:40384 [sender.py:send_request_defer():610] handle sender defer: 2
+2024-07-01 15:39:09,708 INFO    SenderThread:40384 [sender.py:transition_state():614] send defer: 3
+2024-07-01 15:39:09,709 DEBUG   SenderThread:40384 [sender.py:send():379] send: stats
+2024-07-01 15:39:09,709 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: defer
+2024-07-01 15:39:09,709 INFO    HandlerThread:40384 [handler.py:handle_request_defer():184] handle defer: 3
+2024-07-01 15:39:09,709 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: defer
+2024-07-01 15:39:09,709 INFO    SenderThread:40384 [sender.py:send_request_defer():610] handle sender defer: 3
+2024-07-01 15:39:09,709 INFO    SenderThread:40384 [sender.py:transition_state():614] send defer: 4
+2024-07-01 15:39:09,709 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: defer
+2024-07-01 15:39:09,710 INFO    HandlerThread:40384 [handler.py:handle_request_defer():184] handle defer: 4
+2024-07-01 15:39:09,710 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: defer
+2024-07-01 15:39:09,710 INFO    SenderThread:40384 [sender.py:send_request_defer():610] handle sender defer: 4
+2024-07-01 15:39:09,710 INFO    SenderThread:40384 [sender.py:transition_state():614] send defer: 5
+2024-07-01 15:39:09,710 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: defer
+2024-07-01 15:39:09,710 INFO    HandlerThread:40384 [handler.py:handle_request_defer():184] handle defer: 5
+2024-07-01 15:39:09,711 DEBUG   SenderThread:40384 [sender.py:send():379] send: summary
+2024-07-01 15:39:09,711 INFO    SenderThread:40384 [sender.py:_save_file():1454] saving file wandb-summary.json with policy end
+2024-07-01 15:39:09,711 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: defer
+2024-07-01 15:39:09,711 INFO    SenderThread:40384 [sender.py:send_request_defer():610] handle sender defer: 5
+2024-07-01 15:39:09,711 INFO    SenderThread:40384 [sender.py:transition_state():614] send defer: 6
+2024-07-01 15:39:09,712 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: defer
+2024-07-01 15:39:09,712 INFO    HandlerThread:40384 [handler.py:handle_request_defer():184] handle defer: 6
+2024-07-01 15:39:09,712 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: defer
+2024-07-01 15:39:09,712 INFO    SenderThread:40384 [sender.py:send_request_defer():610] handle sender defer: 6
+2024-07-01 15:39:09,717 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: status_report
+2024-07-01 15:39:09,812 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/wandb-summary.json
+2024-07-01 15:39:10,006 INFO    wandb-upload_4:40384 [upload_job.py:push():130] Uploaded file /tmp/tmpdo_0v_exwandb/eo8rkfy3-media/table/Testing Confusion Matrix_17_1da3b889caf765ef5237.table.json
+2024-07-01 15:39:10,013 INFO    SenderThread:40384 [sender.py:transition_state():614] send defer: 7
+2024-07-01 15:39:10,013 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: defer
+2024-07-01 15:39:10,013 INFO    HandlerThread:40384 [handler.py:handle_request_defer():184] handle defer: 7
+2024-07-01 15:39:10,014 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: defer
+2024-07-01 15:39:10,014 INFO    SenderThread:40384 [sender.py:send_request_defer():610] handle sender defer: 7
+2024-07-01 15:39:10,261 INFO    SenderThread:40384 [sender.py:transition_state():614] send defer: 8
+2024-07-01 15:39:10,261 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: defer
+2024-07-01 15:39:10,261 INFO    HandlerThread:40384 [handler.py:handle_request_defer():184] handle defer: 8
+2024-07-01 15:39:10,262 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: defer
+2024-07-01 15:39:10,262 INFO    SenderThread:40384 [sender.py:send_request_defer():610] handle sender defer: 8
+2024-07-01 15:39:10,262 INFO    SenderThread:40384 [job_builder.py:build():440] Attempting to build job artifact
+2024-07-01 15:39:10,263 INFO    SenderThread:40384 [job_builder.py:_get_source_type():569] is repo sourced job
+2024-07-01 15:39:10,266 INFO    SenderThread:40384 [job_builder.py:build():545] adding wandb-job metadata file
+2024-07-01 15:39:10,280 INFO    SenderThread:40384 [sender.py:transition_state():614] send defer: 9
+2024-07-01 15:39:10,281 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: defer
+2024-07-01 15:39:10,281 INFO    HandlerThread:40384 [handler.py:handle_request_defer():184] handle defer: 9
+2024-07-01 15:39:10,281 DEBUG   SenderThread:40384 [sender.py:send():379] send: artifact
+2024-07-01 15:39:10,482 INFO    wandb-upload_3:40384 [upload_job.py:push():130] Uploaded file /tmp/tmpdo_0v_exwandb/blc51osn-media/images/Testing Confusion Matrix Heatmap_17_15d2a78d01cdcae3181b.png
+2024-07-01 15:39:10,641 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: poll_exit
+2024-07-01 15:39:10,813 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/config.yaml
+2024-07-01 15:39:10,813 INFO    Thread-243:40384 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/output.log
+2024-07-01 15:39:10,921 INFO    SenderThread:40384 [sender.py:send_artifact():1530] sent artifact job-git_github.com_DimChatz_KULeuvenThesis.git_main.py - {'id': 'QXJ0aWZhY3Q6OTM0OTgyNjUy', 'state': 'COMMITTED', 'artifactSequence': {'id': 'QXJ0aWZhY3RDb2xsZWN0aW9uOjE0OTk0MzY4OA==', 'latestArtifact': {'id': 'QXJ0aWZhY3Q6OTM0OTgyNjUy', 'versionIndex': 89}}}
+2024-07-01 15:39:10,921 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: defer
+2024-07-01 15:39:10,921 INFO    SenderThread:40384 [sender.py:send_request_defer():610] handle sender defer: 9
+2024-07-01 15:39:10,921 INFO    SenderThread:40384 [dir_watcher.py:finish():358] shutting down directory watcher
+2024-07-01 15:39:11,817 INFO    SenderThread:40384 [dir_watcher.py:finish():388] scan: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files
+2024-07-01 15:39:11,818 INFO    SenderThread:40384 [dir_watcher.py:finish():402] scan save: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/wandb-metadata.json wandb-metadata.json
+2024-07-01 15:39:11,818 INFO    SenderThread:40384 [dir_watcher.py:finish():402] scan save: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/requirements.txt requirements.txt
+2024-07-01 15:39:11,818 INFO    SenderThread:40384 [dir_watcher.py:finish():402] scan save: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/conda-environment.yaml conda-environment.yaml
+2024-07-01 15:39:11,818 INFO    SenderThread:40384 [dir_watcher.py:finish():402] scan save: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/output.log output.log
+2024-07-01 15:39:11,818 INFO    SenderThread:40384 [dir_watcher.py:finish():402] scan save: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/wandb-summary.json wandb-summary.json
+2024-07-01 15:39:11,831 INFO    SenderThread:40384 [dir_watcher.py:finish():402] scan save: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/config.yaml config.yaml
+2024-07-01 15:39:11,839 INFO    SenderThread:40384 [dir_watcher.py:finish():402] scan save: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/table/Validation Confusion Matrix_1_615ce5785713240476da.table.json media/table/Validation Confusion Matrix_1_615ce5785713240476da.table.json
+2024-07-01 15:39:11,840 INFO    SenderThread:40384 [dir_watcher.py:finish():402] scan save: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/table/Validation Confusion Matrix_5_d2230748dd00b0d6cabe.table.json media/table/Validation Confusion Matrix_5_d2230748dd00b0d6cabe.table.json
+2024-07-01 15:39:11,840 INFO    SenderThread:40384 [dir_watcher.py:finish():402] scan save: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/table/Training Confusion Matrix_5_a499764f4df92933b5b7.table.json media/table/Training Confusion Matrix_5_a499764f4df92933b5b7.table.json
+2024-07-01 15:39:11,840 INFO    SenderThread:40384 [dir_watcher.py:finish():402] scan save: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/table/Training Confusion Matrix_3_cc53779c1d7f7e2583d0.table.json media/table/Training Confusion Matrix_3_cc53779c1d7f7e2583d0.table.json
+2024-07-01 15:39:11,840 INFO    SenderThread:40384 [dir_watcher.py:finish():402] scan save: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/table/Validation Confusion Matrix_3_b5a0e38bce4304dfc2a5.table.json media/table/Validation Confusion Matrix_3_b5a0e38bce4304dfc2a5.table.json
+2024-07-01 15:39:11,840 INFO    SenderThread:40384 [dir_watcher.py:finish():402] scan save: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/table/Validation Confusion Matrix_2_1644961ac95ced9e2607.table.json media/table/Validation Confusion Matrix_2_1644961ac95ced9e2607.table.json
+2024-07-01 15:39:11,840 INFO    SenderThread:40384 [dir_watcher.py:finish():402] scan save: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/table/Testing Confusion Matrix_17_1da3b889caf765ef5237.table.json media/table/Testing Confusion Matrix_17_1da3b889caf765ef5237.table.json
+2024-07-01 15:39:11,841 INFO    SenderThread:40384 [dir_watcher.py:finish():402] scan save: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/table/Training Confusion Matrix_4_49da5472ae3eef1b2ee7.table.json media/table/Training Confusion Matrix_4_49da5472ae3eef1b2ee7.table.json
+2024-07-01 15:39:11,841 INFO    SenderThread:40384 [dir_watcher.py:finish():402] scan save: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/table/Training Confusion Matrix_2_b3a75d6b3994d020f3f5.table.json media/table/Training Confusion Matrix_2_b3a75d6b3994d020f3f5.table.json
+2024-07-01 15:39:11,841 INFO    SenderThread:40384 [dir_watcher.py:finish():402] scan save: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/table/Training Confusion Matrix_1_248613a6887be2ecfb27.table.json media/table/Training Confusion Matrix_1_248613a6887be2ecfb27.table.json
+2024-07-01 15:39:11,841 INFO    SenderThread:40384 [dir_watcher.py:finish():402] scan save: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/table/Validation Confusion Matrix_4_cf98cd910623d8958cf3.table.json media/table/Validation Confusion Matrix_4_cf98cd910623d8958cf3.table.json
+2024-07-01 15:39:11,841 INFO    SenderThread:40384 [dir_watcher.py:finish():402] scan save: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/images/Validation Confusion Matrix Heatmap_2_0231a161d51957be071a.png media/images/Validation Confusion Matrix Heatmap_2_0231a161d51957be071a.png
+2024-07-01 15:39:11,841 INFO    SenderThread:40384 [dir_watcher.py:finish():402] scan save: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/images/Testing Confusion Matrix Heatmap_17_15d2a78d01cdcae3181b.png media/images/Testing Confusion Matrix Heatmap_17_15d2a78d01cdcae3181b.png
+2024-07-01 15:39:11,841 INFO    SenderThread:40384 [dir_watcher.py:finish():402] scan save: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/images/Validation Confusion Matrix Heatmap_1_ed8522717126f138badd.png media/images/Validation Confusion Matrix Heatmap_1_ed8522717126f138badd.png
+2024-07-01 15:39:11,841 INFO    SenderThread:40384 [dir_watcher.py:finish():402] scan save: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/images/Training Confusion Matrix Heatmap_2_343eb05ac6d4bfffbdf6.png media/images/Training Confusion Matrix Heatmap_2_343eb05ac6d4bfffbdf6.png
+2024-07-01 15:39:11,841 INFO    SenderThread:40384 [dir_watcher.py:finish():402] scan save: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/images/Validation Confusion Matrix Heatmap_5_f903d5fb0318b6f25d07.png media/images/Validation Confusion Matrix Heatmap_5_f903d5fb0318b6f25d07.png
+2024-07-01 15:39:11,841 INFO    SenderThread:40384 [dir_watcher.py:finish():402] scan save: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/images/Validation Confusion Matrix Heatmap_4_d806fc0d52a212412852.png media/images/Validation Confusion Matrix Heatmap_4_d806fc0d52a212412852.png
+2024-07-01 15:39:11,841 INFO    SenderThread:40384 [dir_watcher.py:finish():402] scan save: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/images/Training Confusion Matrix Heatmap_5_789fd5022aaf45d58784.png media/images/Training Confusion Matrix Heatmap_5_789fd5022aaf45d58784.png
+2024-07-01 15:39:11,842 INFO    SenderThread:40384 [dir_watcher.py:finish():402] scan save: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/images/Training Confusion Matrix Heatmap_1_cdfdd26b00d3b203b43a.png media/images/Training Confusion Matrix Heatmap_1_cdfdd26b00d3b203b43a.png
+2024-07-01 15:39:11,842 INFO    SenderThread:40384 [dir_watcher.py:finish():402] scan save: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/images/Validation Confusion Matrix Heatmap_3_c9904fd9e3cd4e5b15b9.png media/images/Validation Confusion Matrix Heatmap_3_c9904fd9e3cd4e5b15b9.png
+2024-07-01 15:39:11,842 INFO    SenderThread:40384 [dir_watcher.py:finish():402] scan save: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/images/Training Confusion Matrix Heatmap_4_12982abcb2228e5aa117.png media/images/Training Confusion Matrix Heatmap_4_12982abcb2228e5aa117.png
+2024-07-01 15:39:11,842 INFO    SenderThread:40384 [dir_watcher.py:finish():402] scan save: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/media/images/Training Confusion Matrix Heatmap_3_c1665fa3ea593942c520.png media/images/Training Confusion Matrix Heatmap_3_c1665fa3ea593942c520.png
+2024-07-01 15:39:11,842 INFO    SenderThread:40384 [sender.py:transition_state():614] send defer: 10
+2024-07-01 15:39:11,842 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: poll_exit
+2024-07-01 15:39:11,842 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: defer
+2024-07-01 15:39:11,842 INFO    HandlerThread:40384 [handler.py:handle_request_defer():184] handle defer: 10
+2024-07-01 15:39:11,843 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: defer
+2024-07-01 15:39:11,843 INFO    SenderThread:40384 [sender.py:send_request_defer():610] handle sender defer: 10
+2024-07-01 15:39:11,843 INFO    SenderThread:40384 [file_pusher.py:finish():169] shutting down file pusher
+2024-07-01 15:39:12,345 INFO    wandb-upload_2:40384 [upload_job.py:push():130] Uploaded file /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/requirements.txt
+2024-07-01 15:39:12,383 INFO    wandb-upload_1:40384 [upload_job.py:push():130] Uploaded file /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/conda-environment.yaml
+2024-07-01 15:39:12,437 INFO    wandb-upload_4:40384 [upload_job.py:push():130] Uploaded file /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/output.log
+2024-07-01 15:39:12,481 INFO    wandb-upload_0:40384 [upload_job.py:push():130] Uploaded file /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/wandb-summary.json
+2024-07-01 15:39:12,643 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: poll_exit
+2024-07-01 15:39:12,643 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: poll_exit
+2024-07-01 15:39:12,748 INFO    wandb-upload_3:40384 [upload_job.py:push():130] Uploaded file /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/files/config.yaml
+2024-07-01 15:39:12,949 INFO    Thread-242 (_thread_body):40384 [sender.py:transition_state():614] send defer: 11
+2024-07-01 15:39:12,950 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: defer
+2024-07-01 15:39:12,950 INFO    HandlerThread:40384 [handler.py:handle_request_defer():184] handle defer: 11
+2024-07-01 15:39:12,951 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: defer
+2024-07-01 15:39:12,951 INFO    SenderThread:40384 [sender.py:send_request_defer():610] handle sender defer: 11
+2024-07-01 15:39:12,952 INFO    SenderThread:40384 [file_pusher.py:join():175] waiting for file pusher
+2024-07-01 15:39:12,955 INFO    SenderThread:40384 [sender.py:transition_state():614] send defer: 12
+2024-07-01 15:39:12,955 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: defer
+2024-07-01 15:39:12,956 INFO    HandlerThread:40384 [handler.py:handle_request_defer():184] handle defer: 12
+2024-07-01 15:39:12,956 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: defer
+2024-07-01 15:39:12,956 INFO    SenderThread:40384 [sender.py:send_request_defer():610] handle sender defer: 12
+2024-07-01 15:39:12,956 INFO    SenderThread:40384 [file_stream.py:finish():601] file stream finish called
+2024-07-01 15:39:13,644 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: poll_exit
+2024-07-01 15:39:13,655 INFO    SenderThread:40384 [file_stream.py:finish():605] file stream finish is done
+2024-07-01 15:39:13,655 INFO    SenderThread:40384 [sender.py:transition_state():614] send defer: 13
+2024-07-01 15:39:13,656 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: poll_exit
+2024-07-01 15:39:13,656 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: defer
+2024-07-01 15:39:13,656 INFO    HandlerThread:40384 [handler.py:handle_request_defer():184] handle defer: 13
+2024-07-01 15:39:13,657 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: defer
+2024-07-01 15:39:13,657 INFO    SenderThread:40384 [sender.py:send_request_defer():610] handle sender defer: 13
+2024-07-01 15:39:13,657 INFO    SenderThread:40384 [sender.py:transition_state():614] send defer: 14
+2024-07-01 15:39:13,657 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: defer
+2024-07-01 15:39:13,657 INFO    HandlerThread:40384 [handler.py:handle_request_defer():184] handle defer: 14
+2024-07-01 15:39:13,657 DEBUG   SenderThread:40384 [sender.py:send():379] send: final
+2024-07-01 15:39:13,658 DEBUG   SenderThread:40384 [sender.py:send():379] send: footer
+2024-07-01 15:39:13,658 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: defer
+2024-07-01 15:39:13,658 INFO    SenderThread:40384 [sender.py:send_request_defer():610] handle sender defer: 14
+2024-07-01 15:39:13,659 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: poll_exit
+2024-07-01 15:39:13,659 DEBUG   SenderThread:40384 [sender.py:send_request():406] send_request: poll_exit
+2024-07-01 15:39:13,660 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-01 15:39:13,660 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: get_summary
+2024-07-01 15:39:13,661 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: sampled_history
+2024-07-01 15:39:13,662 DEBUG   HandlerThread:40384 [handler.py:handle_request():158] handle_request: shutdown
+2024-07-01 15:39:13,663 INFO    HandlerThread:40384 [handler.py:finish():882] shutting down handler
+2024-07-01 15:39:14,659 INFO    WriterThread:40384 [datastore.py:close():296] close: /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240701_153455-5qcmlse8/run-5qcmlse8.wandb
+2024-07-01 15:39:14,660 INFO    SenderThread:40384 [sender.py:finish():1608] shutting down sender
+2024-07-01 15:39:14,660 INFO    SenderThread:40384 [file_pusher.py:finish():169] shutting down file pusher
+2024-07-01 15:39:14,660 INFO    SenderThread:40384 [file_pusher.py:join():175] waiting for file pusher

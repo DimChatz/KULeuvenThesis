@@ -557,7 +557,7 @@ def CVtrainBinary(modelStr, learningRate, epochs, classWeights, earlyStopPatienc
             if AVRT:
                 trainFileList, valFileList, testFileList = lengthFinderBinary(f"/home/tzikos/Desktop/Data/Berts final/{experiment}/", foldNum)
             else:
-                trainFileList, valFileList, testFileList = lengthFinder(f"/home/tzikos/Desktop/Data/Berts final/{experiment}/", foldNum)
+                trainFileList, valFileList, testFileList = lengthFinder(f"/home/tzikos/Desktop/Data/Berts final/{experiment}/", foldNum, norm_psvt=True)
             if usePretrained:
                 # Path to pretrained weights
                 pretrainedWeightsPath = f"{modelWeightPath}ECGCNNClassifier_PTBXL_B64_L3e-07_13-03-24-23-28.pth"

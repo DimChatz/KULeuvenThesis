@@ -26,7 +26,7 @@ USE_PRETRAINED = False
 
 # MODEL
 BINARY = False
-AVNRT_AVRT = False
+AVNRT_AVRT = True
 MODEL_STR = "CNN2020"
 #MODEL_STR = "GatedTransformer"
 #MODEL_STR = "CNNAttia"
@@ -40,10 +40,10 @@ else:
 
 # HYPERPARAMETERS
 LEARNING_RATE_PTB = 1e-7
-LEARNING_RATE_BERT = 1e-6
+LEARNING_RATE_BERT = 2e-6
 BATCH = 64
-L1 = 1e-4
-L2 = None
+L1 = None
+L2 = 1e-4
 A_BERT = 1
 A_PTB = 1
 
