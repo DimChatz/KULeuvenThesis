@@ -15,7 +15,7 @@ seedEverything(42)
 CLASSES_BERT = 5
 CLASSES_PTB = 5
 ROOT_DATA_PATH = '/home/tzikos/Desktop/Data/'
-EXPERIMENT = "tachy"
+EXPERIMENT = "pre"
 WEIGHT_PATH = "/home/tzikos/Desktop/weights/"
 PREPROC_PTB = False
 PREPROC_BERT = False
@@ -40,10 +40,10 @@ else:
 
 # HYPERPARAMETERS
 LEARNING_RATE_PTB = 1e-7
-LEARNING_RATE_BERT = 3e-6
+LEARNING_RATE_BERT = 1e-6
 BATCH = 64
-L1 = 1e-4
-L2 = 1e-4
+L1 = None
+L2 = None
 A_BERT = 1
 A_PTB = 1
 
