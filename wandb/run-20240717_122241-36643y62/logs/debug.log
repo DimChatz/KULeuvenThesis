@@ -1,0 +1,123 @@
+2024-07-17 12:22:41,735 INFO    MainThread:5749 [wandb_setup.py:_flush():76] Current SDK version is 0.17.1
+2024-07-17 12:22:41,735 INFO    MainThread:5749 [wandb_setup.py:_flush():76] Configure stats pid to 5749
+2024-07-17 12:22:41,735 INFO    MainThread:5749 [wandb_setup.py:_flush():76] Loading settings from /home/tzikos/.config/wandb/settings
+2024-07-17 12:22:41,735 INFO    MainThread:5749 [wandb_setup.py:_flush():76] Loading settings from /home/tzikos/Desktop/KULeuvenThesis/wandb/settings
+2024-07-17 12:22:41,735 INFO    MainThread:5749 [wandb_setup.py:_flush():76] Loading settings from environment variables: {}
+2024-07-17 12:22:41,735 INFO    MainThread:5749 [wandb_setup.py:_flush():76] Applying setup settings: {'_disable_service': False}
+2024-07-17 12:22:41,735 INFO    MainThread:5749 [wandb_setup.py:_flush():76] Inferring run settings from compute environment: {'program_relpath': 'main.py', 'program_abspath': '/home/tzikos/Desktop/KULeuvenThesis/main.py', 'program': '/home/tzikos/Desktop/KULeuvenThesis/main.py'}
+2024-07-17 12:22:41,736 INFO    MainThread:5749 [wandb_setup.py:_flush():76] Applying login settings: {}
+2024-07-17 12:22:41,736 INFO    MainThread:5749 [wandb_init.py:_log_setup():520] Logging user logs to /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240717_122241-36643y62/logs/debug.log
+2024-07-17 12:22:41,736 INFO    MainThread:5749 [wandb_init.py:_log_setup():521] Logging internal logs to /home/tzikos/Desktop/KULeuvenThesis/wandb/run-20240717_122241-36643y62/logs/debug-internal.log
+2024-07-17 12:22:41,736 INFO    MainThread:5749 [wandb_init.py:init():560] calling init triggers
+2024-07-17 12:22:41,736 INFO    MainThread:5749 [wandb_init.py:init():567] wandb.init called with sweep_config: {}
+config: {'learning_rate': 3e-07, 'batch_size': 64, 'L1': None, 'L2': 0.0001, 'A': 1, 'early_patience': 12, 'reduce_lr_patience': 5, 'architecture': 'ECGCNNClassifier', 'experiment': 'pre', 'use_pretrained': False}
+2024-07-17 12:22:41,736 INFO    MainThread:5749 [wandb_init.py:init():610] starting backend
+2024-07-17 12:22:41,736 INFO    MainThread:5749 [wandb_init.py:init():614] setting up manager
+2024-07-17 12:22:41,739 INFO    MainThread:5749 [backend.py:_multiprocessing_setup():105] multiprocessing start_methods=fork,spawn,forkserver, using: spawn
+2024-07-17 12:22:41,740 INFO    MainThread:5749 [wandb_init.py:init():622] backend started and connected
+2024-07-17 12:22:41,748 INFO    MainThread:5749 [wandb_init.py:init():711] updated telemetry
+2024-07-17 12:22:41,753 INFO    MainThread:5749 [wandb_init.py:init():744] communicating run to backend with 90.0 second timeout
+2024-07-17 12:22:42,253 INFO    MainThread:5749 [wandb_run.py:_on_init():2402] communicating current version
+2024-07-17 12:22:42,426 INFO    MainThread:5749 [wandb_run.py:_on_init():2411] got version response upgrade_message: "wandb version 0.17.4 is available!  To upgrade, please run:\n $ pip install wandb --upgrade"
+
+2024-07-17 12:22:42,426 INFO    MainThread:5749 [wandb_init.py:init():795] starting run threads in backend
+2024-07-17 12:22:45,375 INFO    MainThread:5749 [wandb_run.py:_console_start():2380] atexit reg
+2024-07-17 12:22:45,376 INFO    MainThread:5749 [wandb_run.py:_redirect():2235] redirect: wrap_raw
+2024-07-17 12:22:45,376 INFO    MainThread:5749 [wandb_run.py:_redirect():2300] Wrapping output streams.
+2024-07-17 12:22:45,376 INFO    MainThread:5749 [wandb_run.py:_redirect():2325] Redirects installed.
+2024-07-17 12:22:45,377 INFO    MainThread:5749 [wandb_init.py:init():838] run started, returning control to user process
+2024-07-17 12:47:00,592 INFO    MainThread:5749 [retry.py:__call__():172] Retry attempt failed:
+Traceback (most recent call last):
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/wandb/sdk/lib/retry.py", line 131, in __call__
+    result = self._call_fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/wandb/apis/public/api.py", line 70, in execute
+    return self._client.execute(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/client.py", line 52, in execute
+    result = self._get_result(document, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/client.py", line 60, in _get_result
+    return self.transport.execute(document, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/wandb/sdk/lib/gql_request.py", line 59, in execute
+    request.raise_for_status()
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/requests/models.py", line 1021, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 500 Server Error: Internal Server Error for url: https://api.wandb.ai/graphql
+2024-07-17 12:47:35,625 INFO    MainThread:5749 [retry.py:__call__():172] Retry attempt failed:
+Traceback (most recent call last):
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/wandb/sdk/lib/retry.py", line 131, in __call__
+    result = self._call_fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/wandb/apis/public/api.py", line 70, in execute
+    return self._client.execute(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/client.py", line 52, in execute
+    result = self._get_result(document, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/client.py", line 60, in _get_result
+    return self.transport.execute(document, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/wandb/sdk/lib/gql_request.py", line 59, in execute
+    request.raise_for_status()
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/requests/models.py", line 1021, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 500 Server Error: Internal Server Error for url: https://api.wandb.ai/graphql
+2024-07-17 12:49:29,861 INFO    MainThread:5749 [retry.py:__call__():172] Retry attempt failed:
+Traceback (most recent call last):
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/wandb/sdk/lib/retry.py", line 131, in __call__
+    result = self._call_fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/wandb/apis/public/api.py", line 70, in execute
+    return self._client.execute(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/client.py", line 52, in execute
+    result = self._get_result(document, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/client.py", line 60, in _get_result
+    return self.transport.execute(document, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/wandb/sdk/lib/gql_request.py", line 59, in execute
+    request.raise_for_status()
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/requests/models.py", line 1021, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 500 Server Error: Internal Server Error for url: https://api.wandb.ai/graphql
+2024-07-17 12:50:06,996 INFO    MainThread:5749 [retry.py:__call__():172] Retry attempt failed:
+Traceback (most recent call last):
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/wandb/sdk/lib/retry.py", line 131, in __call__
+    result = self._call_fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/wandb/apis/public/api.py", line 70, in execute
+    return self._client.execute(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/client.py", line 52, in execute
+    result = self._get_result(document, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/client.py", line 60, in _get_result
+    return self.transport.execute(document, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/wandb/sdk/lib/gql_request.py", line 59, in execute
+    request.raise_for_status()
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/requests/models.py", line 1021, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 500 Server Error: Internal Server Error for url: https://api.wandb.ai/graphql
+2024-07-17 12:53:23,298 INFO    MainThread:5749 [retry.py:__call__():172] Retry attempt failed:
+Traceback (most recent call last):
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/wandb/sdk/lib/retry.py", line 131, in __call__
+    result = self._call_fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/wandb/apis/public/api.py", line 70, in execute
+    return self._client.execute(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/client.py", line 52, in execute
+    result = self._get_result(document, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/client.py", line 60, in _get_result
+    return self.transport.execute(document, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/wandb/sdk/lib/gql_request.py", line 59, in execute
+    request.raise_for_status()
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/requests/models.py", line 1021, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 500 Server Error: Internal Server Error for url: https://api.wandb.ai/graphql

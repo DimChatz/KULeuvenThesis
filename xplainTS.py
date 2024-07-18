@@ -13,14 +13,15 @@ seedEverything(42)
 
 # Path of fold data wanted
 PATH = "/home/tzikos/Desktop/Data/Berts final/pre/fold5"
-# Batch size - change per model to avoid OOM issues
-BATCH = 20
 # Number in Batch to take
-ELEMENT = 0
 NUM_CLASSES = 2
 DICT = {0:"AVNRT", 1:"AVRT"}
 # Window size for averaging filter
-WINDOW_SIZE = 501
+WINDOW_SIZE = 1
+# Saving the attributions
+SAVE_OPT = True
+# Visualization factor
+VIS_FACTOR = 10
 # Load model and weights
 model = ECGCNNClassifier(numClasses=NUM_CLASSES)
 model.load_state_dict(torch.load('/home/tzikos/Desktop/weights/Models/ECGCNNClassifier_fold5_pre_B64_L1e-05_01-07-24-09-27.pth'))
@@ -39,44 +40,40 @@ for i in range(NUM_CLASSES):
     # Filter out missing leads and irrelevant classes
     classFiles = [file for file in allFiles if ("missing" not in file) and (DICT[i] in file)]
     allClassFiles.append(classFiles)
-class_signals = np.zeros((NUM_CLASSES, BATCH, 12, 5000))
+class_signals = np.zeros((NUM_CLASSES, 12, 5000))
 # Loop through classes
 for i in range(NUM_CLASSES):
     # Take only the first BATCH files
-    allClassFiles[i] = allClassFiles[i][:BATCH]
-    for file in allClassFiles[i]:
-        class_signals[i, :, :, :] = np.load(file).T 
+    class_signals[i, :, :] = np.load(allClassFiles[i][0]).T 
+for i in range(NUM_CLASSES):
     # Ascribe the correct class for Captum
     target_class = i
     # Initialize lists to hold the attributions
     lead_attributions = []
     for lead in range(12):
         # Initialize tensor to hold the lead data
-        lead_signal = np.zeros((BATCH, 12, 5000))
-        lead_signal[:, lead, :] = class_signals[i, :, lead, :]
         print(f"Processing class {DICT[i]}, lead {lead+1}")
-        try:
-            # Convert numpy array to tensor and make it float
-            lead_signal_tensor = torch.from_numpy(lead_signal).float()
-            # Get the attributions
-            attribution = ig.attribute(lead_signal_tensor, target=target_class)
-            print("no error in attributions")
-            lead_attributions.append(attribution)
-        except Exception as e:
-            print(f"Error in attributions for class {DICT[i]}, lead {lead+1}: {e}")
+        # Convert numpy array to tensor and make it float
+        lead_signal_tensor = torch.from_numpy(class_signals[i]).unsqueeze(0).float()
+        #print(lead_signal_tensor.size())
+        # Get the attributions
+        attribution = ig.attribute(lead_signal_tensor, target=target_class)
+        print("no error in attributions")
+        lead_attributions.append(attribution)
         # Initialize plotly figure to write per lead, per class results
         fig = go.Figure()
         # Create averaging filter
         avg_filter = torch.ones(1, WINDOW_SIZE, dtype=torch.float32) / WINDOW_SIZE
         #print(avg_filter.size())
         # Extend attributions
-        ecg_attrib = lead_attributions[lead][0,lead,:].unsqueeze(0).detach().numpy()
+        print(lead_attributions[0].size())
+        ecg_attrib = lead_attributions[0][0, lead, :].unsqueeze(0).detach().numpy()
         #print(ecg_attrib.shape)
         # Get lead data for the first ECG in the batch
-        class_signal = class_signals[i, ELEMENT, lead, :]
+        class_signal = class_signals[i, lead, :]
         #print(class_signal.shape)
         # Normalize per ECG amplitude at each timestep
-        ecg_temp = ecg_attrib / class_signal
+        ecg_temp = ecg_attrib * VIS_FACTOR
         # Make it a tensor, float and add a dimension
         ecg_temp = torch.from_numpy(ecg_temp).view(1, 1, -1).float()
         # Perform the convolution
@@ -91,7 +88,10 @@ for i in range(NUM_CLASSES):
         #print(smoothed.size())
 
         # Add original signal and attributions to the plot
-        fig.add_trace(go.Scatter(y=class_signal, name=f"Lead {lead+1} ECG Signal"))    
-        fig.add_trace(go.Scatter(y=smoothed.numpy()/np.max(smoothed.numpy()), name=f"Lead {lead+1} Attributions"))
+        fig.add_trace(go.Scatter(y=class_signal[2000:4000], name=f"Lead {lead+1} ECG Signal"))    
+        fig.add_trace(go.Scatter(y=smoothed[2000:4000].numpy(), name=f"Lead {lead+1} Attributions"))
         fig.update_layout(title=f"Lead {lead+1} ECG Signal and Attributions fo class {DICT[i]}")
-        fig.show()
+        if lead == 1:
+            fig.show()
+        if SAVE_OPT:
+            fig.write_html(f"lead_{lead+1}_{DICT[i]}.html")

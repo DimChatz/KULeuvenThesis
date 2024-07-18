@@ -22,7 +22,11 @@ DICT = {0:"AVNRT", 1:"AVRT"}
 SHOW_DIFF = True
 # Load model and weights
 model = ECGCNNClassifier(numClasses=NUM_CLASSES)
+weight_sum = sum(p.sum() for p in model.parameters())
+print(f"The sum of the weights before is {weight_sum}")
 model.load_state_dict(torch.load('/home/tzikos/Desktop/weights/Models/ECGCNNClassifier_fold5_pre_B64_L1e-05_01-07-24-09-27.pth'))
+weight_sum = sum(p.sum() for p in model.parameters())
+print(f"The sum of the weights after is {weight_sum}")
 # Load Integrated Gradients object from Captum
 ig = IntegratedGradients(model)
 # Initialize lists to save 
@@ -51,26 +55,19 @@ for i in range(NUM_CLASSES):
     # Load the ECG data
     for file in allClassFiles[i]:
         class_signals[i, :, :, :] = np.load(file).T 
+for i in range(NUM_CLASSES):
     # Define target class
     target_class = i
     # Initialize lists to hold the attribution sums
     lead_attr_sums = []
     # Loop through leads
-    for lead in range(12):
-        # Initialize tensor to hold the lead data
-        lead_signal = np.zeros((BATCH, 12, 5000))
-        # Ascribe values
-        lead_signal[:, lead, :] = class_signals[i, :, lead, :]
-        print(f"Processing class {i+1}, lead {lead+1}")
-        try:
-            # Ensure tensor is tensor and float type
-            lead_signal_tensor = torch.from_numpy(lead_signal).float()
-            # Get the attributions and store them
-            attribution = ig.attribute(lead_signal_tensor, target=target_class)
-            print("no error in attributions")
-            lead_attr_sums.append(attribution[:,lead,:].sum())
-        except Exception as e:
-            print(f"Error in attributions for class {i}, lead {lead}: {e}")
+    # Ensure tensor is tensor and float type
+    lead_signal_tensor = torch.from_numpy(class_signals[i, :, :, :]).float()
+    # Get the attributions and store them
+    attribution = ig.attribute(lead_signal_tensor, target=target_class)
+    print("no error in attributions")
+    #print(attribution.sum((0,2)).size())
+    lead_attr_sums = attribution.sum((0,2))
     # Transform them to numpy to be visualy callable
     lead_attr_sums = [x.numpy() for x in lead_attr_sums]
     # Store the sums for each lead to differentiate between classes
@@ -85,7 +82,6 @@ for i in range(NUM_CLASSES):
 if SHOW_DIFF:
     # Create differentiations
     diff_list = [diff_of_sums[0][i]-diff_of_sums[1][i] for i in range(len(diff_of_sums[0]))]
-
     # Add bar chart for Differences
     fig.add_trace(go.Bar(
         x=list(range(1, len(diff_list) + 1)),

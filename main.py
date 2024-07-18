@@ -43,7 +43,7 @@ LEARNING_RATE_PTB = 1e-7
 LEARNING_RATE_BERT = 3e-7
 BATCH = 64
 L1 = None
-L2 = None
+L2 = 1e-4
 A_BERT = 1
 A_PTB = 1
 
