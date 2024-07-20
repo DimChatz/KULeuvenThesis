@@ -1,5 +1,5 @@
 import torch
-from captum.attr import IntegratedGradients
+from captum.attr import IntegratedGradients, Saliency, DeepLift, GradientShap
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from models import ECGCNNClassifier
@@ -7,30 +7,41 @@ import numpy as np
 import torch.nn.functional as F
 import os 
 from utility import seedEverything
-
+import captum
 # Seed everything for os parsing of same files
-seedEverything(42)
+seedEverything(44)
+
+
+
 
 # Path of fold data wanted
 PATH = "/home/tzikos/Desktop/Data/Berts final/pre/fold5"
+
 # Number in Batch to take
 NUM_CLASSES = 2
 DICT = {0:"AVNRT", 1:"AVRT"}
 # Window size for averaging filter
-WINDOW_SIZE = 1
+WINDOW_SIZE = 51
 # Saving the attributions
 SAVE_OPT = True
 # Visualization factor
 VIS_FACTOR = 10
 # Load model and weights
 model = ECGCNNClassifier(numClasses=NUM_CLASSES)
-model.load_state_dict(torch.load('/home/tzikos/Desktop/weights/Models/ECGCNNClassifier_fold5_pre_B64_L1e-05_01-07-24-09-27.pth'))
+model.load_state_dict(torch.load('/home/tzikos/Desktop/weights/Models/ECGCNNClassifier_fold4_tachy_B64_L1e-06_08-07-24-09-15.pth'))
 # Load Integrated Gradients object from Captum
-ig = IntegratedGradients(model)
+#ig = IntegratedGradients(model)
+#ig = Saliency(model)
+#ig = DeepLift(model)
+ig = GradientShap(model)
+
 
 # Initialize lists to save 
 # class files
 allClassFiles = []
+
+# Save Lead 2 for each class
+smoothed_2 = None
 
 # Loop through the classes
 for i in range(NUM_CLASSES):
@@ -57,16 +68,20 @@ for i in range(NUM_CLASSES):
         lead_signal_tensor = torch.from_numpy(class_signals[i]).unsqueeze(0).float()
         #print(lead_signal_tensor.size())
         # Get the attributions
-        attribution = ig.attribute(lead_signal_tensor, target=target_class)
+        attribution = ig.attribute(lead_signal_tensor, target=target_class, 
+                                   baselines=torch.zeros(1,12,5000).float(), 
+                                   #n_steps=200,
+                                   #n_samples = 5,
+                                   #show_progress=True,
+                                   )
         print("no error in attributions")
         lead_attributions.append(attribution)
         # Initialize plotly figure to write per lead, per class results
-        fig = go.Figure()
         # Create averaging filter
         avg_filter = torch.ones(1, WINDOW_SIZE, dtype=torch.float32) / WINDOW_SIZE
         #print(avg_filter.size())
         # Extend attributions
-        print(lead_attributions[0].size())
+        #print(lead_attributions[0].size())
         ecg_attrib = lead_attributions[0][0, lead, :].unsqueeze(0).detach().numpy()
         #print(ecg_attrib.shape)
         # Get lead data for the first ECG in the batch
@@ -85,13 +100,8 @@ for i in range(NUM_CLASSES):
         # Padd appropriate with the last seen value
         smoothed[:WINDOW_SIZE//2] = smoothed[0].item()
         smoothed[-WINDOW_SIZE//2:] = smoothed[-1].item()
-        #print(smoothed.size())
-
-        # Add original signal and attributions to the plot
-        fig.add_trace(go.Scatter(y=class_signal[2000:4000], name=f"Lead {lead+1} ECG Signal"))    
-        fig.add_trace(go.Scatter(y=smoothed[2000:4000].numpy(), name=f"Lead {lead+1} Attributions"))
-        fig.update_layout(title=f"Lead {lead+1} ECG Signal and Attributions fo class {DICT[i]}")
+        print(smoothed.size())
         if lead == 1:
-            fig.show()
-        if SAVE_OPT:
-            fig.write_html(f"lead_{lead+1}_{DICT[i]}.html")
+            smoothed_2 = smoothed
+    captum.attr.visualization.visualize_timeseries_attr(
+        smoothed_2[1000:4000].unsqueeze(1), torch.from_numpy(class_signals[i, 1, 1000:4000].T).unsqueeze(1), fig_size=(20,20))
