@@ -34,6 +34,7 @@ def padSeqSymm(batch, targetLength, dimension):
     return symPadBatch
 
 
+
 def lengthFinder(path, valNum, norm_psvt=False):
     trainFilesList = []
     if norm_psvt:
@@ -53,7 +54,7 @@ def lengthFinder(path, valNum, norm_psvt=False):
                 trainFiles = os.listdir(trainPath)
                 trainFiles = [os.path.join(trainPath, file) for file in trainFiles]
                 trainFiles = [file for file in trainFiles if "AVRT" not in file]
-                #trainFiles = [file for file in trainFiles if "missing" not in file]
+                trainFiles = [file for file in trainFiles if "missing" not in file]
                 trainFilesList.append(trainFiles)  
     else:
         for folder in os.listdir(path):
@@ -95,10 +96,11 @@ def lengthFinderBinary(path, valNum):
             trainFiles = os.listdir(trainPath)
             trainFiles = [os.path.join(trainPath, file) for file in trainFiles]
             trainFiles = [file for file in trainFiles if ((("AVNRT" in file) or ("AVRT" in file) or ("concealed" in file)))]
-            trainFiles = [file for file in trainFiles if "missing" not in file]
+            #trainFiles = [file for file in trainFiles if "missing" not in file]
             trainFilesList.append(trainFiles)
     trainFilesList = list(chain.from_iterable(trainFilesList))
     return trainFilesList, valFiles, testFiles
+
 ################
 ### DATASETS ###
 ################
@@ -523,7 +525,7 @@ class MLSTMFCN(nn.Module):
     def __init__(self, numClasses):
         super(MLSTMFCN, self).__init__()
         # LSTM
-        self.LSTM = nn.LSTM(input_size=12, hidden_size=100, num_layers=1, batch_first=True)
+        self.LSTM = nn.LSTM(input_size=12, hidden_size=64, num_layers=1, batch_first=True)
         self.LSTMdropout = nn.Dropout(0.8)
 
         # FCN

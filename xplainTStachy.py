@@ -8,6 +8,9 @@ import torch.nn.functional as F
 import os 
 from utility import seedEverything
 import captum
+from captum.attr import visualization as viz
+import matplotlib.pyplot as plt
+
 # Seed everything for os parsing of same files
 seedEverything(42)
 
@@ -19,7 +22,7 @@ PATH = "/home/tzikos/Desktop/Data/Berts final/tachy/fold4"
 
 # Number in Batch to take
 NUM_CLASSES = 5
-DICT = {0:"normal", 2:"AVRT", 1:"AVNRT", 3:"concealed", 4:"EAT"}
+DICT = {0:"normal", 1:"AVNRT", 2:"AVRT", 3:"concealed", 4:"EAT"}
 # Window size for averaging filter
 WINDOW_SIZE = 51
 # Saving the attributions
@@ -74,8 +77,8 @@ for i in range(NUM_CLASSES):
         # Get the attributions
         attribution = ig.attribute(lead_signal_tensor, target=target_class, 
                                    baselines=torch.zeros(1,12,5000).float(), 
-                                   #n_steps=200,
-                                   #n_samples = 5,
+                                   n_samples=50,
+                                   stdevs=0.1*torch.std(lead_signal_tensor).item()
                                    #show_progress=True,
                                    )
         print("no error in attributions")
@@ -110,5 +113,15 @@ for i in range(NUM_CLASSES):
             smoothed_2 = smoothed
     print(smoothed_list[1000:4000, :].shape)
     print(class_signals[i, :, 1000:4000].T.shape)
-    captum.attr.visualization.visualize_timeseries_attr(
-        torch.from_numpy(smoothed_list[1000:4000, :]), torch.from_numpy(class_signals[i, :, 1000:4000].T), fig_size=(20,20))
+    viz.visualize_timeseries_attr(
+        smoothed_2[2000:3000].unsqueeze(1), 
+        torch.from_numpy(class_signals[i, 1, 2000:3000].T).unsqueeze(1), 
+        fig_size=(20, 20),
+        title = f"Lead 2 of Class {DICT[i]}",
+    )
+    viz.visualize_timeseries_attr(
+        torch.from_numpy(smoothed_list[2000:3000, :]), 
+        torch.from_numpy(class_signals[i, :, 2000:3000].T), 
+        fig_size=(20, 20),
+        title = f"All Leads of Class {DICT[i]}",
+    )

@@ -8,6 +8,9 @@ import torch.nn.functional as F
 import os 
 from utility import seedEverything
 import captum
+from captum.attr import visualization as viz
+import matplotlib.pyplot as plt
+
 # Seed everything for os parsing of same files
 seedEverything(44)
 
@@ -70,8 +73,8 @@ for i in range(NUM_CLASSES):
         # Get the attributions
         attribution = ig.attribute(lead_signal_tensor, target=target_class, 
                                    baselines=torch.zeros(1,12,5000).float(), 
-                                   #n_steps=200,
-                                   #n_samples = 5,
+                                   n_samples=50,
+                                   stdevs=0.1*torch.std(lead_signal_tensor).item()
                                    #show_progress=True,
                                    )
         print("no error in attributions")
@@ -103,5 +106,9 @@ for i in range(NUM_CLASSES):
         print(smoothed.size())
         if lead == 1:
             smoothed_2 = smoothed
-    captum.attr.visualization.visualize_timeseries_attr(
-        smoothed_2[1000:4000].unsqueeze(1), torch.from_numpy(class_signals[i, 1, 1000:4000].T).unsqueeze(1), fig_size=(20,20))
+    viz.visualize_timeseries_attr(
+        smoothed_2[1200:3800].unsqueeze(1), 
+        torch.from_numpy(class_signals[i, 1, 1200:3800].T).unsqueeze(1), 
+        fig_size=(20, 20),
+        title = f"Lead 2 of Class {DICT[i]}",
+    )

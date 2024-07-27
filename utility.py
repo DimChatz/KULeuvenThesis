@@ -6,6 +6,8 @@ warnings.filterwarnings("ignore", message="Workbook contains no default style, a
 import random
 import torch
 from tqdm import tqdm
+from torch import nn
+
 
 def seedEverything(seed=42):
     random.seed(seed)
@@ -16,6 +18,16 @@ def seedEverything(seed=42):
     torch.cuda.manual_seed_all(seed)  # if using multi-GPU
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
+
+
+# To remove the last layer and get embeddings, you can create a new model class or use a wrapper
+class ModelWithoutLastLayer(nn.Module):
+    def __init__(self, original_model):
+        super(ModelWithoutLastLayer, self).__init__()
+        self.features = nn.Sequential(*list(original_model.children())[:-1])  # remove the last layer
+
+    def forward(self, x):
+        return self.features(x)
 
 
 def classInstanceCalc(rootDir, targetDir,  segmentList, experiment):

@@ -1,0 +1,56 @@
+Epoch 1: Train Loss: 1.7110, Train Vis Loss: 1.6129, Val Loss: 1.6149, Train Acc: 18.76%, Val Accuracy: 20.69%, Train F1 Score: 14.97%, Val F1 Score: 17.64%
+For class normal the Train F1: 30.74% and Val F1: 31.13%
+For class AVNRT the Train F1: 15.30% and Val F1: 21.66%
+For class AVRT the Train F1: 17.92% and Val F1: 23.16%
+For class concealed the Train F1: 7.35% and Val F1: 6.25%
+For class EAT the Train F1: 3.52% and Val F1: 6.02%
+Time taken for epoch 1: 0.19 minutes
+Traceback (most recent call last):
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/runpy.py", line 198, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/runpy.py", line 88, in _run_code
+    exec(code, run_globals)
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.8.0-linux-x64/bundled/libs/debugpy/adapter/../../debugpy/launcher/../../debugpy/__main__.py", line 39, in <module>
+    cli.main()
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.8.0-linux-x64/bundled/libs/debugpy/adapter/../../debugpy/launcher/../../debugpy/../debugpy/server/cli.py", line 430, in main
+    run()
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.8.0-linux-x64/bundled/libs/debugpy/adapter/../../debugpy/launcher/../../debugpy/../debugpy/server/cli.py", line 284, in run_file
+    runpy.run_path(target, run_name="__main__")
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.8.0-linux-x64/bundled/libs/debugpy/_vendored/pydevd/_pydevd_bundle/pydevd_runpy.py", line 321, in run_path
+    return _run_module_code(code, init_globals, run_name,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.8.0-linux-x64/bundled/libs/debugpy/_vendored/pydevd/_pydevd_bundle/pydevd_runpy.py", line 135, in _run_module_code
+    _run_code(code, mod_globals, init_globals,
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.8.0-linux-x64/bundled/libs/debugpy/_vendored/pydevd/_pydevd_bundle/pydevd_runpy.py", line 124, in _run_code
+    exec(code, run_globals)
+  File "/home/tzikos/Desktop/KULeuvenThesis/main.py", line 146, in <module>
+    CVtrain(modelStr=MODEL_STR, learningRate=LEARNING_RATE_BERT, epochs=1000, classWeights=classWeights,
+  File "/home/tzikos/Desktop/KULeuvenThesis/trainingFuncs.py", line 141, in CVtrain
+    outputs = model(inputs)
+              ^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1511, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1520, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/Desktop/KULeuvenThesis/models.py", line 260, in forward
+    x = self.convMaxBlock1(x)
+        ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1511, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1520, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/Desktop/KULeuvenThesis/models.py", line 290, in forward
+    x = padSeqSymm(x, self.targetLength // self.maxPoolKernel, 2)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/Desktop/KULeuvenThesis/models.py", line 33, in padSeqSymm
+    symPadBatch = F.pad(batch, pad=padArg, mode='constant', value=0)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/torch/nn/functional.py", line 4495, in pad
+    return torch._C._nn.pad(input, pad, mode, value)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt

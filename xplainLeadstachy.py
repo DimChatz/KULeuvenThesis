@@ -84,7 +84,8 @@ for i in range(NUM_CLASSES):
     # Get the attributions and store them
     attribution = ig.attribute(lead_signal_tensor, target=target_class,
                                 baselines=torch.zeros(1,12,5000).float(), 
-                                )
+                                n_samples=20,
+                                stdevs=0.1*torch.std(lead_signal_tensor).item())
     print("no error in attributions")
     #print(attribution.sum((0,2)).size())
     lead_attr_sums = attribution.sum((0,2))
@@ -114,9 +115,10 @@ if SHOW_DIFF:
 
 # Update layout with the provided axis settings
 fig.update_layout(
-    title_text="Sums and Differences for Each Class",
+    title_text="Sums and Differences of Activation Gradients for Each Class",
     barmode='group',  # Group bars side by side
     xaxis=dict(
+        title='Lead',
         tick0=1,
         dtick=1,
         zeroline=True,
@@ -124,6 +126,7 @@ fig.update_layout(
         showgrid=True
     ),
     yaxis=dict(
+        title='Sum of Attributions',
         zeroline=True,
         showline=True,
         showgrid=True
