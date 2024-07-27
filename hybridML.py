@@ -19,6 +19,7 @@ from sklearn.metrics import confusion_matrix
 import plotly.io as pio
 from visualizer import plotNSaveConfusion
 from datetime import datetime
+from models import CNN2023Attia, ECGCNNClassifier, MLSTMFCN, Gated2TowerTransformer
 
 def createNsaveEmbeddings(model, experiment:str, modelName:str,
                           batchSize:int, device:torch.device, loader:DataLoader,
@@ -184,11 +185,11 @@ def wandbTable(table: np.ndarray, run:wandb.run, classNames:list, modelName:str,
         wandb.log({"Training Confusion Matrix Heatmap": wandb.Image(f"/home/tzikos/Confusions/Confusion_train_{modelName}_fold{fold+1}_{experiment}_{subtype}_B{batchSize}_{formattedNow}.png")})
 
 def hybridML(model: torch.nn.Module, modelName: str,  weightsPath: str, experiment: str,
-             batchSize: int, fold: int, subtype: str, notes: str=None, useLDA:bool=True,
+             batchSize: int, subtype: str, notes: str=None, useLDA:bool=True,
              C:float=None):
     now = datetime.now()
     formattedNow = now.strftime("%d-%m-%y-%H-%M")
-    for i in range(10):
+    for fold in range(10):
         preprocEmbed(model, modelName, weightsPath, experiment,
                 batchSize, subtype, fold)
         embeddingAccumulator(experiment, subtype, modelName, fold)
@@ -222,5 +223,19 @@ def hybridML(model: torch.nn.Module, modelName: str,  weightsPath: str, experime
         wandbTable(trainCM, run, classNames, modelName, fold, experiment, subtype, batchSize, formattedNow)
         wandbTable(valCM, run, classNames, modelName, fold, experiment, subtype, batchSize, formattedNow)
         wandbTable(testCM, run, classNames, modelName, fold, experiment, subtype, batchSize, formattedNow)
+        run.finish()
 
-        
+
+
+
+seedEverything(42)
+
+SUBTYPE = "5-class"
+NUMCLASSES = 5
+EXPERIMENT = "pre"
+BATCH_SIZE = 64
+MODEL = CNN2023Attia(5)
+MODELNAME = MODEL.__class__.__name__
+
+hybridML(MODEL, MODELNAME, "/home/tzikos/Desktop/weights/CNN2023Attia_fold9_pre_B64_L1e-05_26-07-24-03-27.pth", EXPERIMENT, BATCH_SIZE, SUBTYPE, useLDA=True, C=1)
+
