@@ -34,6 +34,14 @@ def padSeqSymm(batch, targetLength, dimension):
     return symPadBatch
 
 
+def foldFinder(path, valNum):
+    for folder in os.listdir(path):
+        if folder == f"fold{valNum+1}":
+            foldPath = os.path.join(path, folder)
+            foldFiles = os.listdir(foldPath)
+            foldFiles = [os.path.join(foldPath, file) for file in foldFiles]
+            foldFiles = [file for file in foldFiles if (("missing" not in file) and ("AVRT" not in file))]
+    return foldFiles
 
 def lengthFinder(path, valNum, norm_psvt=False):
     trainFilesList = []
