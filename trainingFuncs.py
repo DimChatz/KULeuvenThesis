@@ -45,7 +45,7 @@ def CVtrain(modelStr, learningRate, epochs, classWeights, earlyStopPatience,
 
     
     for foldNum in range(10):
-        if foldNum < 10:
+        if foldNum > 6:
             # start a new wandb run to track this script
             '''Training function for the model'''
             print(f"Started training fold {foldNum+1}")
