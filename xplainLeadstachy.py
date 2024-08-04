@@ -1,5 +1,5 @@
 import torch
-from captum.attr import IntegratedGradients, Saliency, DeepLift, GradientShap
+from captum.attr import GradientShap
 import plotly.graph_objects as go
 from models import ECGCNNClassifier
 import numpy as np
@@ -12,9 +12,11 @@ from itertools import chain
 seedEverything(42)
 
 
-def fileAccumulator(path, string):
+def fileAccumulator(path, string, numFold):
     trainFilesList = []
     for folder in os.listdir(path):
+        #if str(f"fold{numFold}") in folder or str(f"fold{numFold+1}") in folder:
+            #continue
         trainPath = os.path.join(path, folder)
         trainFiles = os.listdir(trainPath)
         trainFiles = [os.path.join(trainPath, file) for file in trainFiles]
@@ -27,7 +29,7 @@ def fileAccumulator(path, string):
 
 # Globals - to be changed per case
 # Path of fold to consider
-PATH = "/home/tzikos/Desktop/Data/Berts final/tachy/"
+PATH = "/home/tzikos/Desktop/Data/Berts final/tachy"
 # Batch size to take - handle per model for OOM issues
 BATCH = 34
 NUM_CLASSES = 5
@@ -38,7 +40,7 @@ SHOW_DIFF = True
 model = ECGCNNClassifier(numClasses=2)
 #weight_sum = sum(p.sum() for p in model.parameters())
 #print(f"The sum of the weights before is {weight_sum}")
-model.load_state_dict(torch.load('/home/tzikos/Desktop/weights/Models/ECGCNNClassifier_fold5_pre_B64_L1e-05_01-07-24-09-27.pth'))
+model.load_state_dict(torch.load('/home/tzikos/Desktop/weights/Models/ECGCNNClassifier_fold4_tachy_B64_L1e-06_08-07-24-09-15.pth'))
 #weight_sum = sum(p.sum() for p in model.parameters())
 #print(f"The sum of the weights after is {weight_sum}")
 # Load Integrated Gradients object from Captum
@@ -56,7 +58,7 @@ diff_of_sums = []
 # Loop through the classes
 for i in range(NUM_CLASSES):
     # Get all files
-    classFiles = fileAccumulator(PATH, DICT[i])
+    classFiles = fileAccumulator(PATH, DICT[i], numFold=4)
     allClassFiles.append(classFiles)
 # np array to hold the ECG data
 class_signals = np.zeros((NUM_CLASSES, BATCH, 12, 5000))
@@ -72,7 +74,7 @@ for i in range(NUM_CLASSES):
         class_signals[i, :, :, :] = np.load(file).T 
 for i in range(NUM_CLASSES):
     # Define target class
-    if i==0:
+    if i == 0:
         target_class = 0
     else:
         target_class = 1

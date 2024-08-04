@@ -45,7 +45,7 @@ def CVtrain(modelStr, learningRate, epochs, classWeights, earlyStopPatience,
 
     
     for foldNum in range(10):
-        if foldNum > 6:
+        if foldNum < 10:
             # start a new wandb run to track this script
             '''Training function for the model'''
             print(f"Started training fold {foldNum+1}")
@@ -551,7 +551,7 @@ def CVtrainBinary(modelStr, learningRate, epochs, classWeights, earlyStopPatienc
     classWeights = torch.from_numpy(classWeights).to(device)
 
     for foldNum in range(10):
-        if foldNum < 10 :
+        if foldNum > 0:
                 # start a new wandb run to track this script
             '''Training function for the model'''
             print(f"Starting training fold {foldNum+1}")

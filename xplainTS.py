@@ -1,24 +1,21 @@
 import torch
-from captum.attr import IntegratedGradients, Saliency, DeepLift, GradientShap
-import plotly.graph_objects as go
+from captum.attr import GradientShap
 from plotly.subplots import make_subplots
 from models import ECGCNNClassifier
 import numpy as np
 import torch.nn.functional as F
 import os 
 from utility import seedEverything
-import captum
 from captum.attr import visualization as viz
-import matplotlib.pyplot as plt
 
 # Seed everything for os parsing of same files
-seedEverything(44)
+seedEverything(42)
 
 
 
 
 # Path of fold data wanted
-PATH = "/home/tzikos/Desktop/Data/Berts final/pre/fold5"
+PATH = "/home/tzikos/Desktop/Data/Berts final/pre/fold6"
 
 # Number in Batch to take
 NUM_CLASSES = 2
@@ -31,7 +28,7 @@ SAVE_OPT = True
 VIS_FACTOR = 10
 # Load model and weights
 model = ECGCNNClassifier(numClasses=NUM_CLASSES)
-model.load_state_dict(torch.load('/home/tzikos/Desktop/weights/Models/ECGCNNClassifier_fold4_tachy_B64_L1e-06_08-07-24-09-15.pth'))
+model.load_state_dict(torch.load('/home/tzikos/Desktop/weights/Models/ECGCNNClassifier_fold5_pre_B64_L1e-05_01-07-24-09-27.pth'))
 # Load Integrated Gradients object from Captum
 #ig = IntegratedGradients(model)
 #ig = Saliency(model)
@@ -58,7 +55,7 @@ class_signals = np.zeros((NUM_CLASSES, 12, 5000))
 # Loop through classes
 for i in range(NUM_CLASSES):
     # Take only the first BATCH files
-    class_signals[i, :, :] = np.load(allClassFiles[i][0]).T 
+    class_signals[i, :, :] = np.load(allClassFiles[i][-4]).T 
 for i in range(NUM_CLASSES):
     # Ascribe the correct class for Captum
     target_class = i

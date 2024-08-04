@@ -1,0 +1,92 @@
+Epoch 1: Train Loss: 1.6708, Train Vis Loss: 1.2899, Val Loss: 1.2221, Train Acc: 54.28%, Val Accuracy: 62.43%, Train F1 Score: 46.17%, Val F1 Score: 50.27%
+For class NORM the Train F1: 76.59% and Val F1: 87.30%
+For class MI the Train F1: 37.10% and Val F1: 36.73%
+For class STTC the Train F1: 40.07% and Val F1: 46.80%
+For class CD the Train F1: 43.53% and Val F1: 51.32%
+For class HYP the Train F1: 33.55% and Val F1: 29.19%
+Time taken for epoch 1: 13.18 minutes
+Epoch 2: Train Loss: 1.4631, Train Vis Loss: 1.0824, Val Loss: 1.4048, Train Acc: 64.51%, Val Accuracy: 58.22%, Train F1 Score: 57.85%, Val F1 Score: 44.62%
+For class NORM the Train F1: 82.40% and Val F1: 85.60%
+For class MI the Train F1: 52.87% and Val F1: 36.38%
+For class STTC the Train F1: 52.09% and Val F1: 38.89%
+For class CD the Train F1: 54.21% and Val F1: 49.12%
+For class HYP the Train F1: 47.68% and Val F1: 13.10%
+Time taken for epoch 2: 13.20 minutes
+Epoch 3: Train Loss: 1.2910, Train Vis Loss: 0.9105, Val Loss: 1.5851, Train Acc: 71.15%, Val Accuracy: 56.54%, Train F1 Score: 65.45%, Val F1 Score: 42.36%
+For class NORM the Train F1: 86.69% and Val F1: 85.72%
+For class MI the Train F1: 61.74% and Val F1: 34.48%
+For class STTC the Train F1: 60.38% and Val F1: 35.96%
+For class CD the Train F1: 60.30% and Val F1: 43.60%
+For class HYP the Train F1: 58.16% and Val F1: 12.02%
+Time taken for epoch 3: 13.21 minutes
+Epoch 4: Train Loss: 1.1342, Train Vis Loss: 0.7537, Val Loss: 1.7845, Train Acc: 76.77%, Val Accuracy: 54.54%, Train F1 Score: 71.31%, Val F1 Score: 40.12%
+For class NORM the Train F1: 91.07% and Val F1: 84.31%
+For class MI the Train F1: 68.65% and Val F1: 33.89%
+For class STTC the Train F1: 67.37% and Val F1: 35.58%
+For class CD the Train F1: 66.39% and Val F1: 39.64%
+For class HYP the Train F1: 63.09% and Val F1: 7.15%
+Time taken for epoch 4: 13.03 minutes
+Traceback (most recent call last):
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/runpy.py", line 198, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/runpy.py", line 88, in _run_code
+    exec(code, run_globals)
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.8.0-linux-x64/bundled/libs/debugpy/adapter/../../debugpy/launcher/../../debugpy/__main__.py", line 39, in <module>
+    cli.main()
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.8.0-linux-x64/bundled/libs/debugpy/adapter/../../debugpy/launcher/../../debugpy/../debugpy/server/cli.py", line 430, in main
+    run()
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.8.0-linux-x64/bundled/libs/debugpy/adapter/../../debugpy/launcher/../../debugpy/../debugpy/server/cli.py", line 284, in run_file
+    runpy.run_path(target, run_name="__main__")
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.8.0-linux-x64/bundled/libs/debugpy/_vendored/pydevd/_pydevd_bundle/pydevd_runpy.py", line 321, in run_path
+    return _run_module_code(code, init_globals, run_name,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.8.0-linux-x64/bundled/libs/debugpy/_vendored/pydevd/_pydevd_bundle/pydevd_runpy.py", line 135, in _run_module_code
+    _run_code(code, mod_globals, init_globals,
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.8.0-linux-x64/bundled/libs/debugpy/_vendored/pydevd/_pydevd_bundle/pydevd_runpy.py", line 124, in _run_code
+    exec(code, run_globals)
+  File "/home/tzikos/Desktop/KULeuvenThesis/main.py", line 124, in <module>
+    train(modelStr=MODEL_STR, learningRate=LEARNING_RATE_PTB, classWeights=classWeights, expList=list(countDict.keys()),
+  File "/home/tzikos/Desktop/KULeuvenThesis/trainingFuncs.py", line 435, in train
+    outputs = model(inputs)
+              ^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1511, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1520, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/Desktop/KULeuvenThesis/models.py", line 682, in forward
+    x = self.convBlock2(x)
+        ^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1511, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1520, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/Desktop/KULeuvenThesis/models.py", line 641, in forward
+    x = self.IDEN(x)
+        ^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1511, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1520, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/Desktop/KULeuvenThesis/models.py", line 619, in forward
+    x = self.relu1(self.bn1(self.conv1(x)))
+                   ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1511, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1520, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/torch/nn/modules/batchnorm.py", line 175, in forward
+    return F.batch_norm(
+           ^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/torch/nn/functional.py", line 2482, in batch_norm
+    return torch.batch_norm(
+           ^^^^^^^^^^^^^^^^^
+KeyboardInterrupt

@@ -30,8 +30,8 @@ SAVE_OPT = True
 # Visualization factor
 VIS_FACTOR = 10
 # Load model and weights
-model = ECGCNNClassifier(numClasses=2)
-model.load_state_dict(torch.load('/home/tzikos/Desktop/weights/Models/ECGCNNClassifier_fold4_tachy_B64_L1e-06_08-07-24-09-15.pth'))
+model = ECGCNNClassifier(numClasses=5)
+model.load_state_dict(torch.load('/home/tzikos/Desktop/weights/Models/ECGCNNClassifier_fold5_tachy_B64_L1e-06_24-06-24-11-02.pth'))
 # Load Integrated Gradients object from Captum
 #ig = IntegratedGradients(model)
 #ig = Saliency(model)
@@ -58,13 +58,10 @@ class_signals = np.zeros((NUM_CLASSES, 12, 5000))
 # Loop through classes
 for i in range(NUM_CLASSES):
     # Take only the first BATCH files
-    class_signals[i, :, :] = np.load(allClassFiles[i][0]).T 
+    class_signals[i, :, :] = np.load(allClassFiles[i][-3]).T 
 for i in range(NUM_CLASSES):
     # Ascribe the correct class for Captum
-    if i == 0:
-        target_class = 0
-    else:
-        target_class = 1
+    target_class = i
     # Initialize lists to hold the attributions
     lead_attributions = []
     smoothed_list = np.zeros((5000, 12))
@@ -119,9 +116,9 @@ for i in range(NUM_CLASSES):
         fig_size=(20, 20),
         title = f"Lead 2 of Class {DICT[i]}",
     )
-    viz.visualize_timeseries_attr(
-        torch.from_numpy(smoothed_list[2000:3000, :]), 
-        torch.from_numpy(class_signals[i, :, 2000:3000].T), 
-        fig_size=(20, 20),
-        title = f"All Leads of Class {DICT[i]}",
-    )
+    #viz.visualize_timeseries_attr(
+    #    torch.from_numpy(smoothed_list[2000:3000, :]), 
+    #    torch.from_numpy(class_signals[i, :, 2000:3000].T), 
+    #    fig_size=(20, 20),
+    #    title = f"All Leads of Class {DICT[i]}",
+    #)

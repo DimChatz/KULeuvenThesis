@@ -1,0 +1,36 @@
+Epoch 1: Train Loss: 3.3297, Train Vis Loss: 1.5319, Val Loss: 1.4768, Train Acc: 40.08%, Val Accuracy: 46.44%, Train F1 Score: 26.82%, Val F1 Score: 30.49%
+For class NORM the Train F1: 66.04% and Val F1: 76.39%
+For class MI the Train F1: 27.64% and Val F1: 33.38%
+For class STTC the Train F1: 2.44% and Val F1: 2.58%
+For class CD the Train F1: 11.66% and Val F1: 10.87%
+For class HYP the Train F1: 26.32% and Val F1: 29.22%
+Time taken for epoch 1: 0.44 minutes
+Traceback (most recent call last):
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/runpy.py", line 198, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/runpy.py", line 88, in _run_code
+    exec(code, run_globals)
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.10.0-linux-x64/bundled/libs/debugpy/adapter/../../debugpy/launcher/../../debugpy/__main__.py", line 39, in <module>
+    cli.main()
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.10.0-linux-x64/bundled/libs/debugpy/adapter/../../debugpy/launcher/../../debugpy/../debugpy/server/cli.py", line 430, in main
+    run()
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.10.0-linux-x64/bundled/libs/debugpy/adapter/../../debugpy/launcher/../../debugpy/../debugpy/server/cli.py", line 284, in run_file
+    runpy.run_path(target, run_name="__main__")
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.10.0-linux-x64/bundled/libs/debugpy/_vendored/pydevd/_pydevd_bundle/pydevd_runpy.py", line 321, in run_path
+    return _run_module_code(code, init_globals, run_name,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.10.0-linux-x64/bundled/libs/debugpy/_vendored/pydevd/_pydevd_bundle/pydevd_runpy.py", line 135, in _run_module_code
+    _run_code(code, mod_globals, init_globals,
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.10.0-linux-x64/bundled/libs/debugpy/_vendored/pydevd/_pydevd_bundle/pydevd_runpy.py", line 124, in _run_code
+    exec(code, run_globals)
+  File "/home/tzikos/Desktop/KULeuvenThesis/main.py", line 124, in <module>
+    train(modelStr=MODEL_STR, learningRate=LEARNING_RATE_PTB, classWeights=classWeights, expList=list(countDict.keys()),
+  File "/home/tzikos/Desktop/KULeuvenThesis/trainingFuncs.py", line 444, in train
+    regLoss += L2 * torch.sum(param ** 2)
+                              ~~~~~~^^~~
+  File "/home/tzikos/anaconda3/envs/KUThesis/lib/python3.12/site-packages/torch/_tensor.py", line 34, in wrapped
+    @functools.wraps(f, assigned=assigned)
+  File "/home/tzikos/.vscode/extensions/ms-python.debugpy-2024.10.0-linux-x64/bundled/libs/debugpy/_vendored/pydevd/_pydevd_bundle/pydevd_trace_dispatch_regular.py", line 326, in __call__
+    def __call__(self, frame, event, arg):
+KeyboardInterrupt

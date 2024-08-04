@@ -63,7 +63,7 @@ def lengthFinder(path, valNum, norm_psvt=False):
                 trainFiles = os.listdir(trainPath)
                 trainFiles = [os.path.join(trainPath, file) for file in trainFiles]
                 trainFiles = [file for file in trainFiles if "AVRT" not in file]
-                trainFiles = [file for file in trainFiles if "missing" not in file]
+                #trainFiles = [file for file in trainFiles if "missing" not in file]
                 trainFilesList.append(trainFiles)  
     else:
         for folder in os.listdir(path):
@@ -81,7 +81,7 @@ def lengthFinder(path, valNum, norm_psvt=False):
                 trainPath = os.path.join(path, folder)
                 trainFiles = os.listdir(trainPath)
                 trainFiles = [os.path.join(trainPath, file) for file in trainFiles]
-                trainFiles = [file for file in trainFiles if "missing" not in file]
+                #trainFiles = [file for file in trainFiles if "missing" not in file]
                 trainFilesList.append(trainFiles)
     trainFilesList = list(chain.from_iterable(trainFilesList))
     return trainFilesList, valFiles, testFiles
@@ -548,7 +548,7 @@ class MLSTMFCN(nn.Module):
         # Common
         self.concat = Concat()
         self.fc_dropout = nn.Dropout(0.8)
-        self.fc = nn.Linear(100 + 128, numClasses)
+        self.fc = nn.Linear(100 + 92, numClasses)
 
     def forward(self, x):
         # RNN
@@ -688,6 +688,7 @@ class ECGCNNClassifier(nn.Module):
         x = self.Dense2(x)
         x = self.fc(x)
         return x
+
     
 #############################################
 

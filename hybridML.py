@@ -147,10 +147,10 @@ def applyPCAnLDA(experiment:str, subtype:str, modelName:str, solver:str,
     trainEmbeddings = pca.transform(trainEmbeddings)
     testEmbeddings = pca.transform(testEmbeddings)
 
-    lda = LinearDiscriminantAnalysis(solver=solver)
-    lda.fit(trainEmbeddings, trainLabels)
-    trainEmbeddings = lda.transform(trainEmbeddings)
-    testEmbeddings = lda.transform(testEmbeddings)
+    #lda = LinearDiscriminantAnalysis(solver=solver)
+    #lda.fit(trainEmbeddings, trainLabels)
+    #trainEmbeddings = lda.transform(trainEmbeddings)
+    #testEmbeddings = lda.transform(testEmbeddings)
     np.save(f"{path}/{experiment}/{subtype}/fold{fold+1}/train/{modelName}LDAEmbeddings.npy", trainEmbeddings)
     np.save(f"{path}/{experiment}/{subtype}/fold{fold+1}/test/{modelName}LDAEmbeddings.npy", testEmbeddings)
 
@@ -256,16 +256,16 @@ SUBTYPE = ["5-class", "5-class", "NORM-PSVT+nonWPW", "AVNRT-AVRT+concealed"]
 NUMCLASSES = [5, 5, 2, 2]
 EXPERIMENT = ["tachy", "pre", "pre", "tachy"]
 BATCH_SIZE = 64
-WEIGHT_PATHS = ["/home/tzikos/Desktop/weights/Models/ECGCNNClassifier_fold8_tachy_B64_L1e-06_24-06-24-11-02.pth",
-                "/home/tzikos/Desktop/weights/Models/ECGCNNClassifier_fold7_pre_B64_L5e-06_23-06-24-02-16.pth",
-                "/home/tzikos/Desktop/weights/Models/ECGCNNClassifier_fold7_pre_B64_L3e-07_17-07-24-02-13.pth",
-                "/home/tzikos/Desktop/weights/Models/ECGCNNClassifier_fold8_tachy_B64_L2e-06_10-07-24-09-03.pth",
+WEIGHT_PATHS = ["/home/tzikos/Desktop/weights/Models/ECGCNNClassifier_fold8_tachy_B64_L1e-06_24-06-24-11-02.pth", #47.52
+                "/home/tzikos/Desktop/weights/Models/ECGCNNClassifier_fold7_pre_B64_L5e-06_23-06-24-02-16.pth", #48.23
+                "/home/tzikos/Desktop/weights/Models/ECGCNNClassifier_fold7_pre_B64_L3e-07_17-07-24-02-13.pth", #73.71
+                "/home/tzikos/Desktop/weights/Models/ECGCNNClassifier_fold8_tachy_B64_L2e-06_10-07-24-09-03.pth", #50.91
         ]
 foldExpList = [8, 7, 7, 8]
 C_LIST = [0.1, 1, 10]
-SOLVER = {"svd": True,
+SOLVER = {#"svd": True
           #"lsqr": True, 
-          # #"eigen": True, 
+          #"eigen": True, 
           "noLDA": False
           }
 
