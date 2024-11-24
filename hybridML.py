@@ -17,9 +17,9 @@ from sklearn.metrics import confusion_matrix
 import plotly.io as pio
 from visualizer import plotNSaveConfusion
 from datetime import datetime
-from models import ECGCNNClassifier
+from models import ECGCNNClassifier, ECGCNNClassifier2
 import os
-from sklearn.decomposition import PCA
+from sklearn.decomposition import KernelPCA
 
 def fileLoader(path:str, model:torch.nn.Module, modelName:str, weightsPath:str, experiment:str, 
                batchSize:int, subtype:str, fold:int, device:torch.device, ignoreMissing:bool=True):
@@ -141,16 +141,16 @@ def applyPCAnLDA(experiment:str, subtype:str, modelName:str, solver:str,
     trainLabels = np.load(f"{path}/{experiment}/{subtype}/fold{fold+1}/train/{modelName}AccLabels.npy")
 
 
-    pca = PCA(n_components=0.95)
+    pca = KernelPCA(n_components=0.95, kernel='rbf')
     allEmbeddings = np.concatenate((trainEmbeddings, testEmbeddings), axis=0)
     pca.fit(allEmbeddings)
     trainEmbeddings = pca.transform(trainEmbeddings)
     testEmbeddings = pca.transform(testEmbeddings)
 
-    #lda = LinearDiscriminantAnalysis(solver=solver)
-    #lda.fit(trainEmbeddings, trainLabels)
-    #trainEmbeddings = lda.transform(trainEmbeddings)
-    #testEmbeddings = lda.transform(testEmbeddings)
+    lda = LinearDiscriminantAnalysis(solver=solver)
+    lda.fit(trainEmbeddings, trainLabels)
+    trainEmbeddings = lda.transform(trainEmbeddings)
+    testEmbeddings = lda.transform(testEmbeddings)
     np.save(f"{path}/{experiment}/{subtype}/fold{fold+1}/train/{modelName}LDAEmbeddings.npy", trainEmbeddings)
     np.save(f"{path}/{experiment}/{subtype}/fold{fold+1}/test/{modelName}LDAEmbeddings.npy", testEmbeddings)
 
@@ -256,12 +256,17 @@ SUBTYPE = ["5-class", "5-class", "NORM-PSVT+nonWPW", "AVNRT-AVRT+concealed"]
 NUMCLASSES = [5, 5, 2, 2]
 EXPERIMENT = ["tachy", "pre", "pre", "tachy"]
 BATCH_SIZE = 64
-WEIGHT_PATHS = ["/home/tzikos/Desktop/weights/Models/ECGCNNClassifier_fold8_tachy_B64_L1e-06_24-06-24-11-02.pth", #47.52
-                "/home/tzikos/Desktop/weights/Models/ECGCNNClassifier_fold7_pre_B64_L5e-06_23-06-24-02-16.pth", #48.23
-                "/home/tzikos/Desktop/weights/Models/ECGCNNClassifier_fold7_pre_B64_L3e-07_17-07-24-02-13.pth", #73.71
-                "/home/tzikos/Desktop/weights/Models/ECGCNNClassifier_fold8_tachy_B64_L2e-06_10-07-24-09-03.pth", #50.91
-        ]
-foldExpList = [8, 7, 7, 8]
+WEIGHT_PATHS = ["/home/tzikos/Desktop/weights/Models/ECGCNNClassifier_fold10_tachy_B64_L5e-05_02-08-24-00-35.pth", # 74.61/61.59
+                "/home/tzikos/Desktop/weights/Models/ECGCNNClassifier_fold2_pre_B64_L1e-06_10-06-24-17-03.pth", # 54.42/47.76    
+                "/home/tzikos/Desktop/weights/Models/ECGCNNClassifier_fold7_pre_B64_L1e-05_01-08-24-01-17.pth", # 79.30/72.04
+                "/home/tzikos/Desktop/weights/Models/ECGCNNClassifier_fold8_tachy_B64_L5e-06_02-08-24-18-06.pth", # 91.75/66.47
+]
+MODEL_NAME_LIST = [ECGCNNClassifier2(5),
+              ECGCNNClassifier(5),
+              ECGCNNClassifier2(2),
+              ECGCNNClassifier2(2)]
+
+foldExpList = [10, 2, 7, 8]
 C_LIST = [0.1, 1, 10]
 SOLVER = {#"svd": True
           #"lsqr": True, 
@@ -269,10 +274,10 @@ SOLVER = {#"svd": True
           "noLDA": False
           }
 
-for i in range(4): 
+for i in range(4):
     for lda in SOLVER.keys():
         for c in C_LIST: 
-            MODEL = ECGCNNClassifier(NUMCLASSES[i])
+            MODEL = MODEL_NAME_LIST[i]
             MODELNAME = MODEL.__class__.__name__
             hybridML(MODEL, MODELNAME, WEIGHT_PATHS[i], 
                     EXPERIMENT[i], BATCH_SIZE, SUBTYPE[i], 

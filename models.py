@@ -695,6 +695,111 @@ class ECGCNNClassifier(nn.Module):
 
     
 #############################################
+###############################
+### Original CNN 2020 NO BN ###
+###############################
+
+class ConvBlock2(nn.Module):
+    def __init__(self, inChannels, outChannels, targetLength):
+        super().__init__()
+        self.conv1 = nn.Conv1d(in_channels=inChannels, out_channels=outChannels, 
+                               kernel_size=15, stride=2)
+        self.relu1 = nn.ReLU()
+        self.conv2 = nn.Conv1d(in_channels=outChannels, out_channels=outChannels, 
+                               kernel_size=15, stride=1, padding='same')
+        self.relu2 = nn.ReLU()
+        self.convRes = nn.Conv1d(in_channels=inChannels, out_channels=outChannels, 
+                                 kernel_size=15, stride=2)
+        self.relu3 = nn.ReLU()
+        self.targetLength = targetLength
+
+    def forward(self, x):
+        y = x.clone()
+        x = self.conv1(x)
+        x = padSeqSymm(x, self.targetLength, 2)
+        x = self.relu1(x)
+        x = self.relu2(self.conv2(x))
+        y = self.convRes(y)
+        y = padSeqSymm(y, self.targetLength, 2)
+        x = y + x
+        x = self.relu3(x)
+        return x
+
+
+class IDENBlock2(nn.Module):
+    def __init__(self, inChannels, outChannels):
+        super().__init__()
+        self.conv1 = nn.Conv1d(in_channels=inChannels, out_channels=outChannels, 
+                               kernel_size=15, stride=1, padding='same')
+        self.relu1 = nn.ReLU()
+        self.relu2 = nn.ReLU()
+
+    def forward(self, x):
+        y = x.clone()
+        x = self.relu1(self.conv1(x))
+        x = y + x
+        x = self.relu2(x)
+        return x
+
+
+class CNNBlock2(nn.Module):
+    def __init__(self, inChannels, outChannels, targetLength):
+        super().__init__()
+        self.convBlock = ConvBlock2(inChannels, outChannels, targetLength) 
+        self.pool = nn.MaxPool1d(kernel_size=2, stride=2)
+        if inChannels == outChannels:
+            self.IDEN = IDENBlock2(inChannels, outChannels)
+        else:
+            self.IDEN = IDENBlock2(inChannels*2, outChannels)
+        self.targetLength = targetLength
+
+    def forward(self, x):
+        x = self.convBlock(x)
+        x = padSeqSymm(x, self.targetLength, 2)
+        x = self.pool(x)
+        x = padSeqSymm(x, self.targetLength//2, 2)
+        x = self.IDEN(x)
+        return x
+
+
+class ECGCNNClassifier2(nn.Module):
+    '''Model from paper:
+    Automatic multilabel electrocardiogram diagnosis of heart rhythm or conduction abnormalities with deep learning: a cohort study
+    It is in the supplementary material'''
+    def __init__(self, numClasses):
+        super().__init__()
+        self.conv = nn.Conv1d(in_channels=12, out_channels=64, kernel_size=15, stride=1, padding='same')
+        self.bn = nn.BatchNorm1d(num_features=64)
+        self.relu = nn.ReLU()
+        self.maxPool = nn.MaxPool1d(kernel_size=2, stride=2)
+        self.convBlock1 = CNNBlock2(inChannels=64, outChannels=64, targetLength=625)
+        self.convBlock2 = CNNBlock2(inChannels=64, outChannels=128, targetLength=156)
+        self.convBlock3 = CNNBlock2(inChannels=128, outChannels=256, targetLength=39)
+        self.convBlock4 = CNNBlock2(inChannels=256, outChannels=512, targetLength=9)
+        self.avgPool = nn.AvgPool1d(kernel_size=2, stride=2)
+        self.flatten = nn.Flatten()
+        self.Dense1 = DenseBlock(inChannels=1024, outChannels=512)
+        self.Dense2 = DenseBlock(inChannels=512, outChannels=512)
+        self.fc = nn.Linear(512, numClasses)
+
+    def forward(self, x):
+        x = self.bn(self.conv(x))
+        x = self.maxPool(self.relu(x))
+        x = padSeqSymm(x, 1250, 2)
+        x = self.convBlock1(x)
+        x = self.convBlock2(x)
+        x = self.convBlock3(x)
+        x = self.convBlock4(x)
+        x = self.avgPool(x)
+        x = self.flatten(x)
+        x = self.Dense1(x)
+        x = self.Dense2(x)
+        x = self.fc(x)
+        return x
+
+    
+#############################################
+
 
 class ECGSimpleClassifier(nn.Module):
     '''Random Model I came up with to see that
