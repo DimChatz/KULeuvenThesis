@@ -213,11 +213,10 @@ def process_and_plot_confusion_matrices(directory:str, exp_type:str) -> None:
             
             # Update the font size of annotations (data points)
             for annotation in fig.layout.annotations:
-                annotation.font.size = 40  # Set the desired font size for data annotations
+                annotation.font.size = 30  # Set the desired font size for data annotations
 
             # Update layout for better visualization
             fig.update_layout(
-                title_text=f"{exp_type}",
                 xaxis=dict(
                         title="Predicted",
                         title_font=dict(size=20),  # Font size for axis title
@@ -234,7 +233,7 @@ def process_and_plot_confusion_matrices(directory:str, exp_type:str) -> None:
             
             # Save the figure as an HTML file
             output_filename = os.path.splitext(filename)[0] + "_cm"
-            fig.write_image(os.path.join(directory, output_filename), format="jpeg", scale=3)
+            fig.write_image(os.path.join(f"{directory}/../CM", output_filename), format="jpeg", scale=3)
             print(f"Saved confusion matrix plot: {output_filename}_{exp_type}")
 
 if __name__ == "__main__":
