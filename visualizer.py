@@ -5,7 +5,7 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import plotly.figure_factory as ff
 import plotly.io as pio
-
+import os
 
 def trainVisualizer(trainLossList, valLossList, trainAccList, valAccList, trainF1List, valF1List, saveName):
     """Function to visualize the training process"""
@@ -99,7 +99,8 @@ def plotNSaveConfusion(cm, classNames, saveStr, text):
                       xaxis=dict(title='Predicted value'),
                       yaxis=dict(title='Actual value'),
                       yaxis_autorange='reversed',  # This correctly flips the y-axis to match conventional confusion matrix layout
-                      xaxis_tickangle=-45)
+                      xaxis_tickangle=-45,
+                      font=dict(size=30))
     # Show figure in the notebook or IDE
     #fig.show()
     # Save the figure as an HTML file
@@ -166,3 +167,75 @@ def dataLeadStatsVisPerLead(filePath="/home/tzikos/TableCreatorVis"):
                                   row=1, col=idx+1)
                 fig.update_layout(title_text=f"For Class {clasS} in {taip}")
                 fig.write_html(f"{filePath}/{clasS}_{taip}_Lead{i+1}.html")
+
+def process_and_plot_confusion_matrices(directory:str, exp_type:str) -> None:
+    """
+    Process all CSV files in a directory, plot confusion matrices, and save as HTML files.
+
+    Parameters:
+    - directory: Path to the directory containing CSV files.
+    """
+    for filename in os.listdir(directory):
+        if filename.endswith(".csv"):
+            filepath = os.path.join(directory, filename)
+            
+            # Read the CSV file into a DataFrame
+            df = pd.read_csv(filepath, header=None)
+            
+            # Ensure the DataFrame is square and valid for confusion matrix
+            if df.shape[0] != df.shape[1]:
+                print(f"Skipping {filename}: Not a square confusion matrix.")
+                continue
+            
+            # Remove class labels containing "tachy" or "pre"
+            class_names = [label.replace("Predicted:", "").replace("pre", "").replace("tachy", "").replace(" ", "") for label in df.iloc[0,:]]
+            class_names = class_names[1:]
+            filtered_df = df.iloc[1:,1:]
+
+            # Convert DataFrame to numpy array for processing
+            cm = filtered_df.values.astype(int)
+            
+            # Normalize confusion matrix rows
+            cm_normalized = np.array([row / np.sum(row) if np.sum(row) > 0 else row for row in cm])
+
+            # Create annotations from original confusion matrix values
+            annotations = [[int(value) for value in row] for row in cm]
+            
+
+            # Generate annotated heatmap using Plotly
+            fig = ff.create_annotated_heatmap(
+                z=cm_normalized,
+                x=class_names,
+                y=class_names,
+                annotation_text=annotations,
+                colorscale="Magma"
+            )
+            
+            # Update the font size of annotations (data points)
+            for annotation in fig.layout.annotations:
+                annotation.font.size = 40  # Set the desired font size for data annotations
+
+            # Update layout for better visualization
+            fig.update_layout(
+                title_text=f"{exp_type}",
+                xaxis=dict(
+                        title="Predicted",
+                        title_font=dict(size=20),  # Font size for axis title
+                        tickfont=dict(size=20)  # Font size for tick labels
+                    ),
+                yaxis=dict(
+                        title="Actual",
+                        title_font=dict(size=20),  # Font size for axis title
+                        tickfont=dict(size=20)  # Font size for tick labels
+                    ),
+                yaxis_autorange="reversed",  # Correctly flip the y-axis
+                xaxis_tickangle=-45,
+            )
+            
+            # Save the figure as an HTML file
+            output_filename = os.path.splitext(filename)[0] + "_cm"
+            fig.write_image(os.path.join(directory, output_filename), format="jpeg", scale=3)
+            print(f"Saved confusion matrix plot: {output_filename}_{exp_type}")
+
+if __name__ == "__main__":
+    process_and_plot_confusion_matrices("/home/tzikos/Desktop/CMcsv/csv", "Test")

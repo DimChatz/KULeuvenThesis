@@ -6,7 +6,6 @@ import numpy as np
 import os
 from utility import seedEverything
 import pickle
-import shutil
 
 # Seed every library for reproducibility
 seedEverything(42)
@@ -19,18 +18,18 @@ EXPERIMENT = "tachy"
 WEIGHT_PATH = "/home/tzikos/Desktop/weights/"
 PREPROC_PTB = False
 PREPROC_BERT = False
-PRETRAIN = True
-FINETUNE = False
+PRETRAIN = False
+FINETUNE = True
 VISUALIZE = False
 USE_PRETRAINED = False
 
 # MODEL
 BINARY = False
-AVNRT_AVRT = False
-MODEL_STR = "CNN2020"
+AVNRT_AVRT = True
+#MODEL_STR = "CNN2020"
 #MODEL_STR = "GatedTransformer"
 #MODEL_STR = "CNNAttia"
-#MODEL_STR = "MLSTMFCN"
+MODEL_STR = "MLSTMFCN"
 #MODEL_STR = "swin"
 if MODEL_STR == "swin":
     swin = True
@@ -39,11 +38,11 @@ else:
 
 
 # HYPERPARAMETERS
-LEARNING_RATE_PTB = 1e-7
-LEARNING_RATE_BERT = 1e-6
+LEARNING_RATE_PTB = 1e-5
+LEARNING_RATE_BERT = 5e-5
 BATCH = 64
-L1 = 1e-4
-L2 = 1e-4
+L1 = 0
+L2 = 0
 A_BERT = 1
 A_PTB = 1
 

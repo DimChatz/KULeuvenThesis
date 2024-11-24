@@ -8,13 +8,31 @@ import torch.nn.functional as F
 import os
 from utility import seedEverything
 import captum
+from itertools import chain
+
 
 # Seed everything for os parsing of same files
 seedEverything(42)
 
+
+def fileAccumulator(path, string, numFold):
+    trainFilesList = []
+    for folder in os.listdir(path):
+        #if str(f"fold{numFold}") in folder or str(f"fold{numFold+1}") in folder:
+            #continue
+        trainPath = os.path.join(path, folder)
+        trainFiles = os.listdir(trainPath)
+        trainFiles = [os.path.join(trainPath, file) for file in trainFiles]
+        trainFiles = [file for file in trainFiles if "missing" not in file]
+        trainFiles = [file for file in trainFiles if string in file]
+        trainFilesList.append(trainFiles)
+    trainFilesList = list(chain.from_iterable(trainFilesList))
+    return trainFilesList
+
+
 # Globals - to be changed per case
 # Path of fold to consider
-PATH = "/home/tzikos/Desktop/Data/Berts final/pre/fold5"
+PATH = "/home/tzikos/Desktop/Data/Berts final/pre/"
 # Batch size to take - handle per model for OOM issues
 BATCH = 128
 NUM_CLASSES = 2
@@ -23,15 +41,8 @@ DICT = {0:"AVNRT", 1:"AVRT"}
 SHOW_DIFF = True
 # Load model and weights
 model = ECGCNNClassifier(numClasses=NUM_CLASSES)
-#weight_sum = sum(p.sum() for p in model.parameters())
-#print(f"The sum of the weights before is {weight_sum}")
-model.load_state_dict(torch.load('/home/tzikos/Desktop/weights/Models/ECGCNNClassifier_fold5_pre_B64_L1e-05_01-07-24-09-27.pth'))
-#weight_sum = sum(p.sum() for p in model.parameters())
-#print(f"The sum of the weights after is {weight_sum}")
+model.load_state_dict(torch.load('/home/tzikos/Desktop/weights/Models/ECGCNNClassifier_fold2_pre_B64_L1e-05_01-07-24-09-27.pth'))
 # Load Integrated Gradients object from Captum
-#ig = IntegratedGradients(model)
-#ig = Saliency(model)
-#ig = DeepLift(model)
 ig = GradientShap(model)
 
 # Initialize lists to save 
@@ -43,11 +54,8 @@ diff_of_sums = []
 # Loop through the classes
 for i in range(NUM_CLASSES):
     # Get all files
-    allFiles = os.listdir(PATH)
-    allFiles = [os.path.join(PATH, file) for file in allFiles]
-    # Filter out missing leads and irrelevant classes    
-    classFiles = [file for file in allFiles if ("missing" not in file) and (DICT[i] in file)]
-    allClassFiles.append(classFiles)
+    allFiles = fileAccumulator(PATH, DICT[i], 0)
+    allClassFiles.append(allFiles)
 # np array to hold the ECG data
 class_signals = np.zeros((NUM_CLASSES, BATCH, 12, 5000))
 # Initialize plotly figure to write per lead, per class results

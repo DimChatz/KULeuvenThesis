@@ -63,7 +63,7 @@ def lengthFinder(path, valNum, norm_psvt=False):
                 trainFiles = os.listdir(trainPath)
                 trainFiles = [os.path.join(trainPath, file) for file in trainFiles]
                 trainFiles = [file for file in trainFiles if "AVRT" not in file]
-                #trainFiles = [file for file in trainFiles if "missing" not in file]
+                trainFiles = [file for file in trainFiles if "missing" not in file]
                 trainFilesList.append(trainFiles)  
     else:
         for folder in os.listdir(path):
@@ -208,7 +208,7 @@ class PTBDataset(torch.utils.data.Dataset):
         # Its files
         self.fileNames = os.listdir(dirPath)
         self.fileNames = [os.path.join(self.dir, file) for file in self.fileNames]
-        #self.fileNames = [file for file in self.fileNames if "missing" not in file]
+        self.fileNames = [file for file in self.fileNames if "missing" not in file]
         # Number of classes
         self.numClasses = numClasses
         self.swin = swin
@@ -228,7 +228,7 @@ class PTBDataset(torch.utils.data.Dataset):
         fileKey = self.fileNames[idx].split("/")[-1].split("-")[-2]
         label = nameDict[fileKey]
         # Load ECG data
-        ecgData = np.load(self.fileNames[idx])
+        ecgData = np.load(self.fileNames[idx])[::2]
         # Expand dims to make it 3D
         # Reduce data shape (squeeze)
         # Transpose axis to proper format
@@ -257,7 +257,7 @@ class CNN2023Attia(torch.nn.Module):
         self.convMaxBlock2 = ConvMaxBlock(inChannels=16, numFilters=16, kernelSize=5, maxPoolKernel=2, targetLength=625)
         self.convMaxBlock3 = ConvMaxBlock(inChannels=16, numFilters=32, kernelSize=5, maxPoolKernel=4, targetLength=312)
         self.convMaxBlock4 = ConvMaxBlock(inChannels=32, numFilters=32, kernelSize=3, maxPoolKernel=2, targetLength=156)
-        self.convMaxBlock5 = ConvMaxBlock(inChannels=32, numFilters=64, kernelSize=3, maxPoolKernel=2, targetLength=78)
+        self.convMaxBlock5 = ConvMaxBlock(inChannels=32, numFilters =64, kernelSize=3, maxPoolKernel=2, targetLength=78)
         self.convMaxBlock6 = ConvMaxBlock(inChannels=64, numFilters=64, kernelSize=3, maxPoolKernel=4, targetLength=39)
 
         self.convBlock1 = ConvBlockAlone(inChannels=64, numFilters=128, kernelSize=3, targetLength=19)
@@ -293,7 +293,8 @@ class ConvMaxBlock(torch.nn.Module):
         self.maxPoolKernel = maxPoolKernel
 
     def forward(self, x):
-        x = self.bn(self.conv(x))
+        x = self.conv(x)
+        x = self.bn(x)
         x = padSeqSymm(x, self.targetLength, 2)
         x = self.relu(x)
         x = self.maxPool(x)
@@ -311,7 +312,8 @@ class ConvBlockAlone(torch.nn.Module):
         self.targetLength = targetLength
 
     def forward(self, x):
-        x = self.bn(self.conv(x))
+        x = self.conv(x)
+        x = self.bn(x)
         x = padSeqSymm(x, self.targetLength, 2)
         x = self.relu(x)
         return x
@@ -325,7 +327,9 @@ class FFN(torch.nn.Module):
         self.relu = nn.ReLU()
 
     def forward(self, x):
-        x = self.relu(self.bn(self.lin(x)))
+        x = self.lin(x)
+        x = self.bn(x)
+        x = self.relu(x)
         return x
 
 #########################

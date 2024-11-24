@@ -18,7 +18,7 @@ seedEverything(42)
 
 
 # Path of fold data wanted
-PATH = "/home/tzikos/Desktop/Data/Berts final/tachy/fold4"
+PATH = "/home/tzikos/Desktop/Data/Berts final/tachy/fold1"
 
 # Number in Batch to take
 NUM_CLASSES = 5
@@ -30,8 +30,8 @@ SAVE_OPT = True
 # Visualization factor
 VIS_FACTOR = 10
 # Load model and weights
-model = ECGCNNClassifier(numClasses=5)
-model.load_state_dict(torch.load('/home/tzikos/Desktop/weights/Models/ECGCNNClassifier_fold5_tachy_B64_L1e-06_24-06-24-11-02.pth'))
+model = ECGCNNClassifier(numClasses=2)
+model.load_state_dict(torch.load('/home/tzikos/Desktop/weights/Models/ECGCNNClassifier_fold2_tachy_B64_L1e-06_08-07-24-09-15.pth'))
 # Load Integrated Gradients object from Captum
 #ig = IntegratedGradients(model)
 #ig = Saliency(model)
@@ -58,10 +58,13 @@ class_signals = np.zeros((NUM_CLASSES, 12, 5000))
 # Loop through classes
 for i in range(NUM_CLASSES):
     # Take only the first BATCH files
-    class_signals[i, :, :] = np.load(allClassFiles[i][-3]).T 
+    class_signals[i, :, :] = np.load(allClassFiles[i][-1]).T 
 for i in range(NUM_CLASSES):
     # Ascribe the correct class for Captum
-    target_class = i
+    if i == 0:
+        target_class = 0
+    else:
+        target_class = 1
     # Initialize lists to hold the attributions
     lead_attributions = []
     smoothed_list = np.zeros((5000, 12))

@@ -40,7 +40,7 @@ SHOW_DIFF = True
 model = ECGCNNClassifier(numClasses=2)
 #weight_sum = sum(p.sum() for p in model.parameters())
 #print(f"The sum of the weights before is {weight_sum}")
-model.load_state_dict(torch.load('/home/tzikos/Desktop/weights/Models/ECGCNNClassifier_fold4_tachy_B64_L1e-06_08-07-24-09-15.pth'))
+model.load_state_dict(torch.load('/home/tzikos/Desktop/weights/Models/ECGCNNClassifier_fold2_tachy_B64_L1e-06_08-07-24-09-15.pth'))
 #weight_sum = sum(p.sum() for p in model.parameters())
 #print(f"The sum of the weights after is {weight_sum}")
 # Load Integrated Gradients object from Captum

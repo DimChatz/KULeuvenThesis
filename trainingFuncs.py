@@ -15,7 +15,7 @@ from torchvision.models import swin_v2_t
 from models import lengthFinder, lengthFinderBinary, ECGDataset2_0, ECGCNNClassifier, Gated2TowerTransformer, ECGDataset2_0Binary
 from models import MLSTMFCN, CNN2023Attia, PTBDataset
 from tqdm import tqdm
-
+from torchinfo import summary 
 
 #################
 ### TRAINING  ###
@@ -405,6 +405,7 @@ def train(modelStr, learningRate, classWeights, expList, batchSize, modelWeightP
     wandb.run.notes = trainNotes
     model.load_state_dict(torch.load("/home/tzikos/Desktop/weights/Models/90-99/ECGCNNClassifier_fold8_tachy_B64_L1e-05_17-04-24-21-01.pth"), strict=False)
     criterion = nn.CrossEntropyLoss(weight=classWeights)
+    #criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=learningRate)
     # Trackers for callbacks
     bestValF1 = -1
@@ -551,7 +552,7 @@ def CVtrainBinary(modelStr, learningRate, epochs, classWeights, earlyStopPatienc
     classWeights = torch.from_numpy(classWeights).to(device)
 
     for foldNum in range(10):
-        if foldNum > 0:
+        if foldNum < 10:
                 # start a new wandb run to track this script
             '''Training function for the model'''
             print(f"Starting training fold {foldNum+1}")
@@ -613,6 +614,7 @@ def CVtrainBinary(modelStr, learningRate, epochs, classWeights, earlyStopPatienc
             #model.load_state_dict(torch.load("/home/tzikos/Desktop/weights/Models/90-99/ECGCNNClassifier_fold8_tachy_B64_L1e-05_17-04-24-21-01.pth"), strict=False)
             tempRate = learningRate
             criterion = nn.CrossEntropyLoss(weight=classWeights)
+            #criterion = nn.CrossEntropyLoss()
             optimizer = optim.Adam(model.parameters(), lr=tempRate)
 
             # Trackers for callbacks
@@ -636,6 +638,7 @@ def CVtrainBinary(modelStr, learningRate, epochs, classWeights, earlyStopPatienc
             ### TRAINING ###
             ###   LOOP   ###
             ################
+            summary(model, input_size=(1, 12, 5000))
             for epoch in range(epochs):
                 epochBeginTime = time.time()
                 model.train()
