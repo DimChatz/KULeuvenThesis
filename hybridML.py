@@ -19,7 +19,7 @@ from visualizer import plotNSaveConfusion
 from datetime import datetime
 from models import ECGCNNClassifier, ECGCNNClassifier2
 import os
-from sklearn.decomposition import KernelPCA
+from sklearn.decomposition import PCA
 
 def fileLoader(path:str, model:torch.nn.Module, modelName:str, weightsPath:str, experiment:str, 
                batchSize:int, subtype:str, fold:int, device:torch.device, ignoreMissing:bool=True):
@@ -28,7 +28,6 @@ def fileLoader(path:str, model:torch.nn.Module, modelName:str, weightsPath:str, 
         foldFiles = [file for file in foldFiles if "AVRT" not in file]
     elif subtype == "AVNRT-AVRT+concealed":
         foldFiles = [file for file in foldFiles if (("AVRT" in file) or ("concealed" in file) or ("AVNRT" in file))]
-    #model.load_state_dict(torch.load(weightsPath.replace(r'fold\d', f"fold{fold+1}")))
     model.load_state_dict(torch.load(weightsPath))
     model.to(device)
     model.eval()
@@ -60,7 +59,6 @@ def createNsaveEmbeddings(model, experiment:str, modelName:str,
                           subtype:str, fold:int, channels:int=12, timeSteps:int=5000, 
                           ignoreMissing:bool=True):
     embeddingSize = model(torch.zeros((batchSize, channels, timeSteps)).to(device))
-    #print(f"Embedding size is {embeddingSize.size()}")
     allEmbeddings = torch.empty(0, embeddingSize.size(1)).to(device)
     allLabels = torch.empty(0).to(device)
     with torch.no_grad():
@@ -133,7 +131,7 @@ def embeddingAccumulator(experiment:str, subtype:str, modelName:str,
     np.save(f"{path}/{experiment}/{subtype}/fold{fold+1}/test/{modelName}AccLabels.npy", testLabels)
 
 
-def applyPCAnLDA(experiment:str, subtype:str, modelName:str, solver:str,
+def applyPCAnLDA(experiment:str, subtype:str, modelName:str,
               fold:int, path:str="/home/tzikos/Desktop/Data/embeddings"):
     trainEmbeddings = np.load(f"{path}/{experiment}/{subtype}/fold{fold+1}/train/{modelName}AccEmbeddings.npy")
     testEmbeddings = np.load(f"{path}/{experiment}/{subtype}/fold{fold+1}/test/{modelName}AccEmbeddings.npy")
@@ -141,13 +139,13 @@ def applyPCAnLDA(experiment:str, subtype:str, modelName:str, solver:str,
     trainLabels = np.load(f"{path}/{experiment}/{subtype}/fold{fold+1}/train/{modelName}AccLabels.npy")
 
 
-    pca = KernelPCA(n_components=0.95, kernel='rbf')
+    pca = PCA(n_components=0.95)
     allEmbeddings = np.concatenate((trainEmbeddings, testEmbeddings), axis=0)
     pca.fit(allEmbeddings)
     trainEmbeddings = pca.transform(trainEmbeddings)
     testEmbeddings = pca.transform(testEmbeddings)
 
-    lda = LinearDiscriminantAnalysis(solver=solver)
+    lda = LinearDiscriminantAnalysis()
     lda.fit(trainEmbeddings, trainLabels)
     trainEmbeddings = lda.transform(trainEmbeddings)
     testEmbeddings = lda.transform(testEmbeddings)
@@ -199,7 +197,7 @@ def wandbTable(table: np.ndarray, run:wandb.run, classNames:list, modelName:str,
 
 
 def hybridML(model: torch.nn.Module, modelName: str,  weightsPath: str, experiment: str,
-             batchSize: int, subtype: str, foldExperiment:int, solver:str,
+             batchSize: int, subtype: str, foldExperiment:int,
              useLDA:bool=True, ignoreMissing:bool=True, C:float=None):
     trainF1s = []
     testF1s = []
@@ -212,7 +210,7 @@ def hybridML(model: torch.nn.Module, modelName: str,  weightsPath: str, experime
         if fold == foldExperiment-1:
             embeddingAccumulator(experiment, subtype, modelName, fold, ignoreMissing=ignoreMissing)
             if useLDA:
-                applyPCAnLDA(experiment, subtype, modelName, solver, fold)
+                applyPCAnLDA(experiment, subtype, modelName, fold)
             trainCM, testCM, trainF1, testF1 = applySVM(experiment, subtype,
                 modelName, useLDA, fold, C=C)
             run = wandb.init(
@@ -227,7 +225,7 @@ def hybridML(model: torch.nn.Module, modelName: str,  weightsPath: str, experime
                             "architecture": weightsPath.split("/")[-1],
                             "experiment": experiment,
                             "ignoreMissing": ignoreMissing,
-                            "solver": solver,
+                            "solver": 'svd',
                             "subtype": subtype}
                         )
 
@@ -245,8 +243,7 @@ def hybridML(model: torch.nn.Module, modelName: str,  weightsPath: str, experime
             wandb.log({"Training F1": trainF1, "Test F1": testF1})
             trainF1s.append(trainF1)
             testF1s.append(testF1)
-            if fold == 9:
-                wandb.run.notes = f"{np.mean(trainF1s*100):.2f}/{np.mean(testF1s*100):.2f}"
+            wandb.run.notes = f"{np.mean(testF1s*100):.2f}"
             run.finish()
             print("Finished fold ", fold+1)
 
@@ -271,7 +268,7 @@ C_LIST = [0.1, 1, 10]
 SOLVER = {#"svd": True
           #"lsqr": True, 
           #"eigen": True, 
-          "noLDA": False
+          "useLDA": True
           }
 
 for i in range(4):
@@ -282,5 +279,5 @@ for i in range(4):
             hybridML(MODEL, MODELNAME, WEIGHT_PATHS[i], 
                     EXPERIMENT[i], BATCH_SIZE, SUBTYPE[i], 
                     useLDA=SOLVER[lda], C=c, ignoreMissing=False,
-                    foldExperiment=foldExpList[i], solver=lda)
+                    foldExperiment=foldExpList[i])
 
