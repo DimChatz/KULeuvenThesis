@@ -63,7 +63,7 @@ def lengthFinder(path, valNum, norm_psvt=False):
                 trainFiles = os.listdir(trainPath)
                 trainFiles = [os.path.join(trainPath, file) for file in trainFiles]
                 trainFiles = [file for file in trainFiles if "AVRT" not in file]
-                trainFiles = [file for file in trainFiles if "missing" not in file]
+                #trainFiles = [file for file in trainFiles if "missing" not in file]
                 trainFilesList.append(trainFiles)  
     else:
         for folder in os.listdir(path):

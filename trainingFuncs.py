@@ -103,7 +103,9 @@ def CVtrain(modelStr, learningRate, epochs, classWeights, earlyStopPatience,
             wandb.run.notes = trainNotes
             #model.load_state_dict(torch.load("/home/tzikos/Desktop/weights/Models/90-99/ECGCNNClassifier_fold8_tachy_B64_L1e-05_17-04-24-21-01.pth"), strict=False)
             tempRate = learningRate
-            criterion = nn.CrossEntropyLoss(weight=classWeights)
+            criterion = nn.CrossEntropyLoss(
+                #weight=classWeights
+                )
             optimizer = optim.Adam(model.parameters(), lr=tempRate)
 
             # Trackers for callbacks
@@ -404,7 +406,9 @@ def train(modelStr, learningRate, classWeights, expList, batchSize, modelWeightP
     )
     wandb.run.notes = trainNotes
     model.load_state_dict(torch.load("/home/tzikos/Desktop/weights/Models/90-99/ECGCNNClassifier_fold8_tachy_B64_L1e-05_17-04-24-21-01.pth"), strict=False)
-    criterion = nn.CrossEntropyLoss(weight=classWeights)
+    criterion = nn.CrossEntropyLoss(
+        #weight=classWeights
+        )
     #criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=learningRate)
     # Trackers for callbacks
@@ -613,7 +617,9 @@ def CVtrainBinary(modelStr, learningRate, epochs, classWeights, earlyStopPatienc
             wandb.run.notes = trainNotes
             #model.load_state_dict(torch.load("/home/tzikos/Desktop/weights/Models/90-99/ECGCNNClassifier_fold8_tachy_B64_L1e-05_17-04-24-21-01.pth"), strict=False)
             tempRate = learningRate
-            criterion = nn.CrossEntropyLoss(weight=classWeights)
+            criterion = nn.CrossEntropyLoss(
+                #weight=classWeights
+                )
             #criterion = nn.CrossEntropyLoss()
             optimizer = optim.Adam(model.parameters(), lr=tempRate)
 
