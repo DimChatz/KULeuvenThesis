@@ -149,3 +149,18 @@ def checkStats(dataPath, exp):
                 file.write("\n")
             file.write("\n")
             file.write("\n")
+
+
+def checkFoldDistribution(datapath: str) -> None:
+    expList = ["pre", "tachy"]
+    for exp in expList:
+        classList = ["norm", "AVNRT", "AVRT", "concealed", "EAT"]
+        for i in range(10):
+            for classType in classList:     
+                allFiles = os.listdir(os.path.join(datapath, exp, f"fold{i%10+1}"))
+                allFiles = [file for file in allFiles if "missing" not in file and classType in file]
+                print(f"For class {classType}, experiment {exp}and fold {i%10+1} the total files are {len(allFiles)}")
+
+if __name__ == "__main__":
+    datapath = "/home/tzikos/Desktop/Data/Berts final/"
+    checkFoldDistribution(datapath)
