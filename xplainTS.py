@@ -6,6 +6,7 @@ import torch.nn.functional as F
 import os 
 from utility import seedEverything
 from captum.attr import visualization as viz
+import matplotlib.pyplot as plt
 
 # Seed everything for os parsing of same files
 seedEverything(42)
@@ -34,6 +35,10 @@ model.load_state_dict(torch.load('/home/tzikos/Desktop/weights/Models/ECGCNNClas
 #ig = DeepLift(model)
 ig = GradientShap(model)
 
+# Set font globally for Matplotlib
+plt.rcParams.update({
+    'font.size': 30,             # Change font size
+})
 
 # Initialize lists to save 
 # class files
@@ -54,7 +59,7 @@ class_signals = np.zeros((NUM_CLASSES, 12, 5000))
 # Loop through classes
 for i in range(NUM_CLASSES):
     # Take only the first BATCH files
-    class_signals[i, :, :] = np.load(allClassFiles[i][-2]).T 
+    class_signals[i, :, :] = np.load(allClassFiles[i][13]).T
 for i in range(NUM_CLASSES):
     # Ascribe the correct class for Captum
     target_class = i
@@ -105,6 +110,6 @@ for i in range(NUM_CLASSES):
     viz.visualize_timeseries_attr(
         smoothed_2[1200:3800].unsqueeze(1), 
         torch.from_numpy(class_signals[i, 1, 1200:3800].T).unsqueeze(1), 
-        fig_size=(20, 20),
+        fig_size=(40, 40),
         title = f"Lead 2 of Class {DICT[i]}",
     )

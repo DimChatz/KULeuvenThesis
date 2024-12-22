@@ -14,7 +14,7 @@ seedEverything(42)
 CLASSES_BERT = 5
 CLASSES_PTB = 5
 ROOT_DATA_PATH = '/home/tzikos/Desktop/Data/'
-EXPERIMENT = "tachy"
+EXPERIMENT = "pre"
 WEIGHT_PATH = "/home/tzikos/Desktop/weights/"
 PREPROC_PTB = False
 PREPROC_BERT = False
@@ -24,12 +24,12 @@ VISUALIZE = False
 USE_PRETRAINED = False
 
 # MODEL
-BINARY = True
+BINARY = False
 AVNRT_AVRT = False
 #MODEL_STR = "CNN2020"
 #MODEL_STR = "GatedTransformer"
-MODEL_STR = "CNNAttia"
-#MODEL_STR = "MLSTMFCN"
+#MODEL_STR = "CNNAttia"
+MODEL_STR = "MLSTMFCN"
 #MODEL_STR = "swin"
 if MODEL_STR == "swin":
     swin = True
@@ -39,10 +39,10 @@ else:
 
 # HYPERPARAMETERS
 LEARNING_RATE_PTB = 1e-5
-LEARNING_RATE_BERT = 2e-6
+LEARNING_RATE_BERT = 1e-4
 BATCH = 64
 L1 = None
-L2 = None
+L2 = 1e-4
 A_BERT = 1
 A_PTB = 1
 
