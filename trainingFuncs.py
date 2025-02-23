@@ -16,6 +16,7 @@ from models import lengthFinder, lengthFinderBinary, ECGDataset2_0, ECGCNNClassi
 from models import MLSTMFCN, CNN2023Attia, PTBDataset
 from tqdm import tqdm
 from torchinfo import summary 
+from losses import F1ScoreLoss
 
 #################
 ### TRAINING  ###
@@ -45,7 +46,7 @@ def CVtrain(modelStr, learningRate, epochs, classWeights, earlyStopPatience,
 
     
     for foldNum in range(10):
-        if foldNum < 10:
+        if foldNum > 7:
             # start a new wandb run to track this script
             '''Training function for the model'''
             print(f"Started training fold {foldNum+1}")
@@ -103,8 +104,10 @@ def CVtrain(modelStr, learningRate, epochs, classWeights, earlyStopPatience,
             wandb.run.notes = trainNotes
             #model.load_state_dict(torch.load("/home/tzikos/Desktop/weights/Models/90-99/ECGCNNClassifier_fold8_tachy_B64_L1e-05_17-04-24-21-01.pth"), strict=False)
             tempRate = learningRate
-            criterion = nn.CrossEntropyLoss(
-                #weight=classWeights
+            criterion = F1ScoreLoss(
+                weight = classWeights,
+                num_classes = len(classWeights),
+                average = "macro"
                 )
             optimizer = optim.Adam(model.parameters(), lr=tempRate)
 
@@ -406,8 +409,10 @@ def train(modelStr, learningRate, classWeights, expList, batchSize, modelWeightP
     )
     wandb.run.notes = trainNotes
     model.load_state_dict(torch.load("/home/tzikos/Desktop/weights/Models/90-99/ECGCNNClassifier_fold8_tachy_B64_L1e-05_17-04-24-21-01.pth"), strict=False)
-    criterion = nn.CrossEntropyLoss(
-        #weight=classWeights
+    criterion = F1ScoreLoss(
+        weight = classWeights,
+        num_classes = len(classWeights),
+        average = "macro"
         )
     #criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=learningRate)
@@ -617,8 +622,10 @@ def CVtrainBinary(modelStr, learningRate, epochs, classWeights, earlyStopPatienc
             wandb.run.notes = trainNotes
             #model.load_state_dict(torch.load("/home/tzikos/Desktop/weights/Models/90-99/ECGCNNClassifier_fold8_tachy_B64_L1e-05_17-04-24-21-01.pth"), strict=False)
             tempRate = learningRate
-            criterion = nn.CrossEntropyLoss(
-                #weight=classWeights
+            criterion = F1ScoreLoss(
+                weight = classWeights,
+                num_classes = len(classWeights),
+                average = "macro"
                 )
             #criterion = nn.CrossEntropyLoss()
             optimizer = optim.Adam(model.parameters(), lr=tempRate)

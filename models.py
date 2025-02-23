@@ -105,7 +105,7 @@ def lengthFinderBinary(path, valNum):
             trainFiles = os.listdir(trainPath)
             trainFiles = [os.path.join(trainPath, file) for file in trainFiles]
             trainFiles = [file for file in trainFiles if ((("AVNRT" in file) or ("AVRT" in file) or ("concealed" in file)))]
-            #trainFiles = [file for file in trainFiles if "missing" not in file]
+            trainFiles = [file for file in trainFiles if "missing" not in file]
             trainFilesList.append(trainFiles)
     trainFilesList = list(chain.from_iterable(trainFilesList))
     return trainFilesList, valFiles, testFiles
